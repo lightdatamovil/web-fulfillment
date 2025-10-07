@@ -11,8 +11,8 @@ include("modulos/sistema/usuarios/modal/ficha.php");
 include("modulos/sistema/usuarios/modal/estructura.php");
 
 // Configuración
-include("modulos/sistema/configuracion/ficha.php");
-include("modulos/sistema/configuracion/estructura.php");
+include("modulos/sistema/configuracion/modulo/ficha.php");
+include("modulos/sistema/configuracion/modulo/estructura.php");
 
 // Modulo de logisticas
 include("modulos/sistema/logisticas/modulo/ficha.php");
@@ -21,8 +21,6 @@ include("modulos/sistema/logisticas/modulo/estructura.php");
 // Modal logisticas
 include("modulos/sistema/logisticas/modal/ficha.php");
 include("modulos/sistema/logisticas/modal/estructura.php");
-
-
 
 // ------------------------------------------------------------
 
@@ -61,16 +59,16 @@ include("modulos/clientes/listado/modal/estructura.php");
 // PRODUCTOS ----------------------------------------------------
 
 // Listado de Productos
-include("modulos/productos/listado/ficha.php");
-include("modulos/productos/listado/estructura.php");
+include("modulos/productos/listado/modulo/ficha.php");
+include("modulos/productos/listado/modulo/estructura.php");
 
 // Modal Productos
-include("modulos/productos/detalle/ficha.php");
-include("modulos/productos/detalle/estructura.php");
+include("modulos/productos/listado/modal/ficha.php");
+include("modulos/productos/listado/modal/estructura.php");
 
 // Importador Masivo de Productos
-include("modulos/productos/importador_masivo/ficha.php");
-include("modulos/productos/importador_masivo/estructura.php");
+include("modulos/productos/importador_masivo/modulo/ficha.php");
+include("modulos/productos/importador_masivo/modulo/estructura.php");
 
 // --------------------------------------------------------------
 
@@ -89,16 +87,16 @@ include("modulos/insumos/listado/modal/estructura.php");
 // PEDIDOS ----------------------------------------------------
 
 // Listado de Pedidos
-include("modulos/pedidos/listado/ficha.php");
-include("modulos/pedidos/listado/estructura.php");
+include("modulos/pedidos/listado/modulo/ficha.php");
+include("modulos/pedidos/listado/modulo/estructura.php");
 
 // Modal de Pedidos
-include("modulos/pedidos/detalle/ficha.php");
-include("modulos/pedidos/detalle/estructura.php");
+include("modulos/pedidos/listado/modal/ficha.php");
+include("modulos/pedidos/listado/modal/estructura.php");
 
 // Subida masiva de Pedidos
-include("modulos/pedidos/subidaMasiva/ficha.php");
-include("modulos/pedidos/subidaMasiva/estructura.php");
+include("modulos/pedidos/subidaMasiva/modulo/ficha.php");
+include("modulos/pedidos/subidaMasiva/modulo/estructura.php");
 
 // --------------------------------------------------------------
 
@@ -117,44 +115,40 @@ include("modulos/envios/sincronizar/modal/estructura.php");
 // ARMADO PV ----------------------------------------------------
 
 // Armado
-include("modulos/PV/armado/ficha.php");
-include("modulos/PV/armado/estructura.php");
+include("modulos/PV/armado/modulo/ficha.php");
+include("modulos/PV/armado/modulo/estructura.php");
 
 // --------------------------------------------------------------
 
 // ARMADO OT ----------------------------------------------------
 
 // Listado
-include("modulos/OT/listado/ficha.php");
-include("modulos/OT/listado/estructura.php");
+include("modulos/OT/listado/modulo/ficha.php");
+include("modulos/OT/listado/modulo/estructura.php");
 
 // Asignación
-include("modulos/OT/asignacion/ficha.php");
-include("modulos/OT/asignacion/estructura.php");
+include("modulos/OT/asignacion/modulo/ficha.php");
+include("modulos/OT/asignacion/modulo/estructura.php");
 
 // --------------------------------------------------------------
 
 
 // INFORMES ----------------------------------------------------
 
-// Dashboard
-include("modulos/informe/dashboard/ficha.php");
-include("modulos/informe/dashboard/estructura.php");
-
 // Armado
-include("modulos/informe/armado/ficha.php");
-include("modulos/informe/armado/estructura.php");
+include("modulos/informe/armado/modulo/ficha.php");
+include("modulos/informe/armado/modulo/estructura.php");
 
 // Stock
-include("modulos/informe/stock/ficha.php");
-include("modulos/informe/stock/estructura.php");
+include("modulos/informe/stock/modulo/ficha.php");
+include("modulos/informe/stock/modulo/estructura.php");
 
 // --------------------------------------------------------------
 
 // STOCK ----------------------------------------------------
 
 // Dashboard
-include("modulos/stock/ajuste/ficha.php");
-include("modulos/stock/ajuste/estructura.php");
+include("modulos/stock/ajuste/modulo/ficha.php");
+include("modulos/stock/ajuste/modulo/estructura.php");
 
 // --------------------------------------------------------------
