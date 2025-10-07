@@ -1,0 +1,281 @@
+[
+    {
+        "id": 1,
+        "nombre": "Sistema",
+        "accion": null,
+        "icono": "ri-home-gear-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+        "hijos": [
+            {
+                "id": 2,
+                "nombre": "Usuarios",
+                "titulo": "Usuarios",
+                "ruta": "usuarios",
+                "accion": "appModuloUsuarios.open();",
+                "icono": "menu-icon tf-icons ri-user-3-line",
+                "permisos": { "adm": 1, "operador": 0, "exterior": 0, "armador": 0 },
+                "hijos": []
+            },
+            {
+                "id": 3,
+                "nombre": "Configuración",
+                "titulo": "Configuración",
+                "ruta": "configuracion",
+                "accion": "appConfiguracion.open()",
+                "icono": "menu-icon tf-icons ri-settings-3-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
+            },
+            {
+                "id": 4,
+                "nombre": "Logisticas",
+                "titulo": "Logisticas",
+                "ruta": "logisticas",
+                "accion": "appModuloLogisticas.open()",
+                "icono": "menu-icon tf-icons ri-truck-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 10,
+        "nombre": "Curvas",
+        "accion": null,
+        "icono": "ri-t-shirt-air-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+        "hijos": [
+            {
+                "id": 11,
+                "nombre": "Listado",
+                "titulo": "Listado",
+                "ruta": "curvas",
+                "accion": "appModuloCurvas.open();",
+                "icono": "menu-icon tf-icons ri-t-shirt-air-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
+            },
+            {
+                "id": 12,
+                "nombre": "Variantes",
+                "titulo": "Variantes",
+                "ruta": "variantes",
+                "accion": "appModuloVariantes.open();",
+                "icono": "menu-icon tf-icons ri-palette-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 20,
+        "nombre": "Clientes",
+        "accion": null,
+        "icono": "ri-group-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+        "hijos": [
+            {
+                "id": 21,
+                "nombre": "Listado",
+                "titulo": "Clientes",
+                "ruta": "clientes",
+                "accion": "appModuloClientes.open();",
+                "icono": "menu-icon tf-icons ri-user-3-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 30,
+        "nombre": "Insumos",
+        "accion": null,
+        "icono": "ri-box-3-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+        "hijos": [
+            {
+                "id": 31,
+                "nombre": "Listado",
+                "titulo": "Insumos",
+                "ruta": "insumos",
+                "accion": "appModuloInsumos.open();",
+                "icono": "menu-icon tf-icons ri-box-3-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 40,
+        "nombre": "Productos",
+        "accion": null,
+        "icono": "ri-shopping-bag-3-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+        "hijos": [
+            {
+                "id": 41,
+                "nombre": "Listado",
+                "titulo": "Productos",
+                "accion": "appProductosListado.open();",
+                "ruta": "productos",
+                "icono": "menu-icon tf-icons ri-shopping-bag-3-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+                "hijos": []
+            },
+            {
+                "id": 42,
+                "nombre": "Importar masivo",
+                "titulo": "Importar masivo",
+                "ruta": "importador-masivo",
+                "accion": "appImportadorMasivo.open();",
+                "icono": "menu-icon tf-icons ri-download-cloud-2-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 50,
+        "nombre": "Pedidos",
+        "accion": null,
+        "icono": "ri-checkbox-circle-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+        "hijos": [
+            {
+                "id": 51,
+                "nombre": "Listado",
+                "titulo": "Pedidos",
+                "ruta": "pedidos",
+                "accion": "appPedidosListado.open();",
+                "icono": "menu-icon tf-icons ri-checkbox-circle-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+                "hijos": []
+            },
+            {
+                "id": 52,
+                "nombre": "Subida masiva",
+                "titulo": "Subida masiva de pedidos",
+                "ruta": "pedidos-subida-masiva",
+                "accion": "appPedidosSubidaMasiva.open();",
+                "icono": "menu-icon tf-icons ri-file-upload-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 60,
+        "nombre": "Envios",
+        "accion": null,
+        "icono": "ri-mail-send-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+        "hijos": [
+            {
+                "id": 61,
+                "nombre": "Sincronizacion",
+                "titulo": "Sincronizacion",
+                "ruta": "sincronizacion",
+                "accion": "appModuloEnviosSincronizar.open();",
+                "icono": "menu-icon tf-icons ri-refresh-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 70,
+        "nombre": "Pedido de venta",
+        "accion": null,
+        "icono": "ri-shopping-cart-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+        "hijos": [
+            {
+                "id": 71,
+                "nombre": "Armado",
+                "titulo": "Armado PV",
+                "ruta": "armado-pv",
+                "accion": "appPVArmado.open()",
+                "icono": "menu-icon tf-icons ri-shopping-cart-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 80,
+        "nombre": "Orden de trabajo",
+        "accion": null,
+        "icono": "ri-list-check-3",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+        "hijos": [
+            {
+                "id": 81,
+                "nombre": "Listado",
+                "titulo": "Armado OT",
+                "ruta": "armado-ot",
+                "accion": "appOTListado.open()",
+                "icono": "menu-icon tf-icons ri-list-check-3",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+                "hijos": []
+            },
+            {
+                "id": 82,
+                "nombre": "Asignación",
+                "titulo": "Asignación OT",
+                "ruta": "asignacion-ot",
+                "accion": "appOTAsignacion.open()",
+                "icono": "menu-icon tf-icons ri-user-follow-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 90,
+        "nombre": "Informes",
+        "accion": null,
+        "icono": "ri-line-chart-line",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+        "hijos": [
+            {
+                "id": 91,
+                "nombre": "Armado",
+                "titulo": "Informe de armado",
+                "ruta": "informe-armado",
+                "accion": "appInformeArmado.open()",
+                "icono": "menu-icon tf-icons ri-bar-chart-box-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+                "hijos": []
+            },
+            {
+                "id": 92,
+                "nombre": "Stock",
+                "titulo": "Informe de stock",
+                "ruta": "informe-stock",
+                "accion": "appInformeStock.open()",
+                "icono": "menu-icon tf-icons ri-numbers-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+                "hijos": []
+            }
+        ]
+    },
+    {
+        "id": 100,
+        "nombre": "Stock",
+        "accion": null,
+        "icono": "ri-list-ordered",
+        "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+        "hijos": [
+            {
+                "id": 101,
+                "nombre": "Ajuste de stock",
+                "titulo": "Ajuste de stock",
+                "ruta": "stock",
+                "accion": "appStockAjuste.open()",
+                "icono": "menu-icon tf-icons ri-list-ordered",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+                "hijos": []
+            }
+        ]
+    }
+]
