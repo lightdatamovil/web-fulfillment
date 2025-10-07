@@ -442,7 +442,6 @@
 
                 if (donde != 2) {
                     buffer += `<td>`
-                    buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalClientes.editarDireccion(${idx})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="tf-icons ri-edit-2-line ri-22px"></i></button>`
                     buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appModalClientes.eliminarDireccion(${idx})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>`
                     buffer += `</td>`
                 }

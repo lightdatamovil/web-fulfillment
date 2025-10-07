@@ -121,4 +121,35 @@
     }
 
     /* /HOME */
+
+    /* MODAL */
+    .tab-content {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 1rem;
+    }
+
+    .tab-pane {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    @media (min-width: 1401px) and (max-width: 2000px) {
+        .tab-content {
+            height: 550px;
+        }
+    }
+
+    @media (min-width: 788px) and (max-width: 1400px) {
+        .tab-content {
+            height: 430px;
+        }
+    }
+
+    .modal-content {
+        padding-top: 3rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    /* /MODAL */
 </style>

@@ -64,6 +64,7 @@ if (!isset($_SESSION["logueado"])) {
     <link rel="stylesheet" href="assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
     <link rel="stylesheet" href="assets/vendor/libs/flatpickr/flatpickr.css" />
     <link rel="stylesheet" href="assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css" />
+    <link rel="stylesheet" href="assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css" />
 
     <!-- Page CSS -->
     <link rel="stylesheet" href="assets/vendor/css/pages/cards-statistics.css" />
@@ -343,6 +344,9 @@ if (!isset($_SESSION["logueado"])) {
     <script src="assets/vendor/libs/cleavejs/cleave.js"></script>
     <script src="assets/vendor/libs/cleavejs/cleave-phone.js"></script>
     <script src="assets/vendor/libs/bloodhound/bloodhound.js"></script>
+    <script src="assets/vendor/libs/autosize/autosize.js"></script>
+    <script src="assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+    <script src="assets/vendor/libs/jquery-repeater/jquery-repeater.js"></script>
 
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
@@ -358,6 +362,7 @@ if (!isset($_SESSION["logueado"])) {
     <script src="assets/js/form-layouts.js"></script>
     <script src="assets/js/forms-selects.js"></script>
     <script src="assets/js/forms-typeahead.js"></script>
+    <script src="assets/js/forms-extras.js"></script>
 
     <!-- APP SISTEMA -->
     <?php include("sistema/sistema.php"); ?>
