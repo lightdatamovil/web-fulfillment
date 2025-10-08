@@ -133,7 +133,7 @@
 									<div class="col-2 h-100">
 										<div class="d-flex align-items-center h-100 ps-3 fw-semibold">Titulo</div>
 									</div>
-									<div class="col-2 h-100">
+									<div class="col-3 h-100">
 										<div class="d-flex align-items-center h-100 fw-semibold">Calle</div>
 									</div>
 									<div class="col-1 h-100">
@@ -145,11 +145,8 @@
 									<div class="col-2 h-100">
 										<div class="d-flex align-items-center h-100 fw-semibold">Localidad</div>
 									</div>
-									<div class="col-1 h-100">
-										<div class="d-flex align-items-center h-100 fw-semibold">Provincia</div>
-									</div>
 									<div class="col-2 h-100">
-										<div class="d-flex align-items-center h-100 fw-semibold">Observación</div>
+										<div class="d-flex align-items-center h-100 fw-semibold">Provincia</div>
 									</div>
 									<div class="col-1 h-100 p-0">
 										<div class="d-flex align-items-center h-100 fw-semibold">Acciones</div>
@@ -158,197 +155,103 @@
 								</div>
 							</div>
 							<div class=" col-12">
-								<form class="form-repeater">
-									<div data-repeater-list="group-a">
+								<form class="form-repeater forms_mClientes" id="formDirecciones_mClientes">
+									<div data-repeater-list="direcciones">
 										<div data-repeater-item>
 											<div class="row g-3">
+												<input type="hidden" name="did" id="did_direcciones_mClientes" />
 												<div class="col-12 col-md-6 col-lg-2">
-													<div>
-														<input
-															type="text"
-															id="form-repeater-1-1"
-															class="form-control form-control-sm"
-															placeholder="Titulo" />
-													</div>
+													<input type="text" name="titulo" id="titulo_direcciones_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_direcciones_mClientes" placeholder="Titulo" />
 												</div>
-												<div class="col-12 col-md-6 col-lg-2">
-													<div>
-														<input
-															type="text"
-															id="form-repeater-1-1"
-															class="form-control form-control-sm"
-															placeholder="Calle" />
-													</div>
+												<div class="col-12 col-md-6 col-lg-3">
+													<input type="text" name="calle" id="calle_direcciones_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_direcciones_mClientes" placeholder="Calle" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-1">
-													<div>
-														<input
-															type="text"
-															id="form-repeater-1-1"
-															class="form-control form-control-sm"
-															placeholder="N°" />
-													</div>
+													<input type="text" name="numero" id="numero_direcciones_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_direcciones_mClientes" placeholder="N°" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-1">
-													<div>
-														<input
-															type="text"
-															id="form-repeater-1-1"
-															class="form-control form-control-sm"
-															placeholder="CP" />
-													</div>
+													<input type="text" name="cp" id="cp_direcciones_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_direcciones_mClientes" placeholder="CP" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-2">
-													<div>
-														<input
-															type="text"
-															id="form-repeater-1-1"
-															class="form-control form-control-sm"
-															placeholder="Localidad" />
-													</div>
-												</div>
-												<div class="col-12 col-md-6 col-lg-1">
-													<div>
-														<input
-															type="text"
-															id="form-repeater-1-1"
-															class="form-control form-control-sm"
-															placeholder="Provincia" />
-													</div>
+													<input type="text" name="localidad" id="localidad_direcciones_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_direcciones_mClientes" placeholder="Localidad" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-2">
-													<div>
-														<input
-															type="text"
-															id="form-repeater-1-1"
-															class="form-control form-control-sm"
-															placeholder="Observación" />
-													</div>
+													<input type="text" name="provincia" id="provincia_direcciones_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_direcciones_mClientes" placeholder="Provincia" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-1">
 													<div class="d-flex align-items-center justify-content-center h-100">
 														<button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
-
-													</div>
-
-												</div>
-
-
-
-												<!-- <div class="mb-6 col-lg-6 col-xl-3 col-12 mb-0">
-													<div class="form-floating form-floating-outline">
-														<input
-															type="password"
-															id="form-repeater-1-2"
-															class="form-control"
-															placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
-														<label for="form-repeater-1-2">Password</label>
 													</div>
 												</div>
-												<div class="mb-6 col-lg-6 col-xl-2 col-12 mb-0">
-													<div class="form-floating form-floating-outline">
-														<select id="form-repeater-1-3" class="form-select">
-															<option value="Male">Male</option>
-															<option value="Female">Female</option>
-														</select>
-														<label for="form-repeater-1-3">Gender</label>
-													</div>
-												</div>
-												<div class="mb-6 col-lg-6 col-xl-2 col-12 mb-0">
-													<div class="form-floating form-floating-outline">
-														<select id="form-repeater-1-4" class="form-select">
-															<option value="Designer">Designer</option>
-															<option value="Developer">Developer</option>
-															<option value="Tester">Tester</option>
-															<option value="Manager">Manager</option>
-														</select>
-														<label for="form-repeater-1-4">Profession</label>
-													</div>
-												</div> -->
-
 											</div>
 											<hr class="mt-3 mb-3" />
 										</div>
 									</div>
 									<div class="mb-0">
-										<button class="btn btn-primary" data-repeater-create>
+										<button class="btn btn-outline-success" data-repeater-create>
 											<i class="ri-add-line me-1"></i>
-											<span class="align-middle">Add</span>
+											<span class="align-middle">Nueva dirección</span>
 										</button>
 									</div>
 								</form>
+
 							</div>
 
 						</div>
-						<!-- <form class="row g-5 mb-5 align-items-center forms_mClientes" id="formDirecciones_mClientes" onsubmit="return false">
-							<div class="col-12 col-md-12 col-lg-4">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="titulo_direcciones_mClientes" class="form-control campos_mClientes camposDirecciones_mClientes" placeholder="Titulo" onkeyup="appModalClientes.habilitarBtnAgregarDireccion()" />
-									<label for="titulo_direcciones_mClientes">Titulo</label>
-								</div>
-							</div>
-							<div class="col-12 col-md-12 col-lg-4">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="calle_direcciones_mClientes" class="form-control campos_mClientes camposDirecciones_mClientes" placeholder="Calle" onkeyup="appModalClientes.habilitarBtnAgregarDireccion()" />
-									<label for="calle_direcciones_mClientes">Calle</label>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-lg-2">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="numero_direcciones_mClientes" class="form-control campos_mClientes camposDirecciones_mClientes" placeholder="Numero" onkeyup="appModalClientes.habilitarBtnAgregarDireccion()" />
-									<label for="numero_direcciones_mClientes">Numero</label>
-								</div>
-							</div>
-							<div class="col-12 col-md-6 col-lg-2">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="cp_direcciones_mClientes" class="form-control campos_mClientes camposDirecciones_mClientes" placeholder="CP" onkeyup="appModalClientes.habilitarBtnAgregarDireccion()" />
-									<label for="cp_direcciones_mClientes">CP</label>
-								</div>
-							</div>
-							<div class="col-12 col-md-12 col-lg-3">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="localidad_direcciones_mClientes" class="form-control campos_mClientes camposDirecciones_mClientes" placeholder="Localidad" onkeyup="appModalClientes.habilitarBtnAgregarDireccion()" />
-									<label for="localidad_direcciones_mClientes">Localidad</label>
-								</div>
-							</div>
-							<div class="col-12 col-md-12 col-lg-3">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="provincia_direcciones_mClientes" class="form-control campos_mClientes camposDirecciones_mClientes" placeholder="Provincia" onkeyup="appModalClientes.habilitarBtnAgregarDireccion()" />
-									<label for="provincia_direcciones_mClientes">Provincia</label>
-								</div>
-							</div>
-							<div class="col-12  col-md-12 col-lg-4">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="observacion_direcciones_mClientes" class="form-control campos_mClientes" placeholder="Observación"></input>
-									<label for="observacion_direcciones_mClientes">Observación</label>
-								</div>
-							</div>
-							<div class="col-12 col-md-12 col-lg-2">
-								<button id="btnAgregarDireccion_mClientes" class="btn btn-label-success btnAgregar_mClientes w-100" disabled onclick="appModalClientes.agregarDireccion()">Agregar</button>
-							</div>
-						</form>
-						<div id="contenedorDirecciones_mClientes" style="overflow: auto;" class="contenedoresExtras_mClientes"></div> -->
 					</div>
 
 					<div class="tab-pane fade" id="tabContactos_mClientes" role="tabpanel">
-						<form class="row g-5 mb-5 align-items-center forms_mClientes" id="formContactos_mClientes" onsubmit="return false">
-							<div class="col-12 col-md-12 col-lg-5">
-								<div class="form-floating form-floating-outline">
-									<select id="tipo_contacto_mClientes" class="form-select campos_mClientes camposContactos_mClientes" onchange="appModalClientes.habilitarBtnAgregarContacto()"></select>
-									<label for="tipo_contacto_mClientes">Tipo de contacto</label>
+						<div class="row">
+							<div class="col-12 bg-body mb-4 d-none d-lg-block" style="height: 44px;">
+
+								<div class="row h-100">
+									<div class="col-5 h-100">
+										<div class="d-flex align-items-center h-100 ps-3 fw-semibold">Tipo</div>
+									</div>
+									<div class="col-6 h-100">
+										<div class="d-flex align-items-center h-100 fw-semibold">Valor</div>
+									</div>
+
+									<div class="col-1 h-100 p-0">
+										<div class="d-flex align-items-center h-100 fw-semibold">Acciones</div>
+									</div>
+
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-5">
-								<div class="form-floating form-floating-outline">
-									<input type="text" id="valor_contacto_mClientes" class="form-control campos_mClientes camposContactos_mClientes" placeholder="Valor" onkeyup="appModalClientes.habilitarBtnAgregarContacto()" />
-									<label for="valor_contacto_mClientes">Valor</label>
-								</div>
+							<div class=" col-12">
+								<form class="form-repeater forms_mClientes" id="formContactos_mClientes">
+									<div data-repeater-list="contactos">
+										<div data-repeater-item>
+											<div class="row g-3">
+												<input type="hidden" name="did" id="did_contactos_mClientes" />
+												<div class="col-12 col-md-6 col-lg-5">
+													<select id="tipo_contactos_mClientes" class="form-select form-select-sm campos_mClientes camposObli_mClientes campos_contactos_mClientes"></select>
+												</div>
+
+
+												<div class="col-12 col-md-6 col-lg-6">
+													<input type="text" name="valor" id="valor_contactos_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_contactos_mClientes" placeholder="Valor" />
+												</div>
+												<div class="col-12 col-md-6 col-lg-1">
+													<div class="d-flex align-items-center justify-content-center h-100">
+														<button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
+													</div>
+												</div>
+											</div>
+											<hr class="mt-3 mb-3" />
+										</div>
+									</div>
+									<div class="mb-0">
+										<button class="btn btn-outline-success" data-repeater-create>
+											<i class="ri-add-line me-1"></i>
+											<span class="align-middle">Nuevo contacto</span>
+										</button>
+									</div>
+								</form>
+
 							</div>
-							<div class="col-12 col-md-12 col-lg-2">
-								<button id="btnAgregarContacto_mClientes" class="btn btn-label-success btnAgregar_mClientes w-100" disabled onclick="appModalClientes.agregarContacto()">Agregar</button>
-							</div>
-						</form>
-						<div id="contenedorContactos_mClientes" class="contenedoresExtras_mClientes" style="overflow: auto;"></div>
+
+						</div>
 					</div>
 
 				</div>

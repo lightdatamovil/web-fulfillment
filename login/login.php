@@ -260,9 +260,6 @@
                     password
                 };
 
-                console.log("paranetreio", parametros);
-
-
                 $.ajax({
                     url: "login/processLogin.php",
                     type: "POST",

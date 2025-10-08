@@ -330,6 +330,27 @@
             })
         }
 
+        public.formRepeater = function({
+            id
+        }) {
+            const $repeater = $(`#${id}`);
+            $repeater.find('[data-repeater-item]').each(function() {
+                const $fila = $(this);
+                const did = $fila.find('input[name="did"]').val()?.trim();
+                const $inputs = $fila.find('input, select, textarea');
+
+                if (!did) {
+                    const todosVacios = $inputs.toArray().every(input => $(input).val().trim() === '');
+                    const sufijo = id.substring(id.lastIndexOf('_') + 1);
+                    if (todosVacios) {
+                        $inputs.removeClass(`camposObli_${sufijo}`);
+                        $inputs.removeClass('is-invalid')
+                    } else {
+                        $inputs.addClass(`camposObli_${sufijo}`);
+                    }
+                }
+            });
+        }
 
         return public;
     })();

@@ -101,6 +101,75 @@
             });
         }
 
+        public.formRepeater = function({
+            id,
+            data = []
+        }) {
+            const $repeater = $(`#${id}`);
+            let contador = 0;
+
+            if (!$repeater.data('template')) {
+                $repeater.data('template', $repeater.html());
+            }
+            $repeater.html($repeater.data('template'));
+
+            $repeater.repeater({
+                initEmpty: false,
+
+                show: function() {
+                    contador++;
+                    const self = $(this);
+
+                    self.find('input').each(function() {
+                        const idOriginal = $(this).attr('id');
+                        if (idOriginal) $(this).attr('id', `${idOriginal}_${contador}`);
+                    });
+
+                    self.stop(true, true).slideDown();
+                    globalActivarAcciones.tooltips({
+                        idContainer: id
+                    })
+                },
+
+                hide: function(deleteElement) {
+                    const self = $(this);
+
+                    const todosVacios = self.find('input:not([type="hidden"]),select:not([type="hidden"])').toArray().every(input => {
+                        return $(input).val().trim() == '';
+                    });
+
+                    if (todosVacios) {
+                        self.stop(true, true).slideUp(deleteElement);
+                        return;
+                    }
+
+                    globalSweetalert.confirmar({
+                        titulo: "¿Estas seguro de eliminar esta fila?",
+                        color: "var(--bs-danger)"
+                    }).then(function(confirmado) {
+                        if (confirmado) {
+                            self.stop(true, true).slideUp(deleteElement);
+                        }
+                    });
+                }
+            });
+
+            if (data && data.length > 0) {
+                $repeater.setList(data);
+            }
+
+        };
+
+        public.obtenerDataFormRepeater = function({
+            id
+        }) {
+            if ($(`#${id}`).length === 0) {
+                console.warn(`⚠️ No se encontró el elemento "${`#${id}`}"`);
+                return {};
+            }
+            return $(`#${id}`).repeaterVal();
+        }
+
         return public
     }())
 </script>

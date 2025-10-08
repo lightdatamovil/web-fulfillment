@@ -22,7 +22,7 @@
                 id: "tienda_mClientes"
             })
             await globalLlenarSelect.contactos({
-                id: "tipo_contacto_mClientes"
+                id: "tipo_contactos_mClientes"
             })
 
             logosTiendas = globalLogoTiendas.obtener()
@@ -33,6 +33,8 @@
                 $('.campos_mClientes').prop('disabled', false);
                 $("#btnEditar_mClientes").addClass("ocultar")
                 $("#btnGuardar_mClientes, .forms_mClientes").removeClass("ocultar");
+                renderDirecciones()
+                renderContactos()
                 $("#modal_mClientes").modal("show")
             } else if (mode == 1) {
                 // MODIFICAR CLIENTE
@@ -52,6 +54,10 @@
                 $("#btnGuardar_mClientes, #btnEditar_mClientes, .forms_mClientes").addClass("ocultar");
                 await get()
             }
+
+            await globalActivarAcciones.tooltips({
+                idContainer: "modal_mClientes"
+            })
         }
 
         function get() {
@@ -115,6 +121,14 @@
                 cuentas: g_tiendas,
             };
 
+            globalValidar.formRepeater({
+                id: "formDirecciones_mClientes"
+            })
+
+            globalValidar.formRepeater({
+                id: "formContactos_mClientes"
+            })
+
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mClientes",
                 callback: validacion
@@ -154,6 +168,14 @@
                 contactos: g_contactos,
                 cuentas: g_tiendas,
             };
+
+            globalValidar.formRepeater({
+                id: "formDirecciones_mClientes"
+            })
+
+            globalValidar.formRepeater({
+                id: "formContactos_mClientes"
+            })
 
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mClientes",
@@ -384,141 +406,21 @@
             g_tiendas = tiendasFinales;
         }
 
-        public.habilitarBtnAgregarDireccion = function() {
-            const habilitar = $(".camposDirecciones_mClientes").toArray().every(input => $(input).val().trim() !== "");
-            $("#btnAgregarDireccion_mClientes").prop("disabled", !habilitar);
-        };
-
-        public.agregarDireccion = function() {
-            g_direcciones.push({
-                did: 0,
-                titulo: $("#titulo_direcciones_mClientes").val().trim(),
-                calle: $("#calle_direcciones_mClientes").val().trim(),
-                numero: $("#numero_direcciones_mClientes").val().trim(),
-                cp: $("#cp_direcciones_mClientes").val().trim(),
-                localidad: $("#localidad_direcciones_mClientes").val().trim(),
-                provincia: $("#provincia_direcciones_mClientes").val().trim(),
-                observacion: $("#observacion_direcciones_mClientes").val().trim()
-            });
-
-            $(".camposDirecciones_mClientes, #observacion_direcciones_mClientes").val('');
-            $("#btnAgregarDireccion_mClientes").prop("disabled", true)
-            renderDirecciones();
-        };
-
         function renderDirecciones() {
-            if (g_direcciones.length == 0) {
-                $("#contenedorDirecciones_mClientes").html('<p class="text-muted text-center">Sin direcciones aún.</p>');
-                return;
-            }
-
-            buffer = `<table class="table table-bordered">`
-            buffer += `<thead>`
-            buffer += `<tr>`
-            buffer += `<th>Titulo</th>`
-            buffer += `<th>Calle</th>`
-            buffer += `<th>Numero</th>`
-            buffer += `<th>CP</th>`
-            buffer += `<th>Localidad</th>`
-            buffer += `<th>Provincia</th>`
-            buffer += `<th>Observación</th>`
-            if (donde != 2) {
-                buffer += `<th>Acciones</th>`
-            }
-            buffer += `</tr>`
-            buffer += `</thead>`
-
-            buffer += `<tbody>`
-
-            g_direcciones.forEach((direccion, idx) => {
-                buffer += `<tr>`
-                buffer += `<td>${direccion?.titulo || "---"}</td>`
-                buffer += `<td>${direccion?.calle || "---"}</td>`
-                buffer += `<td>${direccion?.numero || "---"}</td>`
-                buffer += `<td>${direccion?.cp || "---"}</td>`
-                buffer += `<td>${direccion?.localidad || "---"}</td>`
-                buffer += `<td>${direccion?.provincia || "---"}</td>`
-                buffer += `<td>${direccion?.observacion || "---"}</td>`
-
-                if (donde != 2) {
-                    buffer += `<td>`
-                    buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appModalClientes.eliminarDireccion(${idx})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>`
-                    buffer += `</td>`
-                }
-                buffer += `</tr>`
-            });
-
-            buffer += `</tbody>`
-            buffer += `</table>`
-
-            $("#contenedorDirecciones_mClientes").html(buffer);
-            globalActivarAcciones.tooltips({
-                idContainer: "modal_mClientes"
+            globalActivarAcciones.formRepeater({
+                id: "formDirecciones_mClientes",
+                data: g_direcciones
             })
         };
 
-        public.eliminarDireccion = function(index) {
-            g_direcciones.splice(index, 1);
-            renderDirecciones();
-        };
-
-        public.habilitarBtnAgregarContacto = function() {
-            const tipo = $("#tipo_contacto_mClientes").val();
-            const valor = $("#valor_contacto_mClientes").val().trim();
-            $("#btnAgregarContacto_mClientes").prop("disabled", !(tipo && valor));
-        };
-
-        public.agregarContacto = function() {
-            g_contactos.push({
-                did: 0,
-                tipo: $("#tipo_contacto_mClientes").val(),
-                valor: $("#valor_contacto_mClientes").val().trim()
-            });
-
-            $(".camposContactos_mClientes").val('');
-            $("#btnAgregarContacto_mClientes").prop("disabled", true)
-            renderContactos();
-        };
-
         function renderContactos() {
-            if (g_contactos.length === 0) {
-                $("#contenedorContactos_mClientes").html('<p class="text-muted text-center">Sin direcciones aún.</p>');
-                return;
-            }
-
-            buffer = `<table class="table table-bordered">`
-            buffer += `<thead>`
-            buffer += `<tr>`
-            buffer += `<th>Tipo</th>`
-            buffer += `<th>Valor</th>`
-            if (donde != 2) {
-                buffer += `<th>Eliminar</th>`
-            }
-            buffer += `</tr>`
-            buffer += `</thead>`
-
-            buffer += `<tbody>`
-
-            g_contactos.forEach((c, idx) => {
-                buffer += `<tr>`
-                buffer += `<td>${appSistema.contactos[c.tipo]}</td>`
-                buffer += `<td>${c.valor}</td>`
-                if (donde != 2) {
-                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appModalClientes.eliminarContacto(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
-                }
-                buffer += `</tr>`
-            });
-
-            buffer += `</tbody>`
-            buffer += `</table>`
-
-            $("#contenedorContactos_mClientes").html(buffer);
+            globalActivarAcciones.formRepeater({
+                id: "formContactos_mClientes",
+                data: g_contactos
+            })
         };
 
-        public.eliminarContacto = function(index) {
-            g_contactos.splice(index, 1);
-            renderContactos();
-        };
+
 
         public.eliminar = function(did) {
             globalSweetalert.confirmar({
