@@ -1,5 +1,5 @@
 <div class="modal fade" id="modal_mUsuarios" tabindex="-1" data-bs-backdrop="static">
-	<div class="modal-dialog modal-dialog-centered modal-lg modal-simple">
+	<div class="modal-dialog modal-dialog-centered modal-xl modal-simple">
 		<div class="modal-content">
 
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -23,25 +23,12 @@
 								<i class="ri-survey-line ri-20px d-sm-none"></i>
 							</button>
 						</li>
-						<li class="nav-item">
-							<button
-								type="button"
-								class="nav-link"
-								role="tab"
-								data-bs-toggle="tab"
-								data-bs-target="#tabAccesos_mUsuarios"
-								aria-controls="tabAccesos_mUsuarios"
-								aria-selected="false">
-								<span class="d-none d-sm-block"><i class="tf-icons ri-key-2-line me-2"></i> Accesos</span>
-								<i class="ri-key-2-line ri-20px d-sm-none"></i>
-							</button>
-						</li>
 					</ul>
 				</div>
 
 				<div class="tab-content p-0">
 					<div class="tab-pane fade show active" id="tabGeneral_mUsuarios" role="tabpanel">
-						<form class="row g-5" onsubmit="return false" autocomplete="off">
+						<form class="row g-5 align-items-baseline" onsubmit="return false" autocomplete="off">
 							<div class="col-12 col-md-12 col-lg-6">
 								<div class="form-floating form-floating-outline">
 									<input type="text" id="nombre_mUsuarios" class="form-control campos_mUsuarios camposObli_mUsuarios" placeholder="Nombre" />
@@ -58,7 +45,7 @@
 
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-12">
+							<div class="col-12 col-md-12 col-lg-6">
 								<div class="form-floating form-floating-outline">
 									<input type="text" id="usuario_mUsuarios" class="form-control campos_mUsuarios camposObli_mUsuarios" placeholder="Usuario" />
 									<label for="usuario_mUsuarios">Nombre de usuario</label>
@@ -74,20 +61,20 @@
 
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-6">
+							<div class="col-12 col-md-12 col-lg-4">
 								<div class="form-floating form-floating-outline">
 									<input type="text" id="telefono_mUsuarios" class="form-control campos_mUsuarios" placeholder="Telefono" />
 									<label for="telefono_mUsuarios">Telefono</label>
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-6">
+							<div class="col-12 col-md-12 col-lg-4">
 								<div class="form-floating form-floating-outline">
 									<select id="perfil_mUsuarios" class="form-select campos_mUsuarios camposObli_mUsuarios" onchange="appModalUsuarios.perfilCliente(this)"></select>
 									<label for="perfil_mUsuarios">Perfil</label>
 									<div class="invalid-feedback">Debe seleccionar uno</div>
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-6">
+							<div class="col-12 col-md-12 col-lg-4">
 								<div class="form-floating form-floating-outline">
 									<select id="estado_mUsuarios" class="form-select campos_mUsuarios">
 										<option value="1" selected>Habilitado</option>
@@ -121,11 +108,8 @@
 								</div>
 							</div>
 
-						</form>
-					</div>
+							<h5 class="mt-6 mb-0 border-top pt-4 ms-1">Accesos</h5>
 
-					<div class="tab-pane fade" id="tabAccesos_mUsuarios" role="tabpanel">
-						<form class="row g-5 align-items-baseline" onsubmit="return false">
 							<div class="col-12 col-md-12 col-lg-6">
 								<div class="form-floating form-floating-outline">
 									<select id="modInicio_mUsuarios" class="form-select campos_mUsuarios">
@@ -156,14 +140,13 @@
 						</form>
 					</div>
 
-
 				</div>
 
-				<div class="col-12 mt-7">
+				<div class="col-12 border-top pt-5 mt-2">
 					<div class="row justify-content-end g-3">
 						<div class="col-12 col-md-6 col-lg-3">
 							<button type="submit" class="btn btn-success w-100" id="btnGuardar_mUsuarios" onclick="appModalUsuarios.guardar()">Guardar</button>
-							<button type="submit" class="btn btn-success w-100" id="btnEditar_mUsuarios" onclick="appModalUsuarios.editar()">Editar</button>
+							<button type="submit" class="btn btn-success w-100" id="btnEditar_mUsuarios" onclick="appModalUsuarios.editar()">Guardar</button>
 						</div>
 						<div class="col-12 col-md-6 col-lg-2">
 							<button type="reset" class="btn btn-outline-danger w-100" data-bs-dismiss="modal">Cerrar</button>

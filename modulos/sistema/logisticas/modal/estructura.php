@@ -2,6 +2,7 @@
     const appModalLogisticas = (function() {
         let g_did = 0;
         let g_data;
+        let g_direcciones;
         let donde = 0;
         const rutaAPI = "logisticas"
 
@@ -21,19 +22,20 @@
 
             if (mode == 0) {
                 // NUEVO LOGISTICA
-                $("#titulo_mLogisticas").text("Nuevo logistica");
-                $("#subtitulo_mLogisticas").text("Creacion de logistica nuevo, completar formulario.");
+                $("#titulo_mLogisticas").text("Nueva logistica");
+                $("#subtitulo_mLogisticas").text("Creacion de logistica nueva, completar formulario.");
                 $('.campos_mLogisticas').prop('disabled', false);
                 $("#checkHabilitado_mLogisticas").prop("checked", true);
                 $("#codLightdata_mLogisticas").prop('disabled', true).removeClass("camposObli_mLogisticas");
                 $("#btnEditar_mLogisticas").addClass("ocultar");
                 $("#btnGuardar_mLogisticas").removeClass("ocultar");
+                renderDirecciones()
                 $("#modal_mLogisticas").modal("show")
             } else if (mode == 1) {
                 // MODIFICAR LOGISTICA
                 await globalLoading.open()
                 $("#titulo_mLogisticas").text("Modificar logistica");
-                $("#subtitulo_mLogisticas").text("Modificacion de logistica existente, completar formulario.");
+                $("#subtitulo_mLogisticas").html("Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios ");
                 $('.campos_mLogisticas').prop('disabled', false);
                 $("#btnGuardar_mLogisticas").addClass("ocultar");
                 $("#btnEditar_mLogisticas").removeClass("ocultar");
@@ -56,10 +58,12 @@
                     $("#codigo_mLogisticas").val(g_data.codigo);
                     $("#nombre_mLogisticas").val(g_data.nombre);
                     $("#checkHabilitado_mLogisticas").prop("checked", g_data.habilitado == 1);
-                    $("#checkEsLightdata_mLogisticas").prop("checked", g_data.esLightdata == 1);
-                    if (g_data.esLightdata == 1) {
-                        $("#codLightdata_mLogisticas").val(g_data.codLightdata).prop('disabled', false);
+                    $("#checkEsLightdata_mLogisticas").prop("checked", g_data.logisticaLD == 1);
+                    if (g_data.logisticaLD == 1) {
+                        $("#codLightdata_mLogisticas").val(g_data.codigoLD).prop('disabled', false);
                     }
+                    g_direcciones = g_data.direcciones || []
+                    renderDirecciones();
                     $("#modal_mLogisticas").modal("show")
                 }
             });
@@ -72,10 +76,18 @@
 
             $(".campos_mLogisticas").val("")
             $("#checkHabilitado_mLogisticas, #checkEsLightdata_mLogisticas").prop("checked", false);
+            g_direcciones = [];
 
             globalValidar.limpiarTodas()
             globalValidar.deshabilitarTiempoReal({
                 className: "camposObli_mLogisticas"
+            })
+        };
+
+        function renderDirecciones() {
+            globalActivarAcciones.formRepeater({
+                id: "formDirecciones_mLogisticas",
+                data: g_direcciones
             })
         };
 
@@ -86,7 +98,6 @@
             globalValidar.limpiarUna({
                 id: "codLightdata_mLogisticas"
             })
-
 
             if (isChecked) {
                 $("#codLightdata_mLogisticas").addClass("camposObli_mLogisticas");
@@ -107,13 +118,19 @@
                 codigo: $("#codigo_mLogisticas").val().trim() || null,
                 nombre: $("#nombre_mLogisticas").val().trim() || null,
                 habilitado: $("#checkHabilitado_mLogisticas").is(":checked") ? 1 : 0,
-                logisticaLD: $("#checkEsLightdata_mLogisticas").is(":checked") ? 1 : 0
+                logisticaLD: $("#checkEsLightdata_mLogisticas").is(":checked") ? 1 : 0,
+                direcciones: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formDirecciones_mLogisticas"
+                }),
             };
-
 
             if (datos.logisticaLD == 1) {
                 datos.codigoLD = $("#codLightdata_mLogisticas").val()
             }
+
+            globalValidar.formRepeater({
+                id: "formDirecciones_mLogisticas"
+            })
 
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mLogisticas",
@@ -148,12 +165,19 @@
                 codigo: $("#codigo_mLogisticas").val().trim() || null,
                 nombre: $("#nombre_mLogisticas").val().trim() || null,
                 habilitado: $("#checkHabilitado_mLogisticas").is(":checked") ? 1 : 0,
-                esLightdata: $("#checkEsLightdata_mLogisticas").is(":checked") ? 1 : 0
+                logisticaLD: $("#checkEsLightdata_mLogisticas").is(":checked") ? 1 : 0,
+                direcciones: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formDirecciones_mLogisticas"
+                }),
             };
 
-            if (datosNuevos.esLightdata == 1) {
-                datosNuevos.codLightdata = $("#codLightdata_mLogisticas").val()
+            if (datosNuevos.logisticaLD == 1) {
+                datosNuevos.codigoLD = $("#codLightdata_mLogisticas").val()
             }
+
+            globalValidar.formRepeater({
+                id: "formDirecciones_mLogisticas"
+            })
 
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mLogisticas",
@@ -179,12 +203,19 @@
                 return;
             }
 
+            if (datosModificados.direcciones && datosModificados.direcciones.length > 0) {
+                datosNuevos.direcciones = globalValidar.obtenerCambiosEnArray({
+                    dataNueva: datosModificados.direcciones,
+                    dataOriginal: g_direcciones
+                })
+            }
+
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de modificar esta logistica?"
                 })
                 .then(function(confirmado) {
                     if (confirmado) {
-                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosModificados, {
+                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
                             onSuccess: function(result) {
                                 $("#modal_mLogisticas").modal("hide");
                                 globalSweetalert.exito();

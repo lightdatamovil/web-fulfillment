@@ -47,8 +47,8 @@
                 buffer += `<tr>`
                 buffer += `<td>${logistica.codigo || "---"}</td>`
                 buffer += `<td>${logistica.nombre || "---"}</td>`
-                buffer += `<td><span class="badge rounded-pill bg-label-${logistica.logisticaLD == 1 ? 'success' : 'danger'}">${logistica.logisticaLD == 1 ? logistica.codigoLD : "NO"}</span></td>`
-                buffer += `<td><span class="badge rounded-pill bg-label-${logistica.habilitado == 1 ? 'success': 'danger'}">${logistica.habilitado == 1 ? 'habilitado' : 'Deshabilitado'}</span></td>`
+                buffer += `<td><span class="badge rounded-pill bg-label-${logistica.logisticaLD == 1 ? 'success' : 'danger'}">${logistica.logisticaLD == 1 ? (logistica.codigoLD || "Sin codigo") : "NO"}</span></td>`
+                buffer += `<td><span class="badge rounded-pill bg-label-${logistica.habilitado == 1 ? 'success': 'danger'}">${logistica.habilitado == 1 ? 'Habilitado' : 'Deshabilitado'}</span></td>`
                 buffer += `<td>`
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalLogisticas.open({mode: 2, did: '${logistica.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
                 buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`

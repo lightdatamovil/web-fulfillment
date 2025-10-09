@@ -319,8 +319,12 @@
                 razon_social: $("#razonSocial_mClientes").val().trim() || null,
                 habilitado: $("#estado_mClientes").val(),
                 observaciones: $("#observacion_mClientes").val().trim() || null,
-                direcciones: g_direcciones,
-                contactos: g_contactos,
+                direcciones: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formDirecciones_mClientes"
+                }),
+                contactos: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formContactos_mClientes"
+                }),
                 cuentas: g_tiendas,
             };
 
