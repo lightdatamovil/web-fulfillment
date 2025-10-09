@@ -73,7 +73,7 @@
                     g_tiendas.forEach(tienda => {
                         appModalClientes.renderTienda(tienda.tipo, tienda.titulo, tienda.data, tienda.did);
                     });
-                    g_direcciones = g_data.direcciones
+                    g_direcciones = g_data.direcciones || []
                     renderDirecciones();
                     g_contactos = g_data.contactos || [];
                     renderContactos();
@@ -101,120 +101,6 @@
             globalValidar.deshabilitarTiempoReal({
                 className: "camposObli_mClientes"
             })
-        };
-
-        function validacion() {
-            return globalValidar.obligatorios({
-                className: "camposObli_mClientes"
-            })
-        }
-
-        public.guardar = function() {
-            const datos = {
-                codigo: $("#codigo_mClientes").val().trim() || null,
-                nombre_fantasia: $("#nombreFantasia_mClientes").val().trim() || null,
-                razon_social: $("#razonSocial_mClientes").val().trim() || null,
-                habilitado: $("#estado_mClientes").val(),
-                observaciones: $("#observacion_mClientes").val().trim() || null,
-                direcciones: g_direcciones,
-                contactos: g_contactos,
-                cuentas: g_tiendas,
-            };
-
-            globalValidar.formRepeater({
-                id: "formDirecciones_mClientes"
-            })
-
-            globalValidar.formRepeater({
-                id: "formContactos_mClientes"
-            })
-
-            globalValidar.habilitarTiempoReal({
-                className: "camposObli_mClientes",
-                callback: validacion
-            });
-
-            if (validacion()) {
-                globalSweetalert.alert({
-                    titulo: "Verifique los campos"
-                });
-                return;
-            }
-
-            globalSweetalert.confirmar({
-                    titulo: "¿Estas seguro de guardar este cliente?"
-                })
-                .then(function(confirmado) {
-                    if (confirmado) {
-                        globalRequest.post(`/${rutaAPI}`, datos, {
-                            onSuccess: function(result) {
-                                $("#modal_mClientes").modal("hide");
-                                globalSweetalert.exito();
-                                appModuloClientes.getListado();
-                            }
-                        });
-                    }
-                });
-        };
-
-        public.editar = function() {
-            const datosNuevos = {
-                codigo: $("#codigo_mClientes").val().trim() || null,
-                nombre_fantasia: $("#nombreFantasia_mClientes").val().trim() || null,
-                razon_social: $("#razonSocial_mClientes").val().trim() || null,
-                habilitado: $("#estado_mClientes").val(),
-                observaciones: $("#observacion_mClientes").val().trim() || null,
-                direcciones: g_direcciones,
-                contactos: g_contactos,
-                cuentas: g_tiendas,
-            };
-
-            globalValidar.formRepeater({
-                id: "formDirecciones_mClientes"
-            })
-
-            globalValidar.formRepeater({
-                id: "formContactos_mClientes"
-            })
-
-            globalValidar.habilitarTiempoReal({
-                className: "camposObli_mClientes",
-                callback: validacion
-            });
-
-            if (validacion()) {
-                globalSweetalert.alert({
-                    titulo: "Verifique los campos"
-                });
-                return;
-            }
-
-            const datosModificados = globalValidar.obtenerCambios({
-                dataNueva: datosNuevos,
-                dataOriginal: g_data
-            });
-
-            if (Object.keys(datosModificados).length === 0) {
-                globalSweetalert.alert({
-                    titulo: "No se realizaron cambios"
-                });
-                return;
-            }
-
-            globalSweetalert.confirmar({
-                    titulo: "¿Estas seguro de modificar este cliente?"
-                })
-                .then(function(confirmado) {
-                    if (confirmado) {
-                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosModificados, {
-                            onSuccess: function(result) {
-                                $("#modal_mClientes").modal("hide");
-                                globalSweetalert.exito();
-                                appModuloClientes.getListado();
-                            }
-                        });
-                    }
-                });
         };
 
         public.habilitarBtnAgregarTienda = function() {
@@ -295,7 +181,7 @@
             vinculado = data.ml_user;
 
             let buffer = '';
-            buffer += `<div class="col-12 border rounded p-5" id="${idUnico}" data-tipo="${tipo}" data-did="${did}">`;
+            buffer += `<div class="col-12 border rounded-5 card p-5" id="${idUnico}" data-tipo="${tipo}" data-did="${did}">`;
             buffer += `<div class="row">`
             buffer += `<div class="d-flex align-items-center justify-content-between mb-3">`;
 
@@ -420,7 +306,137 @@
             })
         };
 
+        function validacion() {
+            return globalValidar.obligatorios({
+                className: "camposObli_mClientes"
+            })
+        }
 
+        public.guardar = function() {
+            const datos = {
+                codigo: $("#codigo_mClientes").val().trim() || null,
+                nombre_fantasia: $("#nombreFantasia_mClientes").val().trim() || null,
+                razon_social: $("#razonSocial_mClientes").val().trim() || null,
+                habilitado: $("#estado_mClientes").val(),
+                observaciones: $("#observacion_mClientes").val().trim() || null,
+                direcciones: g_direcciones,
+                contactos: g_contactos,
+                cuentas: g_tiendas,
+            };
+
+            globalValidar.formRepeater({
+                id: "formDirecciones_mClientes"
+            })
+
+            globalValidar.formRepeater({
+                id: "formContactos_mClientes"
+            })
+
+            globalValidar.habilitarTiempoReal({
+                className: "camposObli_mClientes",
+                callback: validacion
+            });
+
+            if (validacion()) {
+                globalSweetalert.alert({
+                    titulo: "Verifique los campos"
+                });
+                return;
+            }
+
+            globalSweetalert.confirmar({
+                    titulo: "¿Estas seguro de guardar este cliente?"
+                })
+                .then(function(confirmado) {
+                    if (confirmado) {
+                        globalRequest.post(`/${rutaAPI}`, datos, {
+                            onSuccess: function(result) {
+                                $("#modal_mClientes").modal("hide");
+                                globalSweetalert.exito();
+                                appModuloClientes.getListado();
+                            }
+                        });
+                    }
+                });
+        };
+
+        public.editar = function() {
+            const datosNuevos = {
+                codigo: $("#codigo_mClientes").val().trim() || null,
+                nombre_fantasia: $("#nombreFantasia_mClientes").val().trim() || null,
+                razon_social: $("#razonSocial_mClientes").val().trim() || null,
+                habilitado: $("#estado_mClientes").val() * 1,
+                observaciones: $("#observacion_mClientes").val().trim() || null,
+                direcciones: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formDirecciones_mClientes"
+                }),
+                contactos: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formContactos_mClientes"
+                }),
+                cuentas: g_tiendas,
+            };
+
+            globalValidar.formRepeater({
+                id: "formDirecciones_mClientes"
+            })
+
+            globalValidar.formRepeater({
+                id: "formContactos_mClientes"
+            })
+
+            globalValidar.habilitarTiempoReal({
+                className: "camposObli_mClientes",
+                callback: validacion
+            });
+
+            if (validacion()) {
+                globalSweetalert.alert({
+                    titulo: "Verifique los campos"
+                });
+                return;
+            }
+
+            const datosModificados = globalValidar.obtenerCambios({
+                dataNueva: datosNuevos,
+                dataOriginal: g_data
+            });
+
+            if (Object.keys(datosModificados).length === 0) {
+                globalSweetalert.alert({
+                    titulo: "No se realizaron cambios"
+                });
+                return;
+            }
+
+            if (datosModificados.direcciones && datosModificados.direcciones.length > 0) {
+                datosNuevos.direcciones = globalValidar.obtenerCambiosEnArray({
+                    dataNueva: datosModificados.direcciones,
+                    dataOriginal: g_direcciones
+                })
+            }
+
+            if (datosModificados.contactos && datosModificados.contactos.length > 0) {
+                datosNuevos.contactos = globalValidar.obtenerCambiosEnArray({
+                    dataNueva: datosModificados.contactos,
+                    dataOriginal: g_contactos
+                })
+            }
+
+            globalSweetalert.confirmar({
+                    titulo: "¿Estas seguro de modificar este cliente?"
+                })
+                .then(function(confirmado) {
+                    if (confirmado) {
+                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosModificados, {
+                            onSuccess: function(result) {
+                                $("#modal_mClientes").modal("hide");
+                                globalSweetalert.exito();
+                                appModuloClientes.getListado();
+                            }
+                        });
+                    }
+                });
+        };
 
         public.eliminar = function(did) {
             globalSweetalert.confirmar({

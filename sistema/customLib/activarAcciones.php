@@ -105,6 +105,7 @@
             id,
             data = []
         }) {
+
             const $repeater = $(`#${id}`);
             let contador = 0;
 
@@ -120,7 +121,10 @@
                     contador++;
                     const self = $(this);
 
-                    self.find('input').each(function() {
+                    self.find('input, select, textarea').each(function() {
+                        if (!$(this).val()) {
+                            $(this).val('');
+                        }
                         const idOriginal = $(this).attr('id');
                         if (idOriginal) $(this).attr('id', `${idOriginal}_${contador}`);
                     });
@@ -134,7 +138,7 @@
                 hide: function(deleteElement) {
                     const self = $(this);
 
-                    const todosVacios = self.find('input:not([type="hidden"]),select:not([type="hidden"])').toArray().every(input => {
+                    const todosVacios = self.find('input:not([type="hidden"]),select:not([type="hidden"]),textarea:not([type="hidden"])').toArray().every(input => {
                         return $(input).val().trim() == '';
                     });
 
@@ -163,12 +167,16 @@
         public.obtenerDataFormRepeater = function({
             id
         }) {
-            if ($(`#${id}`).length === 0) {
-                console.warn(`⚠️ No se encontró el elemento "${`#${id}`}"`);
-                return {};
-            }
-            return $(`#${id}`).repeaterVal();
-        }
+            const $element = $(`#${id}`);
+            const data = $element.repeaterVal();
+            const primeraClave = Object.keys(data)[0];
+            const lista = data[primeraClave] || [];
+            const filtrado = lista.filter(item => {
+                return Object.values(item).some(valor => valor && valor.toString().trim() !== '');
+            });
+            return filtrado;
+        };
+
 
         return public
     }())

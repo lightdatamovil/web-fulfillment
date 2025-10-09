@@ -317,18 +317,99 @@
             }
 
             dataNueva.forEach(dato => {
-                if (dato.did == 0) {
-                    obj.add.push(dato)
+                if (!dato.did) {
+                    obj.add.push(dato);
                 } else {
-                    let viejo = dataOriginal.find(datoOriginal => datoOriginal.did == dato.did)
+                    let viejo = dataOriginal.find(datoOriginal => datoOriginal.did * 1 == dato.did * 1);
                     if (viejo) {
-                        obj.update.push(dato)
+                        obj.update.push(dato);
                     } else {
-                        obj.remove.push(dato.did)
+                        obj.remove.push(dato.did);
                     }
                 }
-            })
+            });
+
+            return obj;
         }
+
+
+        public.obtenerCambiosEnArray = function({
+            dataNueva,
+            dataOriginal
+        }) {
+            const resultado = {
+                add: [],
+                update: [],
+                remove: []
+            };
+
+            // Convertimos a objetos indexados por did
+            const originalById = _.keyBy(dataOriginal, 'did');
+            const nuevoById = _.keyBy(dataNueva, 'did');
+
+            // Función de comparación personalizada
+            const esIgualPersonalizado = (a, b) => {
+                // Normalizar nulos/vacíos
+                const normalizar = v => {
+                    if (_.isNil(v) || v === '' || (_.isString(v) && _.trim(v) === '')) return '';
+                    if (_.isNumber(v) && isNaN(v)) return '';
+                    return v;
+                };
+
+                a = normalizar(a);
+                b = normalizar(b);
+
+                // Si ambos son numéricos (string o número) y valen lo mismo → iguales
+                if (!isNaN(a) && !isNaN(b) && a !== '' && b !== '') {
+                    return Number(a) === Number(b);
+                }
+
+                // Si ambos vacíos → iguales
+                if (a === '' && b === '') return true;
+
+                // En otros casos usa comparación normal
+                return undefined; // deja que lodash siga comparando
+            };
+
+            // --- 1. ADD & UPDATE ---
+            for (const objNuevo of dataNueva) {
+                if (!objNuevo.did) {
+                    delete objNuevo.did;
+                    resultado.add.push(objNuevo);
+                    continue;
+                }
+
+                const objOriginal = originalById[objNuevo.did];
+
+                if (!objOriginal) {
+                    // No existía → dataNueva con did
+                    delete objNuevo.did;
+                    resultado.add.push(objNuevo);
+                } else {
+                    // Comparar ignorando did
+                    const sinDidNuevo = _.omit(objNuevo, 'did');
+                    const sinDidOriginal = _.omit(objOriginal, 'did');
+
+                    const iguales = _.isEqualWith(sinDidNuevo, sinDidOriginal, esIgualPersonalizado);
+
+                    if (!iguales) {
+                        resultado.update.push(objNuevo);
+                    }
+                }
+            }
+
+            // --- 2. REMOVE ---
+            for (const objOriginal of dataOriginal) {
+                if (!nuevoById[objOriginal.did]) {
+                    resultado.remove.push({
+                        did: objOriginal.did
+                    });
+                }
+            }
+
+            return resultado;
+        }
+
 
         public.formRepeater = function({
             id
@@ -337,10 +418,10 @@
             $repeater.find('[data-repeater-item]').each(function() {
                 const $fila = $(this);
                 const did = $fila.find('input[name="did"]').val()?.trim();
-                const $inputs = $fila.find('input, select, textarea');
+                const $inputs = $fila.find('input:not([type="hidden"]),select:not([type="hidden"]),textarea:not([type="hidden"])');
 
                 if (!did) {
-                    const todosVacios = $inputs.toArray().every(input => $(input).val().trim() === '');
+                    const todosVacios = $inputs.toArray().every(input => $(input).val().trim() == '');
                     const sufijo = id.substring(id.lastIndexOf('_') + 1);
                     if (todosVacios) {
                         $inputs.removeClass(`camposObli_${sufijo}`);

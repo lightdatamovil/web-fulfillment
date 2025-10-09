@@ -8,7 +8,7 @@
 					<h4 class="mb-2" id="titulo_mClientes">Nuevo cliente</h4>
 					<p class="mb-6" id="subtitulo_mClientes">Creacion de cliente nuevo, llenar formulario.</p>
 				</div>
-				<div class="nav-align-top col-12 mb-6">
+				<div class="nav-align-top col-12">
 					<ul id="tabs_mClientes" class="nav nav-tabs nav-fill" role="tablist">
 						<li class="nav-item">
 							<button
@@ -66,7 +66,7 @@
 				</div>
 
 				<div class="tab-content p-0">
-					<div class="tab-pane fade show active" id="tabGeneral_mClientes" role="tabpanel">
+					<div class="tab-pane fade show pt-8 active" id="tabGeneral_mClientes" role="tabpanel">
 						<form class="row g-5" onsubmit="return false">
 							<div class="col-12 col-md-12 col-lg-6">
 								<div class="form-floating form-floating-outline">
@@ -110,7 +110,7 @@
 						</form>
 					</div>
 
-					<div class="tab-pane fade" id="tabCuentas_mClientes" role="tabpanel">
+					<div class="tab-pane fade p-4 pt-8" id="tabCuentas_mClientes" role="tabpanel">
 						<form class="row g-5 mb-5 align-items-center forms_mClientes" id="formTiendas_mClientes" onsubmit="return false">
 							<div class="col-12 col-md-12 col-lg-9">
 								<div class="form-floating form-floating-outline">
@@ -149,7 +149,7 @@
 										<div class="d-flex align-items-center h-100 fw-semibold">Provincia</div>
 									</div>
 									<div class="col-1 h-100 p-0">
-										<div class="d-flex align-items-center h-100 fw-semibold">Acciones</div>
+										<div class="d-flex align-items-center h-100 fw-semibold"></div>
 									</div>
 
 								</div>
@@ -213,7 +213,7 @@
 									</div>
 
 									<div class="col-1 h-100 p-0">
-										<div class="d-flex align-items-center h-100 fw-semibold">Acciones</div>
+										<div class="d-flex align-items-center h-100 fw-semibold"></div>
 									</div>
 
 								</div>
@@ -225,9 +225,8 @@
 											<div class="row g-3">
 												<input type="hidden" name="did" id="did_contactos_mClientes" />
 												<div class="col-12 col-md-6 col-lg-5">
-													<select id="tipo_contactos_mClientes" class="form-select form-select-sm campos_mClientes camposObli_mClientes campos_contactos_mClientes"></select>
+													<select name="tipo" id="tipo_contactos_mClientes" class="form-select form-select-sm campos_mClientes camposObli_mClientes campos_contactos_mClientes"></select>
 												</div>
-
 
 												<div class="col-12 col-md-6 col-lg-6">
 													<input type="text" name="valor" id="valor_contactos_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_contactos_mClientes" placeholder="Valor" />
@@ -260,7 +259,7 @@
 					<div class="row justify-content-end g-3">
 						<div class="col-12 col-md-6 col-lg-3">
 							<button type="submit" class="btn btn-success w-100" id="btnGuardar_mClientes" onclick="appModalClientes.guardar()">Guardar</button>
-							<button type="submit" class="btn btn-success w-100" id="btnEditar_mClientes" onclick="appModalClientes.editar()">Modificar</button>
+							<button type="submit" class="btn btn-success w-100" id="btnEditar_mClientes" onclick="appModalClientes.editar()">Guardar</button>
 
 						</div>
 						<div class="col-12 col-md-6 col-lg-2">
