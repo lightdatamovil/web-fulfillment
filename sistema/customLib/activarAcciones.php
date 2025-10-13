@@ -106,6 +106,9 @@
             data = []
         }) {
 
+
+            console.log(id, data);
+
             const $repeater = $(`#${id}`);
             let contador = 0;
 
@@ -139,7 +142,7 @@
                     const self = $(this);
 
                     const todosVacios = self.find('input:not([type="hidden"]),select:not([type="hidden"]),textarea:not([type="hidden"])').toArray().every(input => {
-                        return $(input).val().trim() == '';
+                        return $(input).val() ? $(input).val().trim() == '' : true;
                     });
 
                     if (todosVacios) {
