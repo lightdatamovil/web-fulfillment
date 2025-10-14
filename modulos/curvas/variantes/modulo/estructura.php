@@ -47,7 +47,6 @@
                 buffer += `<tr>`
                 buffer += `<td>${variante.codigo || "---"}</td>`
                 buffer += `<td>${variante.nombre || "---"}</td>`
-                buffer += `<td>${variante.descripcion || "---"}</td>`
                 buffer += `<td><span class="badge rounded-pill bg-label-${variante.habilitado == 0 ? 'danger' : 'success'}">${variante.habilitado == 0 ? 'Deshabilitado' : 'Habilitado'}</span></td>`
                 buffer += `<td>`
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalVariantes.open({mode: 2, did: '${variante.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`

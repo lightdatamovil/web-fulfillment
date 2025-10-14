@@ -211,27 +211,58 @@
             dataNueva,
             dataOriginal
         }) {
+            console.log("dataNueva", dataNueva);
+            console.log("dataOriginal", dataOriginal);
+
             const cambios = {};
 
-            // función para normalizar fechas
+            // Función para normalizar fechas y horas
             function normalizarFecha(valor) {
                 if (!valor) return null;
                 try {
-                    return new Date(valor).toISOString().slice(0, 19); // YYYY-MM-DDTHH:mm:ss en UTC
+                    return new Date(valor).toISOString().slice(0, 19);
                 } catch {
-                    return valor; // si no es parseable, lo dejo igual
+                    return valor;
                 }
             }
 
-            Object.keys(dataNueva).forEach(key => {
-                let nuevo = dataNueva[key];
-                let original = dataOriginal[key];
+            // Función para normalizar tipos de datos dentro de un objeto/array
+            function normalizarTipos(obj) {
+                if (Array.isArray(obj)) {
+                    return obj.map(normalizarTipos);
+                } else if (obj && typeof obj === "object") {
+                    const nuevoObj = {};
+                    Object.keys(obj).forEach(k => {
+                        let valor = obj[k];
+                        // Normalizar DID a string si existe
+                        if (k.toLowerCase() === "did") {
+                            valor = String(valor);
+                        }
+                        // Recursión para objetos y arrays
+                        nuevoObj[k] = normalizarTipos(valor);
+                    });
+                    return nuevoObj;
+                } else if (typeof obj === "number") {
+                    return String(obj); // convertimos números a string para evitar falsos positivos
+                }
+                return obj;
+            }
 
+            const dataNuevaNorm = normalizarTipos(dataNueva);
+            const dataOriginalNorm = normalizarTipos(dataOriginal);
+
+            // Recorremos todas las keys de dataNueva
+            Object.keys(dataNuevaNorm).forEach(key => {
+                let nuevo = dataNuevaNorm[key];
+                let original = dataOriginalNorm[key];
+
+                // Si es un array, ordenamos por JSON.stringify para tener comparación consistente
                 if (Array.isArray(nuevo) && Array.isArray(original)) {
-                    nuevo = _.sortBy(nuevo);
-                    original = _.sortBy(original);
+                    nuevo = _.sortBy(nuevo, obj => JSON.stringify(obj));
+                    original = _.sortBy(original, obj => JSON.stringify(obj));
                 }
 
+                // Normalizar fechas/horas
                 if (
                     typeof nuevo === "string" &&
                     typeof original === "string" &&
@@ -241,6 +272,7 @@
                     original = normalizarFecha(original);
                 }
 
+                // Comparamos usando lodash isEqual
                 if (!_.isEqual(nuevo, original)) {
                     cambios[key] = dataNueva[key];
                 }
@@ -343,13 +375,10 @@
                 remove: []
             };
 
-            // Convertimos a objetos indexados por did
             const originalById = _.keyBy(dataOriginal, 'did');
             const nuevoById = _.keyBy(dataNueva, 'did');
 
-            // Función de comparación personalizada
             const esIgualPersonalizado = (a, b) => {
-                // Normalizar nulos/vacíos
                 const normalizar = v => {
                     if (_.isNil(v) || v === '' || (_.isString(v) && _.trim(v) === '')) return '';
                     if (_.isNumber(v) && isNaN(v)) return '';
@@ -359,19 +388,15 @@
                 a = normalizar(a);
                 b = normalizar(b);
 
-                // Si ambos son numéricos (string o número) y valen lo mismo → iguales
                 if (!isNaN(a) && !isNaN(b) && a !== '' && b !== '') {
                     return Number(a) === Number(b);
                 }
 
-                // Si ambos vacíos → iguales
                 if (a === '' && b === '') return true;
 
-                // En otros casos usa comparación normal
-                return undefined; // deja que lodash siga comparando
+                return undefined;
             };
 
-            // --- 1. ADD & UPDATE ---
             for (const objNuevo of dataNueva) {
                 if (!objNuevo.did) {
                     delete objNuevo.did;
@@ -382,11 +407,9 @@
                 const objOriginal = originalById[objNuevo.did];
 
                 if (!objOriginal) {
-                    // No existía → dataNueva con did
                     delete objNuevo.did;
                     resultado.add.push(objNuevo);
                 } else {
-                    // Comparar ignorando did
                     const sinDidNuevo = _.omit(objNuevo, 'did');
                     const sinDidOriginal = _.omit(objOriginal, 'did');
 
@@ -398,12 +421,9 @@
                 }
             }
 
-            // --- 2. REMOVE ---
             for (const objOriginal of dataOriginal) {
                 if (!nuevoById[objOriginal.did]) {
-                    resultado.remove.push({
-                        did: objOriginal.did
-                    });
+                    resultado.remove.push(objOriginal.did);
                 }
             }
 

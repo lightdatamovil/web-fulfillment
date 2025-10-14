@@ -59,7 +59,6 @@
                     <tr>
                         <th data-order="codigo">Codigo</th>
                         <th data-order="nombre">Nombre</th>
-                        <th data-order="descripcion">Descripción</th>
                         <th data-order="habilitado">Estado</th>
                         <th>Acciones</th>
                     </tr>

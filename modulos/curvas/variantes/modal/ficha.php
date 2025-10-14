@@ -34,6 +34,7 @@
 							<div class="tab-content p-0">
 								<div class="tab-pane fade show active" id="tabGeneral_mVariantes" role="tabpanel">
 									<form class="row g-5" onsubmit="return false">
+										<h5 class="m-0 mt-3">Datos de la variante</h5>
 										<div class="col-12 col-md-12">
 											<div class="form-floating form-floating-outline">
 												<input type="text" id="codigo_mVariantes" class="form-control campos_mVariantes camposObli_mVariantes" placeholder="Codigo" />
@@ -56,7 +57,7 @@
 											</div>
 										</div>
 									</form>
-									<form class="row g-5 mb-5 align-items-center pt-3 border-top mt-5" id="formCategorias_mVariantes" onsubmit="return false">
+									<form class="row g-5 mb-5 align-items-center pt-3 border-top mt-5 ocultarDesdeVer" id="formCategorias_mVariantes" onsubmit="return false">
 										<h5 class="m-0">Categorias</h5>
 										<div class="col-12 col-md-12 col-lg-12">
 											<div class="form-floating form-floating-outline">

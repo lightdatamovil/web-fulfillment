@@ -4,7 +4,6 @@
         let g_data;
         let donde = 0;
         let g_categorias = [];
-        let g_valores = [];
 
         const rutaAPI = "variantes"
 
@@ -23,7 +22,7 @@
                 $("#titulo_mVariantes").text("Nueva variante");
                 $("#subtitulo_mVariantes").text("Creacion de variante nuevo, completar formulario.");
                 $('.campos_mVariantes').prop('disabled', false);
-                $("#btnGuardar_mVariantes, #formValores_mVariantes").removeClass("ocultar");
+                $("#btnGuardar_mVariantes, .ocultarDesdeVer").removeClass("ocultar");
                 $("#btnEditar_mVariantes").addClass("ocultar")
                 renderCategorias();
                 $("#modal_mVariantes").modal("show")
@@ -33,7 +32,7 @@
                 $("#titulo_mVariantes").text("Modificar variante");
                 $("#subtitulo_mVariantes").text("Modificacion de variante existente, completar formulario.");
                 $('.campos_mVariantes').prop('disabled', false);
-                $("#btnEditar_mVariantes, #formValores_mVariantes").removeClass("ocultar");
+                $("#btnEditar_mVariantes, .ocultarDesdeVer").removeClass("ocultar");
                 $("#btnGuardar_mVariantes").addClass("ocultar")
                 await get()
             } else {
@@ -42,7 +41,7 @@
                 $("#titulo_mVariantes").text("Ver variante");
                 $("#subtitulo_mVariantes").text("Visualizacion de variante, no se puede modificar.");
                 $('.campos_mVariantes').prop('disabled', true);
-                $("#btnGuardar_mVariantes, #btnEditar_mVariantes, #formValores_mVariantes").addClass("ocultar");
+                $("#btnGuardar_mVariantes, #btnEditar_mVariantes, .ocultarDesdeVer").addClass("ocultar");
                 await get()
             }
         }
@@ -55,9 +54,16 @@
                     $("#nombre_mVariantes").val(g_data.nombre);
                     $("#descripcion_mVariantes").val(g_data.descripcion);
                     $("#checkHabilitado_mVariantes").prop("checked", g_data.habilitado == 1);
-                    g_valores = g_data.valores || [];
-                    g_categorias = g_data.categorias || [];
+                    g_categorias = structuredClone(g_data.categorias)
                     renderCategorias();
+
+                    if (donde == 2) {
+                        $('.campos_mVariantes').prop('disabled', true);
+                        $(".ocultarDesdeVer").addClass("ocultar")
+                    } else {
+                        $(".ocultarDesdeVer").removeClass("ocultar")
+                    }
+
                     $("#modal_mVariantes").modal("show")
                 }
             });
@@ -72,7 +78,7 @@
             $("#checkHabilitado_mVariantes").prop("checked", true);
             $("#btnAgregarCategoria_mVariantes").prop("disabled", true)
             $("#listaValores_mVariantes").html('');
-            g_valores = [];
+            g_data = []
             g_categorias = []
 
             globalValidar.limpiarTodas()
@@ -98,6 +104,14 @@
                 return;
             }
 
+            g_categorias = g_categorias.map((categoria, idx) => ({
+                ...categoria,
+                valores: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: `formValores_${idx}_mVariantes`
+                })
+            }));
+
+
             g_categorias.push({
                 did: "",
                 nombre,
@@ -106,6 +120,8 @@
 
             $("#categoria_mVariantes").val('');
             $("#btnAgregarCategoria_mVariantes").prop("disabled", true)
+
+
             renderCategorias();
         };
 
@@ -115,6 +131,14 @@
                 color: "var(--bs-danger)"
             }).then(function(confirmado) {
                 if (confirmado) {
+
+                    g_categorias = g_categorias.map((categoria, idx) => ({
+                        ...categoria,
+                        valores: globalActivarAcciones.obtenerDataFormRepeater({
+                            id: `formValores_${idx}_mVariantes`
+                        })
+                    }));
+
                     g_categorias.splice(index, 1);
                     renderCategorias();
                 }
@@ -127,7 +151,7 @@
 
         function renderCategorias() {
             if (g_categorias.length === 0) {
-                $("#listaCategorias_mVariantes").html('<p class="text-muted text-center">Sin categorias aún.</p>');
+                $("#listaCategorias_mVariantes").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin categorias aún, agrega al menos una.</span></div>`);
                 return;
             }
 
@@ -144,7 +168,7 @@
                 buffer += `<div class="col-12 d-none d-lg-block mb-4 mt-2" style="height: 35px;">`
                 buffer += `<div class="row bg-body rounded-3 h-100">`
 
-                buffer += `<div class="col-3 h-100">`
+                buffer += `<div class="col-4 h-100">`
                 buffer += `<div class="d-flex align-items-center h-100 ps-1">Codigo</div>`
                 buffer += `</div>`
 
@@ -152,7 +176,7 @@
                 buffer += `<div class="d-flex align-items-center h-100">Nombre</div>`
                 buffer += `</div>`
 
-                buffer += `<div class="col-2 h-100 p-0">`
+                buffer += `<div class="col-1 h-100 p-0">`
                 buffer += `<div class="d-flex align-items-center h-100"></div>`
                 buffer += `</div>`
 
@@ -162,28 +186,27 @@
                 buffer += `<div class="col-12">`
                 buffer += `<form class="form-repeater forms_mVariantes" id="formValores_${idx}_mVariantes">`
                 buffer += `<div data-repeater-list="${idx}">`
-                buffer += `<div data-repeater-item>`
+                buffer += `<div class="mb-3" data-repeater-item>`
                 buffer += `<div class="row g-3">`
                 buffer += `<input type="hidden" name="did" id="did_valores_${idx}_mVariantes" />`
 
-                buffer += `<div class="col-12 col-md-6 col-lg-3">`
-                buffer += `<input type="text" name="codigo" id="codigo_valores_${idx}_mVariantes" class="form-control form-control-sm campos_mVariantes camposObli_mVariantes campos_valores_mVariantes" placeholder="Codigo" />`
+                buffer += `<div class="col-12 col-md-6 col-lg-4">`
+                buffer += `<input type="text" name="codigo" id="codigo_valores_${idx}_mVariantes" class="form-control form-control-sm campos_mVariantes camposObli_mVariantes" placeholder="Codigo" />`
                 buffer += `</div>`
 
                 buffer += `<div class="col-12 col-md-6 col-lg-7">`
-                buffer += `<input type="text" name="nombre" id="nombre_valores_${idx}_mVariantes" class="form-control form-control-sm campos_mVariantes camposObli_mVariantes campos_valores_mVariantes" placeholder="Nombre" />`
+                buffer += `<input type="text" name="nombre" id="nombre_valores_${idx}_mVariantes" class="form-control form-control-sm campos_mVariantes camposObli_mVariantes" placeholder="Nombre" />`
                 buffer += `</div>`
 
-                buffer += `<div class="col-12 col-md-6 col-lg-2">`
-                buffer += `<div class="d-flex align-items-center justify-content-center h-100">`
+                buffer += `<div class="col-12 col-md-6 col-lg-1">`
+                buffer += `<div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer">`
                 buffer += `<button type="button" class="btn brn-sm btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar valor"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>`
                 buffer += `</div>`
                 buffer += `</div>`
                 buffer += `</div>`
-                buffer += `<hr class="mt-3 mb-3" />`
                 buffer += `</div>`
                 buffer += `</div>`
-                buffer += `<div class="mb-0 position-absolute" style="top: 1rem; right: 1rem;">`
+                buffer += `<div class="mb-0 position-absolute ocultarDesdeVer" style="top: 1rem; right: 1rem;">`
                 buffer += `<button type="button" class="btn btn-icon btn-sm btn-label-danger me-2" onclick="appModalVariantes.eliminarValor(${idx})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar categoria">`
                 buffer += `<span class="tf-icons ri-delete-bin-6-line ri-20px"></span>`
                 buffer += `</button>`
@@ -227,20 +250,12 @@
                 orden: 1
             };
 
-            console.log(datos);
-
-
             datos.categorias = datos.categorias.map((categoria, idx) => ({
                 ...categoria,
                 valores: globalActivarAcciones.obtenerDataFormRepeater({
                     id: `formValores_${idx}_mVariantes`
                 })
             }));
-
-
-            console.log(datos);
-            return
-
 
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mVariantes",
@@ -250,6 +265,20 @@
             if (validacion()) {
                 globalSweetalert.alert({
                     titulo: "Verifique los campos"
+                });
+                return;
+            }
+
+            if (datos.categorias.length < 1) {
+                globalSweetalert.alert({
+                    titulo: "La variante debe tener al menos una categoria"
+                });
+                return;
+            }
+
+            if (!datos.categorias || datos.categorias.some(cat => !cat.valores || cat.valores.length === 0)) {
+                globalSweetalert.alert({
+                    titulo: "Las categorías deben tener al menos un valor"
                 });
                 return;
             }
@@ -270,16 +299,65 @@
                 });
         };
 
-        public.editar = function() {
+        public.editar = async function() {
+            // 1️⃣ Armo el objeto base
             const datosNuevos = {
                 codigo: $("#codigo_mVariantes").val().trim() || null,
                 nombre: $("#nombre_mVariantes").val().trim() || null,
-                descripcion: $("#descripcion_mVariantes").val().trim() || null,
                 habilitado: $("#checkHabilitado_mVariantes").is(":checked") ? 1 : 0,
-                atributoValores: g_valores || [],
                 orden: 1
             };
 
+            console.log("g_categorias 1", g_categorias);
+            console.log("datosNuevos 1", datosNuevos);
+
+            // 2️⃣ Agrego categorías con sus valores (detectando cambios internos)
+            datosNuevos.categorias = g_categorias.map((categoria, idx) => {
+                const valoresNuevos = globalActivarAcciones.obtenerDataFormRepeater({
+                    id: `formValores_${idx}_mVariantes`
+                });
+
+                const categoriaOriginal = g_data.categorias?.find(cat => cat.did === categoria.did);
+                let valoresFinales = valoresNuevos;
+
+                // Si existe en los datos originales, detecto cambios en los valores
+                if (categoriaOriginal) {
+                    const cambiosValores = globalValidar.obtenerCambiosEnArray({
+                        dataNueva: valoresNuevos,
+                        dataOriginal: categoriaOriginal.valores
+                    });
+
+                    // Solo reemplazo si hubo cambios en los valores
+                    if (cambiosValores?.length > 0) {
+                        valoresFinales = valoresNuevos;
+                    }
+                }
+
+                return {
+                    ...categoria,
+                    valores: valoresFinales
+                };
+            });
+
+            console.log("datosNuevos 2", datosNuevos);
+
+            // 3️⃣ Detecto cambios generales
+            const datosModificados = globalValidar.obtenerCambios({
+                dataNueva: datosNuevos,
+                dataOriginal: g_data
+            });
+
+            console.log("datosModificados", datosModificados);
+
+            // 4️⃣ Si no hubo cambios, aviso
+            if (Object.keys(datosModificados).length === 0) {
+                globalSweetalert.alert({
+                    titulo: "No se realizaron cambios"
+                });
+                return;
+            }
+
+            // 5️⃣ Valido campos en tiempo real
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mVariantes",
                 callback: validacion
@@ -292,33 +370,38 @@
                 return;
             }
 
-            const datosModificados = globalValidar.obtenerCambios({
-                dataNueva: datosNuevos,
-                dataOriginal: g_data
-            });
-
-            if (Object.keys(datosModificados).length === 0) {
+            // 6️⃣ Valido que haya categorías y valores
+            if (!datosNuevos.categorias || datosNuevos.categorias.length < 1) {
                 globalSweetalert.alert({
-                    titulo: "No se realizaron cambios"
+                    titulo: "La variante debe tener al menos una categoría"
                 });
                 return;
             }
 
-            globalSweetalert.confirmar({
-                    titulo: "¿Estas seguro de modificar esta variante?"
-                })
-                .then(function(confirmado) {
-                    if (confirmado) {
-                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosModificados, {
-                            onSuccess: function(result) {
-                                $("#modal_mVariantes").modal("hide")
-                                globalSweetalert.exito()
-                                appModuloVariantes.getListado();
-                            }
-                        });
-                    }
+            if (datosNuevos.categorias.some(cat => !cat.valores || cat.valores.length === 0)) {
+                globalSweetalert.alert({
+                    titulo: "Las categorías deben tener al menos un valor"
                 });
+                return;
+            }
+
+            // 7️⃣ Confirmación antes de enviar
+            const confirmado = await globalSweetalert.confirmar({
+                titulo: "¿Estás seguro de modificar esta variante?"
+            });
+
+            if (!confirmado) return;
+
+            // 8️⃣ Envío al backend
+            globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
+                onSuccess: function(result) {
+                    $("#modal_mVariantes").modal("hide");
+                    globalSweetalert.exito();
+                    appModuloVariantes.getListado();
+                }
+            });
         };
+
 
         public.eliminar = function(did) {
             globalSweetalert.confirmar({

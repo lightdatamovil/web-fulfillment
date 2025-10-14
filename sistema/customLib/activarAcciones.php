@@ -105,10 +105,6 @@
             id,
             data = []
         }) {
-
-
-            console.log(id, data);
-
             const $repeater = $(`#${id}`);
             let contador = 0;
 
@@ -141,6 +137,14 @@
                 hide: function(deleteElement) {
                     const self = $(this);
 
+                    const totalFilas = self.parent().find('[data-repeater-item]').length;
+                    if (totalFilas <= 1) {
+                        globalSweetalert.alert({
+                            titulo: "Debe haber al menos una fila"
+                        });
+                        return;
+                    }
+
                     const todosVacios = self.find('input:not([type="hidden"]),select:not([type="hidden"]),textarea:not([type="hidden"])').toArray().every(input => {
                         return $(input).val() ? $(input).val().trim() == '' : true;
                     });
@@ -164,21 +168,28 @@
             if (data && data.length > 0) {
                 $repeater.setList(data);
             }
-
         };
+
 
         public.obtenerDataFormRepeater = function({
             id
         }) {
             const $element = $(`#${id}`);
-            const data = $element.repeaterVal();
+            if ($element.length === 0) return [];
+
+            const data = $element?.repeaterVal();
+            if (!data || Object.keys(data).length === 0) return [];
+
             const primeraClave = Object.keys(data)[0];
-            const lista = data[primeraClave] || [];
-            const filtrado = lista.filter(item => {
-                return Object.values(item).some(valor => valor && valor.toString().trim() !== '');
-            });
+            const lista = Array.isArray(data[primeraClave]) ? data[primeraClave] : [];
+
+            const filtrado = lista.filter(item =>
+                Object.values(item).some(valor => valor && valor.toString().trim() !== '')
+            );
+
             return filtrado;
         };
+
 
 
         return public
