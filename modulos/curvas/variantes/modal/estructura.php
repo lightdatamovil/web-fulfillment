@@ -299,8 +299,7 @@
                 });
         };
 
-        public.editar = async function() {
-            // 1️⃣ Armo el objeto base
+        public.editar = function() {
             const datosNuevos = {
                 codigo: $("#codigo_mVariantes").val().trim() || null,
                 nombre: $("#nombre_mVariantes").val().trim() || null,
@@ -308,48 +307,20 @@
                 orden: 1
             };
 
-            console.log("g_categorias 1", g_categorias);
-            console.log("datosNuevos 1", datosNuevos);
-
-            // 2️⃣ Agrego categorías con sus valores (detectando cambios internos)
             datosNuevos.categorias = g_categorias.map((categoria, idx) => {
-                const valoresNuevos = globalActivarAcciones.obtenerDataFormRepeater({
-                    id: `formValores_${idx}_mVariantes`
-                });
-
-                const categoriaOriginal = g_data.categorias?.find(cat => cat.did === categoria.did);
-                let valoresFinales = valoresNuevos;
-
-                // Si existe en los datos originales, detecto cambios en los valores
-                if (categoriaOriginal) {
-                    const cambiosValores = globalValidar.obtenerCambiosEnArray({
-                        dataNueva: valoresNuevos,
-                        dataOriginal: categoriaOriginal.valores
-                    });
-
-                    // Solo reemplazo si hubo cambios en los valores
-                    if (cambiosValores?.length > 0) {
-                        valoresFinales = valoresNuevos;
-                    }
-                }
-
-                return {
+                return ({
                     ...categoria,
-                    valores: valoresFinales
-                };
-            });
+                    valores: globalActivarAcciones.obtenerDataFormRepeater({
+                        id: `formValores_${idx}_mVariantes`
+                    })
+                })
+            })
 
-            console.log("datosNuevos 2", datosNuevos);
-
-            // 3️⃣ Detecto cambios generales
             const datosModificados = globalValidar.obtenerCambios({
                 dataNueva: datosNuevos,
                 dataOriginal: g_data
             });
 
-            console.log("datosModificados", datosModificados);
-
-            // 4️⃣ Si no hubo cambios, aviso
             if (Object.keys(datosModificados).length === 0) {
                 globalSweetalert.alert({
                     titulo: "No se realizaron cambios"
@@ -357,7 +328,6 @@
                 return;
             }
 
-            // 5️⃣ Valido campos en tiempo real
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mVariantes",
                 callback: validacion
@@ -370,7 +340,6 @@
                 return;
             }
 
-            // 6️⃣ Valido que haya categorías y valores
             if (!datosNuevos.categorias || datosNuevos.categorias.length < 1) {
                 globalSweetalert.alert({
                     titulo: "La variante debe tener al menos una categoría"
@@ -385,21 +354,57 @@
                 return;
             }
 
-            // 7️⃣ Confirmación antes de enviar
-            const confirmado = await globalSweetalert.confirmar({
-                titulo: "¿Estás seguro de modificar esta variante?"
-            });
+            let categoriasUpdateadas = {}
+            if (datosModificados.categorias && datosModificados.categorias.length > 0) {
+                categoriasUpdateadas = globalValidar.obtenerCambiosEnArray({
+                    dataNueva: datosModificados.categorias,
+                    dataOriginal: g_data.categorias
+                })
+            }
 
-            if (!confirmado) return;
+            if (categoriasUpdateadas.update && categoriasUpdateadas.update.length > 0) {
+                categoriasUpdateadas.update = categoriasUpdateadas.update.map((categoria) => {
 
-            // 8️⃣ Envío al backend
-            globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
-                onSuccess: function(result) {
-                    $("#modal_mVariantes").modal("hide");
-                    globalSweetalert.exito();
-                    appModuloVariantes.getListado();
-                }
-            });
+                    let valoresUpdateados = {}
+                    let original = g_data.categorias.find(item => item.did == categoria.did)
+
+                    let valoresModificados = globalValidar.obtenerCambios({
+                        dataNueva: categoria.valores,
+                        dataOriginal: original.valores
+                    });
+
+                    valoresModificados = Object.values(valoresModificados)
+
+                    if (valoresModificados && valoresModificados.length > 0) {
+                        valoresUpdateados = globalValidar.obtenerCambiosEnArray({
+                            dataNueva: valoresModificados,
+                            dataOriginal: original.valores
+                        })
+                    }
+
+                    return {
+                        ...categoria,
+                        valores: valoresUpdateados
+                    }
+                })
+            }
+
+            datosNuevos.categorias = categoriasUpdateadas
+
+            globalSweetalert.confirmar({
+                    titulo: "¿Estas seguro de modificar esta variante?"
+                })
+                .then(function(confirmado) {
+                    if (confirmado) {
+                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
+                            onSuccess: function(result) {
+                                $("#modal_mVariantes").modal("hide");
+                                globalSweetalert.exito();
+                                appModuloVariantes.getListado();
+                            }
+                        });
+                    }
+                });
         };
 
 

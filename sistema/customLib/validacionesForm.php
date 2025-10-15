@@ -211,12 +211,9 @@
             dataNueva,
             dataOriginal
         }) {
-            console.log("dataNueva", dataNueva);
-            console.log("dataOriginal", dataOriginal);
 
             const cambios = {};
 
-            // Función para normalizar fechas y horas
             function normalizarFecha(valor) {
                 if (!valor) return null;
                 try {
@@ -226,7 +223,6 @@
                 }
             }
 
-            // Función para normalizar tipos de datos dentro de un objeto/array
             function normalizarTipos(obj) {
                 if (Array.isArray(obj)) {
                     return obj.map(normalizarTipos);
@@ -234,16 +230,14 @@
                     const nuevoObj = {};
                     Object.keys(obj).forEach(k => {
                         let valor = obj[k];
-                        // Normalizar DID a string si existe
                         if (k.toLowerCase() === "did") {
                             valor = String(valor);
                         }
-                        // Recursión para objetos y arrays
                         nuevoObj[k] = normalizarTipos(valor);
                     });
                     return nuevoObj;
                 } else if (typeof obj === "number") {
-                    return String(obj); // convertimos números a string para evitar falsos positivos
+                    return String(obj);
                 }
                 return obj;
             }
@@ -251,18 +245,15 @@
             const dataNuevaNorm = normalizarTipos(dataNueva);
             const dataOriginalNorm = normalizarTipos(dataOriginal);
 
-            // Recorremos todas las keys de dataNueva
             Object.keys(dataNuevaNorm).forEach(key => {
                 let nuevo = dataNuevaNorm[key];
                 let original = dataOriginalNorm[key];
 
-                // Si es un array, ordenamos por JSON.stringify para tener comparación consistente
                 if (Array.isArray(nuevo) && Array.isArray(original)) {
                     nuevo = _.sortBy(nuevo, obj => JSON.stringify(obj));
                     original = _.sortBy(original, obj => JSON.stringify(obj));
                 }
 
-                // Normalizar fechas/horas
                 if (
                     typeof nuevo === "string" &&
                     typeof original === "string" &&
@@ -272,7 +263,6 @@
                     original = normalizarFecha(original);
                 }
 
-                // Comparamos usando lodash isEqual
                 if (!_.isEqual(nuevo, original)) {
                     cambios[key] = dataNueva[key];
                 }
@@ -288,13 +278,12 @@
         }) {
             const cambios = {};
 
-            // función para normalizar fechas
             function normalizarFecha(valor) {
                 if (!valor) return null;
                 try {
-                    return new Date(valor).toISOString().slice(0, 19); // YYYY-MM-DDTHH:mm:ss en UTC
+                    return new Date(valor).toISOString().slice(0, 19);
                 } catch {
-                    return valor; // si no es parseable, lo dejo igual
+                    return valor;
                 }
             }
 
@@ -303,7 +292,6 @@
                 let original = dataOriginal[key];
 
                 if (Array.isArray(nuevo) && Array.isArray(original)) {
-                    // normalizamos arrays (ordenamos para comparar)
                     const arrNuevo = _.sortBy(nuevo);
                     const arrOriginal = _.sortBy(original);
 
@@ -319,7 +307,6 @@
                         }
                     }
                 } else {
-                    // normalización de fechas/horas en strings
                     if (
                         typeof nuevo === "string" &&
                         typeof original === "string" &&
@@ -337,33 +324,6 @@
 
             return cambios;
         };
-
-        public.obtenerCambiosEnArray = function({
-            dataNueva,
-            dataOriginal
-        }) {
-            let obj = {
-                add: [],
-                update: [],
-                remove: []
-            }
-
-            dataNueva.forEach(dato => {
-                if (!dato.did) {
-                    obj.add.push(dato);
-                } else {
-                    let viejo = dataOriginal.find(datoOriginal => datoOriginal.did * 1 == dato.did * 1);
-                    if (viejo) {
-                        obj.update.push(dato);
-                    } else {
-                        obj.remove.push(dato.did);
-                    }
-                }
-            });
-
-            return obj;
-        }
-
 
         public.obtenerCambiosEnArray = function({
             dataNueva,
