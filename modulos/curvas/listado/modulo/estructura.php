@@ -15,7 +15,7 @@
         public.open = async function() {
             $(".winapp").hide();
             $("#modulo_curvas").show();
-            await appModuloCurvas.getListado();
+            appModuloCurvas.getListado();
             await globalActivarAcciones.filtrarConEnter({
                 className: "inputs_curvas",
                 callback: appModuloCurvas.getListado
@@ -28,12 +28,12 @@
         };
 
         public.limpiarCampos = function() {
-            $(".campos_curvas").val("")
+            $(".campos_curvas").val("");
         };
 
         function renderListado() {
             $("#tbodyListado_curvas").empty()
-            let buffer = ""
+            buffer = ""
 
             if (!g_data || g_data.length < 1) {
                 globalSinInformacion.tablasVacias({
@@ -63,12 +63,11 @@
             });
 
             $("#tbodyListado_curvas").html(buffer)
-            $("#totalRegistros_curvas").text(g_meta.totalItems)
-            $("#totalPaginas_curvas").text(g_meta.totalPages)
+            $("#totalRegistros_curvas").text(g_meta.totalRegistros)
+            $("#totalPaginas_curvas").text(g_meta.totalPaginas)
             globalActivarAcciones.tooltips({
                 idContainer: "modulo_curvas"
             })
-
         }
 
         public.getListado = function({

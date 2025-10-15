@@ -18,7 +18,7 @@
             }
 
             for (variante of appSistema.variantes) {
-                buffer += `<option value="${variante["did"]}">${variante["codigo"] || "Sin codigo"} - ${variante["tipo"] || "Sin nombre"}</option>`
+                buffer += `<option value="${variante["did"]}">${variante["codigo"] || "Sin codigo"} - ${variante["nombre"] || "Sin nombre"}</option>`
             }
 
             $(`#${id}`).html(buffer)

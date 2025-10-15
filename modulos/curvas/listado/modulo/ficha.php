@@ -3,9 +3,10 @@
     <div class="card mb-6">
         <div class="card-body">
             <div class="d-flex align-items-center">
-                <i class="ri-box-3-line ri-30px me-2"></i>
-                <h3 class="mb-0">Curvas</h3>
+                <i class="ri-palette-line ri-30px me-2"></i>
+                <h3 class="mb-0">Curvas de variantes</h3>
             </div>
+
         </div>
     </div>
 
@@ -16,13 +17,13 @@
             <div class="row g-3 mb-5">
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="form-floating form-floating-outline">
-                        <input type="text" class="form-control campos_curvas inputs_curvas" id="filtroCodigo_curvas" placeholder="Codigo" />
+                        <input type="text" class="form-control inputs_curvas campos_curvas" id="filtroCodigo_curvas" placeholder="Codigo" />
                         <label for="filtroCodigo_curvas">Buscar por codigo</label>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="form-floating form-floating-outline">
-                        <input type="text" class="form-control campos_curvas inputs_curvas" id="filtroNombre_curvas" placeholder="Nombre" />
+                        <input type="text" class="form-control inputs_curvas campos_curvas" id="filtroNombre_curvas" placeholder="Nombre" />
                         <label for="filtroNombre_curvas">Buscar por nombre</label>
                     </div>
                 </div>
@@ -40,7 +41,7 @@
 
             <div class="row g-3 mb-3">
                 <div class="col-12 col-md-6 col-lg-3">
-                    <button class="btn btn-label-success w-100" onclick="appModalCurvas.open()"><span class="tf-icons ri-box-3-fill ri-19px me-2"></span>Nuevo</button>
+                    <button class="btn btn-label-success w-100" onclick="appModalCurvas.open()"><span class="tf-icons ri-function-add-fill ri-19px me-2"></span>Nueva</button>
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <button class="btn btn-warning w-100" onclick="appModuloCurvas.limpiarCampos()">Limpiar filtros</button>
