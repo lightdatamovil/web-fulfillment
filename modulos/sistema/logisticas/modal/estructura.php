@@ -20,6 +20,9 @@
                 className: "select2_mLogisticas"
             })
 
+            console.log("donde", donde);
+
+
             if (mode == 0) {
                 // NUEVO LOGISTICA
                 $("#titulo_mLogisticas").text("Nueva logistica");
@@ -28,7 +31,7 @@
                 $("#checkHabilitado_mLogisticas").prop("checked", true);
                 $("#codLightdata_mLogisticas").prop('disabled', true).removeClass("camposObli_mLogisticas");
                 $("#btnEditar_mLogisticas").addClass("ocultar");
-                $("#btnGuardar_mLogisticas").removeClass("ocultar");
+                $("#btnGuardar_mLogisticas, .ocultarDesdeVer_mLogisticas").removeClass("ocultar");
                 renderDirecciones()
                 $("#modal_mLogisticas").modal("show")
             } else if (mode == 1) {
@@ -38,7 +41,7 @@
                 $("#subtitulo_mLogisticas").html("Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios ");
                 $('.campos_mLogisticas').prop('disabled', false);
                 $("#btnGuardar_mLogisticas").addClass("ocultar");
-                $("#btnEditar_mLogisticas").removeClass("ocultar");
+                $("#btnEditar_mLogisticas, .ocultarDesdeVer_mLogisticas").removeClass("ocultar");
                 await get()
             } else {
                 // VER LOGISTICA
@@ -46,7 +49,7 @@
                 $("#titulo_mLogisticas").text("Ver logistica");
                 $("#subtitulo_mLogisticas").text("Visualizacion de logistica, no se puede modificar.");
                 $('.campos_mLogisticas').prop('disabled', true);
-                $("#btnGuardar_mLogisticas, #btnEditar_mLogisticas").addClass("ocultar");
+                $("#btnGuardar_mLogisticas, #btnEditar_mLogisticas, .ocultarDesdeVer_mLogisticas").addClass("ocultar");
                 await get()
             }
         }
@@ -60,10 +63,19 @@
                     $("#checkHabilitado_mLogisticas").prop("checked", g_data.habilitado == 1);
                     $("#checkEsLightdata_mLogisticas").prop("checked", g_data.logisticaLD == 1);
                     if (g_data.logisticaLD == 1) {
-                        $("#codLightdata_mLogisticas").val(g_data.codigoLD).prop('disabled', false);
+                        $("#codLightdata_mLogisticas").val(g_data.codigoLD).prop('disabled', donde == 2);
                     }
+
                     g_direcciones = g_data.direcciones || []
                     renderDirecciones();
+
+                    if (donde == 2) {
+                        $('.campos_mLogisticas').prop('disabled', true);
+                        $(".ocultarDesdeVer_mLogisticas").addClass("ocultar")
+                    } else {
+                        $('.campos_mLogisticas').prop('disabled', false);
+                        $(".ocultarDesdeVer_mLogisticas").removeClass("ocultar")
+                    }
                     $("#modal_mLogisticas").modal("show")
                 }
             });

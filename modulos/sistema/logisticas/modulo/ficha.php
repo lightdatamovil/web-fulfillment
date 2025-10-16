@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="form-floating form-floating-outline">
-                        <select id="filtroEsLightdata_logisticas" class="form-select campos_logisticas">
+                        <select id="filtroEsLightdata_logisticas" class="form-select campos_logisticas select_logisticas">
                             <option value="todos" selected>Todos</option>
                             <option value="1">Si</option>
                             <option value="0">No</option>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="form-floating form-floating-outline">
-                        <select id="filtroEstado_logisticas" class="form-select campos_logisticas">
+                        <select id="filtroEstado_logisticas" class="form-select campos_logisticas select_logisticas">
                             <option value="todos" selected>Todos</option>
                             <option value="1">Habilitado</option>
                             <option value="0">Deshabilitado</option>

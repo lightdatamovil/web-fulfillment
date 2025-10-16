@@ -29,6 +29,7 @@
 
         public.limpiarCampos = function() {
             $(".campos_logisticas").val("")
+            $(".select_logisticas").val("todos")
         };
 
         function renderListado() {

@@ -58,7 +58,7 @@
 				buffer += `<td>${user.apellido || '---'}</td>`
 				buffer += `<td>${user.email || '---'}</td>`
 				buffer += `<td>${user.perfil ? appSistema.perfiles[user.perfil] : '---'}</td>`
-				buffer += `<td><span class="badge rounded-pill bg-label-${user.habilitado == 0 ? 'danger' : 'success'}">${user.habilitado == 0 ? 'Deshabilitado' : 'Habilitado'}</span></td>`
+				buffer += `<td><span class="badge rounded-pill bg-label-${user.habilitado == 1 ? 'success' : 'danger'}">${user.habilitado == 1 ? 'Habilitado' : 'Deshabilitado'}</span></td>`
 				buffer += `<td>`
 				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalUsuarios.open({mode: 2, did: '${user.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
 				buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`

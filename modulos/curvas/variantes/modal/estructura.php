@@ -22,7 +22,7 @@
                 $("#titulo_mVariantes").text("Nueva variante");
                 $("#subtitulo_mVariantes").text("Creacion de variante nuevo, completar formulario.");
                 $('.campos_mVariantes').prop('disabled', false);
-                $("#btnGuardar_mVariantes, .ocultarDesdeVer").removeClass("ocultar");
+                $("#btnGuardar_mVariantes, .ocultarDesdeVer_mVariantes").removeClass("ocultar");
                 $("#btnEditar_mVariantes").addClass("ocultar")
                 renderCategorias();
                 $("#modal_mVariantes").modal("show")
@@ -32,7 +32,7 @@
                 $("#titulo_mVariantes").text("Modificar variante");
                 $("#subtitulo_mVariantes").text("Modificacion de variante existente, completar formulario.");
                 $('.campos_mVariantes').prop('disabled', false);
-                $("#btnEditar_mVariantes, .ocultarDesdeVer").removeClass("ocultar");
+                $("#btnEditar_mVariantes, .ocultarDesdeVer_mVariantes").removeClass("ocultar");
                 $("#btnGuardar_mVariantes").addClass("ocultar")
                 await get()
             } else {
@@ -41,7 +41,7 @@
                 $("#titulo_mVariantes").text("Ver variante");
                 $("#subtitulo_mVariantes").text("Visualizacion de variante, no se puede modificar.");
                 $('.campos_mVariantes').prop('disabled', true);
-                $("#btnGuardar_mVariantes, #btnEditar_mVariantes, .ocultarDesdeVer").addClass("ocultar");
+                $("#btnGuardar_mVariantes, #btnEditar_mVariantes, .ocultarDesdeVer_mVariantes").addClass("ocultar");
                 await get()
             }
         }
@@ -59,9 +59,10 @@
 
                     if (donde == 2) {
                         $('.campos_mVariantes').prop('disabled', true);
-                        $(".ocultarDesdeVer").addClass("ocultar")
+                        $(".ocultarDesdeVer_mVariantes").addClass("ocultar")
                     } else {
-                        $(".ocultarDesdeVer").removeClass("ocultar")
+                        $('.campos_mVariantes').prop('disabled', false);
+                        $(".ocultarDesdeVer_mVariantes").removeClass("ocultar")
                     }
 
                     $("#modal_mVariantes").modal("show")
@@ -199,14 +200,14 @@
                 buffer += `</div>`
 
                 buffer += `<div class="col-12 col-md-6 col-lg-1">`
-                buffer += `<div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer">`
+                buffer += `<div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mVariantes">`
                 buffer += `<button type="button" class="btn brn-sm btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar valor"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>`
                 buffer += `</div>`
                 buffer += `</div>`
                 buffer += `</div>`
                 buffer += `</div>`
                 buffer += `</div>`
-                buffer += `<div class="mb-0 position-absolute ocultarDesdeVer" style="top: 1rem; right: 1rem;">`
+                buffer += `<div class="mb-0 position-absolute ocultarDesdeVer_mVariantes" style="top: 1rem; right: 1rem;">`
                 buffer += `<button type="button" class="btn btn-icon btn-sm btn-label-danger me-2" onclick="appModalVariantes.eliminarValor(${idx})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar categoria">`
                 buffer += `<span class="tf-icons ri-delete-bin-6-line ri-20px"></span>`
                 buffer += `</button>`

@@ -6,7 +6,7 @@
 			<div class="modal-body p-0">
 				<div class=" col-12 text-center mb-6">
 					<h4 class="mb-2" id="titulo_mUsuarios">Nuevo usuario</h4>
-					<p class="mb-6" id="subtitulo_mUsuarios">Creacion de usuario nuevo, llenar formulario.</p>
+					<p class="mb-6" id="subtitulo_mUsuarios">Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios.</p>
 				</div>
 				<div class="nav-align-top col-12 mb-6">
 					<ul id="tabs_mUsuarios" class="nav nav-tabs nav-fill" role="tablist">
@@ -61,26 +61,24 @@
 
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-4">
+							<div class="col-12 col-md-12 col-lg-5">
 								<div class="form-floating form-floating-outline">
 									<input type="text" id="telefono_mUsuarios" class="form-control campos_mUsuarios" placeholder="Telefono" />
 									<label for="telefono_mUsuarios">Telefono</label>
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-4">
+							<div class="col-12 col-md-12 col-lg-5">
 								<div class="form-floating form-floating-outline">
 									<select id="perfil_mUsuarios" class="form-select campos_mUsuarios camposObli_mUsuarios" onchange="appModalUsuarios.perfilCliente(this)"></select>
 									<label for="perfil_mUsuarios">Perfil</label>
 									<div class="invalid-feedback">Debe seleccionar uno</div>
 								</div>
 							</div>
-							<div class="col-12 col-md-12 col-lg-4">
-								<div class="form-floating form-floating-outline">
-									<select id="estado_mUsuarios" class="form-select campos_mUsuarios">
-										<option value="1" selected>Habilitado</option>
-										<option value="0">Deshabilitado</option>
-									</select>
-									<label for="estado_mUsuarios">Estado</label>
+
+							<div class="col-12 col-md-12 col-lg-2">
+								<div class="form-check mt-4">
+									<input class="form-check-input campos_mUsuarios" type="checkbox" id="estado_mUsuarios" />
+									<label class="form-check-label" for="estado_mUsuarios">Habilitado</label>
 								</div>
 							</div>
 
@@ -113,9 +111,7 @@
 							<div class="col-12 col-md-12 col-lg-6">
 								<div class="form-floating form-floating-outline">
 									<select id="modInicio_mUsuarios" class="form-select campos_mUsuarios">
-										<option value="1">Clientes</option>
-										<option value="2">Productos</option>
-										<option value="3">Ordenes</option>
+										<option value="1">Home</option>
 									</select>
 									<label for="modInicio_mUsuarios">Modulo de inicio</label>
 								</div>

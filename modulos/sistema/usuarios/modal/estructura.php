@@ -30,7 +30,7 @@
 			if (mode == 0) {
 				// NUEVA VARIANTE
 				$("#titulo_mUsuarios").text("Nuevo usuario");
-				$("#subtitulo_mUsuarios").text("Creacion de usuario nuevo, completar formulario.");
+				$("#subtitulo_mUsuarios").html("Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios.");
 				$('.campos_mUsuarios').prop('disabled', false);
 				$("#btnEditar_mUsuarios, #containerCliente_mUsuarios, #containerEditPassword_mUsuarios").addClass("ocultar")
 				$("#btnGuardar_mUsuarios, #containerPassword_mUsuarios, #containerRepPassword_mUsuarios").removeClass("ocultar");
@@ -40,7 +40,7 @@
 				// MODIFICAR VARIANTE
 				await globalLoading.open()
 				$("#titulo_mUsuarios").text("Modificar usuario");
-				$("#subtitulo_mUsuarios").text("Modificacion de usuario existente, completar formulario.");
+				$("#subtitulo_mUsuarios").html("Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios.");
 				$('.campos_mUsuarios').prop('disabled', false);
 				$("#btnGuardar_mUsuarios, #containerPassword_mUsuarios, #containerRepPassword_mUsuarios").addClass("ocultar");
 				$("#btnEditar_mUsuarios, #containerEditPassword_mUsuarios").removeClass("ocultar");
@@ -49,7 +49,7 @@
 				// VER VARIANTE
 				await globalLoading.open()
 				$("#titulo_mUsuarios").text("Ver usuario");
-				$("#subtitulo_mUsuarios").text("Visualizacion de usuario, no se puede modificar.");
+				$("#subtitulo_mUsuarios").html("<b>Estás en modo visualización.</b> Para actualizar la información, debés hacerlo desde la opción Editar.");
 				$('.campos_mUsuarios').prop('disabled', true);
 				$("#btnGuardar_mUsuarios, #btnEditar_mUsuarios, #containerPassword_mUsuarios, #containerRepPassword_mUsuarios, #containerEditPassword_mUsuarios").addClass("ocultar");
 				await get()
@@ -67,7 +67,7 @@
 					$("#email_mUsuarios").val(g_data.email);
 					$("#telefono_mUsuarios").val(g_data.telefono);
 					$("#perfil_mUsuarios").val(g_data.perfil);
-					$("#estado_mUsuarios").val(g_data.habilitado);
+					$("#estado_mUsuarios").prop("checked", g_data.habilitado == 1);
 					$("#modInicio_mUsuarios").val(g_data.modulo_inicial);
 					$("#appHabilitada_mUsuarios").prop("checked", g_data.app_habilitada == 1);
 
@@ -76,6 +76,7 @@
 						$("#cliente_mUsuarios").val(g_data.codigo_cliente.split(",")).trigger("change");
 					} else {
 						$("#containerCliente_mUsuarios").addClass("ocultar");
+						$("#cliente_mUsuarios").val([]).trigger("change");
 					}
 
 					$("#modal_mUsuarios").modal("show");
@@ -89,10 +90,11 @@
 			})
 
 			$(".campos_mUsuarios").val("")
-			$("#perfil_mUsuarios, #estado_mUsuarios").val('1');
-			$("#modInicio_mUsuarios").val('0');
+			$("#perfil_mUsuarios").val('1');
+			$("#estado_mUsuarios").prop("checked", true);
+			$("#modInicio_mUsuarios").val('1');
 			$("#appHabilitada_mUsuarios, #checkEditPassword_mUsuarios").prop("checked", false);
-			$("#cliente_mUsuarios").val(null).trigger("change");
+			$("#cliente_mUsuarios").val([]).trigger("change");
 			validarPasword = false
 
 			globalValidar.limpiarTodas()
@@ -170,7 +172,7 @@
 				telefono: $("#telefono_mUsuarios").val().trim() || null,
 				usuario: $("#usuario_mUsuarios").val().trim() || null,
 				perfil: Number($("#perfil_mUsuarios").val()) || null,
-				habilitado: Number($("#estado_mUsuarios").val()) || null,
+				habilitado: $("#estado_mUsuarios").prop("checked") ? 1 : 0,
 				modulo_inicial: Number($("#modInicio_mUsuarios").val()) || null,
 				app_habilitada: $("#appHabilitada_mUsuarios").prop("checked") ? 1 : 0,
 				codigo_cliente: $("#cliente_mUsuarios").val().join(",") || null,
@@ -213,7 +215,7 @@
 				telefono: $("#telefono_mUsuarios").val().trim() || null,
 				usuario: $("#usuario_mUsuarios").val().trim() || null,
 				perfil: Number($("#perfil_mUsuarios").val()) || null,
-				habilitado: Number($("#estado_mUsuarios").val()) || null,
+				habilitado: $("#estado_mUsuarios").prop("checked") ? 1 : 0,
 				modulo_inicial: Number($("#modInicio_mUsuarios").val()) || null,
 				app_habilitada: $("#appHabilitada_mUsuarios").prop("checked") ? 1 : 0,
 				codigo_cliente: $("#cliente_mUsuarios").val().join(",") || null
@@ -253,7 +255,7 @@
 				})
 				.then(function(confirmado) {
 					if (confirmado) {
-						globalRequest.put(`/${rutaAPI}/${g_did}`, datosModificados, {
+						globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
 							onSuccess: function(result) {
 								$("#modal_mUsuarios").modal("hide");
 								globalSweetalert.exito();
@@ -265,9 +267,9 @@
 		};
 
 		public.perfilCliente = function(e) {
+			$("#cliente_mUsuarios").val([]).trigger("change");
 			if ($(e).val() == didPerfilCliente) {
 				$("#containerCliente_mUsuarios").removeClass("ocultar")
-				$("#cliente_mUsuarios").val(null).trigger("change");
 			} else {
 				$("#containerCliente_mUsuarios").addClass("ocultar")
 			}

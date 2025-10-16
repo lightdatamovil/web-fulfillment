@@ -102,25 +102,25 @@
                                                 <div class="row g-3">
                                                     <input type="hidden" name="did" id="did_direcciones_mLogisticas" />
                                                     <div class="col-12 col-md-6 col-lg-2">
-                                                        <input type="text" name="titulo" id="titulo_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas campos_direcciones_mLogisticas" placeholder="Titulo" />
+                                                        <input type="text" name="titulo" id="titulo_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas" placeholder="Titulo" />
                                                     </div>
                                                     <div class="col-12 col-md-6 col-lg-3">
-                                                        <input type="text" name="calle" id="calle_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas campos_direcciones_mLogisticas" placeholder="Calle" />
+                                                        <input type="text" name="calle" id="calle_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas" placeholder="Calle" />
                                                     </div>
                                                     <div class="col-12 col-md-6 col-lg-1">
-                                                        <input type="text" name="numero" id="numero_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas campos_direcciones_mLogisticas" placeholder="N°" />
+                                                        <input type="text" name="numero" id="numero_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas" placeholder="N°" />
                                                     </div>
                                                     <div class="col-12 col-md-6 col-lg-1">
-                                                        <input type="text" name="cp" id="cp_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas campos_direcciones_mLogisticas" placeholder="CP" />
+                                                        <input type="text" name="cp" id="cp_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas" placeholder="CP" />
                                                     </div>
                                                     <div class="col-12 col-md-6 col-lg-2">
-                                                        <input type="text" name="localidad" id="localidad_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas campos_direcciones_mLogisticas" placeholder="Localidad" />
+                                                        <input type="text" name="localidad" id="localidad_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas" placeholder="Localidad" />
                                                     </div>
                                                     <div class="col-12 col-md-6 col-lg-2">
-                                                        <input type="text" name="provincia" id="provincia_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas campos_direcciones_mLogisticas" placeholder="Provincia" />
+                                                        <input type="text" name="provincia" id="provincia_direcciones_mLogisticas" class="form-control form-control-sm campos_mLogisticas camposObli_mLogisticas" placeholder="Provincia" />
                                                     </div>
                                                     <div class="col-12 col-md-6 col-lg-1">
-                                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                                        <div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mLogisticas">
                                                             <button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
                                                         </div>
                                                     </div>
@@ -128,7 +128,7 @@
                                                 <hr class="mt-3 mb-3" />
                                             </div>
                                         </div>
-                                        <div class="mb-0">
+                                        <div class="mb-0 ocultarDesdeVer_mLogisticas">
                                             <button class="btn btn-outline-success" data-repeater-create>
                                                 <i class="ri-add-line me-1"></i>
                                                 <span class="align-middle">Nueva dirección</span>

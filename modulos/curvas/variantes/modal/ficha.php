@@ -57,7 +57,7 @@
 											</div>
 										</div>
 									</form>
-									<form class="row g-5 mb-5 align-items-center pt-3 border-top mt-5 ocultarDesdeVer" id="formCategorias_mVariantes" onsubmit="return false">
+									<form class="row g-5 mb-5 align-items-center pt-3 border-top mt-5 ocultarDesdeVer_mVariantes" id="formCategorias_mVariantes" onsubmit="return false">
 										<h5 class="m-0">Categorias</h5>
 										<div class="col-12 col-md-12 col-lg-12">
 											<div class="form-floating form-floating-outline">
