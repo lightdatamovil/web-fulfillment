@@ -3,8 +3,9 @@
         let g_did = 0;
         let g_data;
         let donde = 0;
-        let g_categorias = [];
-
+        let categoriasSeleccionadas = [];
+        let g_columnas = []
+        let g_columnasHead = []
         const rutaAPI = "curvas"
 
         const public = {};
@@ -33,7 +34,6 @@
                 $('.campos_mCurvas').prop('disabled', false);
                 $("#btnGuardar_mCurvas, .ocultarDesdeVer").removeClass("ocultar");
                 $("#btnEditar_mCurvas").addClass("ocultar")
-                renderCategorias();
                 $("#modal_mCurvas").modal("show")
             } else if (mode == 1) {
                 // MODIFICAR CURVA
@@ -64,7 +64,6 @@
                     $("#descripcion_mCurvas").val(g_data.descripcion);
                     $("#checkHabilitado_mCurvas").prop("checked", g_data.habilitado == 1);
                     g_categorias = structuredClone(g_data.categorias)
-                    renderCategorias();
 
                     if (donde == 2) {
                         $('.campos_mCurvas').prop('disabled', true);
@@ -98,7 +97,6 @@
             })
         };
 
-
         public.agregarVariante = function() {
             let variantes = $("#variantes_mCurvas").val()
 
@@ -111,10 +109,9 @@
                 variantes.forEach((varianteSeleccionada) => {
                     let variante = appSistema.variantes.find((item) => item.did == varianteSeleccionada)
 
-
                     buffer += `<div class="col-12 col-md-${variantes.length > 1 ? "6" : "12"}">`
                     buffer += `<div class="form-floating form-floating-outline">`
-                    buffer += `<select class="form-select selectCategorias_mProductos" data-didVariante="${variante.did}" onchange="appModalCurvas.habilitarBtnGenerarCurva()">`
+                    buffer += `<select class="form-select selectCategorias_mProductos" data-variante="${variante.did}" onchange="appModalCurvas.habilitarBtnGenerarCurva()">`
                     buffer += `<option value="" selected>Seleccionar</option>`
                     for (categorias of variante["categorias"]) {
                         buffer += `<option value="${categorias["did"]}">${categorias["nombre"] || "Sin nombre"}</option>`
@@ -128,11 +125,30 @@
                 buffer += `</div>`
             }
 
-
             $("#containerCategorias_mCurvas").html(buffer)
             $("#btnGenerarCurva_mCurvas").prop("disabled", true);
-
         }
+
+        function obtenerCategoriasSeleccionadas() {
+            categoriasSeleccionadas = []
+
+            $(".selectCategorias_mProductos").each(function() {
+                const variante = $(this).data("variante");
+                const categoria = $(this).val();
+                const nombreCategoria = $(this).find("option:selected").text();
+                const dataVariante = appSistema.variantes.find((item) => item.did == variante)
+
+                if (categoria) {
+                    categoriasSeleccionadas.push({
+                        variante,
+                        categoria,
+                        nombreCategoria,
+                        nombreVariante: dataVariante.nombre || ""
+
+                    });
+                }
+            });
+        };
 
         public.habilitarBtnGenerarCurva = function() {
             const todosValidos = $('.selectCategorias_mProductos').toArray().every(
@@ -142,167 +158,84 @@
             $("#btnGenerarCurva_mCurvas").prop("disabled", !todosValidos);
         };
 
-        public.generarCurva = function() {
+        public.generarCurva = async function() {
+            await obtenerCategoriasSeleccionadas()
 
+            let valoresSeleccionados = await categoriasSeleccionadas.map((item) => {
+                let variante = appSistema.variantes.find((v) => v.did == item.variante)
+                let categoria = variante.categorias.find((c) => c.did == item.categoria)
+                return categoria.valores
+            })
+
+            g_columnas = await obtenerColumnas(valoresSeleccionados)
+
+            await renderTablaDeValores()
+        }
+
+        function obtenerColumnas(arrays) {
+            return arrays.reduce((acumulado, actual) => {
+                const combinaciones = [];
+                acumulado.forEach(a => {
+                    actual.forEach(b => {
+                        combinaciones.push({
+                            variante: [...a.variante, b],
+                            habilitado: 1
+                        });
+                    });
+                });
+                return combinaciones;
+            }, [{
+                variante: []
+            }]);
         }
 
 
+        function renderTablaDeValores() {
+            $("#listaVariantes_mCurvas").empty();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public.agregarCategoria = function() {
-            const nombre = $("#categoria_mCurvas").val().trim();
-
-            verificarTabla = g_categorias.some(v => v.nombre.toLowerCase() === nombre.toLowerCase());
-
-            if (verificarTabla) {
-                globalSweetalert.alert({
-                    titulo: "Ya existe esa categoria"
-                })
-                return;
-            }
-
-            g_categorias = g_categorias.map((categoria, idx) => ({
-                ...categoria,
-                valores: globalActivarAcciones.obtenerDataFormRepeater({
-                    id: `formValores_${idx}_mCurvas`
-                })
-            }));
-
-
-            g_categorias.push({
-                did: "",
-                nombre,
-                valores: []
-            });
-
-            $("#categoria_mCurvas").val('');
-            $("#btnGenerarCurva_mCurvas").prop("disabled", true)
-
-
-            renderCategorias();
-        };
-
-        public.eliminarValor = function(index) {
-            globalSweetalert.confirmar({
-                titulo: "¿Estas seguro de eliminar esta categoria?",
-                color: "var(--bs-danger)"
-            }).then(function(confirmado) {
-                if (confirmado) {
-
-                    g_categorias = g_categorias.map((categoria, idx) => ({
-                        ...categoria,
-                        valores: globalActivarAcciones.obtenerDataFormRepeater({
-                            id: `formValores_${idx}_mCurvas`
-                        })
-                    }));
-
-                    g_categorias.splice(index, 1);
-                    renderCategorias();
-                }
-            })
-        };
-
-        public.cambiarNombreCategoria = function(index) {
-            g_categorias[index].nombre = $(`#nombreCategoria_${index}_mCurvas`).val();
-        };
-
-        function renderCategorias() {
-            if (g_categorias.length === 0) {
-                $("#listaCategorias_mCurvas").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin categorias aún, agrega al menos una.</span></div>`);
+            if (g_columnas.length === 0) {
+                $("#listaVariantes_mCurvas").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin variantes aún, agrega al menos una.</span></div>`);
                 return;
             }
 
             let buffer = "";
+            buffer += `<div class="table-responsive text-nowrap table-container" style="height: 450px;">`
+            buffer += `<table class="table table-hover">`
+            buffer += `<thead id="theadListado_mCurvas" class="table-thead z-1">`
 
-            g_categorias.forEach((categoria, idx) => {
-                buffer += `<div class="col-12 px-3 mb-5 border rounded position-relative">`
-                buffer += `<div class="row p-3">`
+            buffer += `<tr class="text-center">`
+            buffer += `<th class="py-3"></th>`
+            categoriasSeleccionadas.forEach((categoria, idx) => {
+                buffer += `<th class="py-3"><span class="text-primary">${categoria.nombreVariante}</span><br/>${categoria.nombreCategoria}</th>`
+            })
+            buffer += `</tr>`
 
-                buffer += `<div class="col-10 col-md-10 col-lg-6" style="height: 48px;">`
-                buffer += `<div class="d-flex align-items-center h-100 fw-bold">Categoria: <input type="text" id="nombreCategoria_${idx}_mCurvas" data-did="${categoria.did}" onkeyup="appModalCurvas.cambiarNombreCategoria(${idx})" class="form-control form-control-sm ms-3 campos_mCurvas camposObli_mCurvas" placeholder="Categoria" value="${categoria.nombre}" /></div>`
-                buffer += `</div>`
+            buffer += `</thead>`
+            buffer += `<tbody id="tbodyListado_mCurvas">`
 
-                buffer += `<div class="col-12 d-none d-lg-block mb-4 mt-2" style="height: 35px;">`
-                buffer += `<div class="row bg-body rounded-3 h-100">`
+            g_columnas.forEach((columnas, idx) => {
+                buffer += `<tr class="text-center">`
+                buffer += `<td>`
 
-                buffer += `<div class="col-4 h-100">`
-                buffer += `<div class="d-flex align-items-center h-100 ps-1">Codigo</div>`
-                buffer += `</div>`
-
-                buffer += `<div class="col-7 h-100">`
-                buffer += `<div class="d-flex align-items-center h-100">Nombre</div>`
-                buffer += `</div>`
-
-                buffer += `<div class="col-1 h-100 p-0">`
-                buffer += `<div class="d-flex align-items-center h-100"></div>`
+                buffer += `<div class="form-check">`
+                buffer += `<input class="form-check-input campos_mCurvas" type="checkbox" value="" id="columnaHabilitado_${idx}_mCurvas" ${columnas.habilitado == 1 ? "checked": ""} />`
                 buffer += `</div>`
 
-                buffer += `</div>`
-                buffer += `</div>`
+                buffer += `</td>`
+                columnas.variante.forEach((item) => {
+                    buffer += `<td data-did="${item.did}">${item.nombre}</td>`
+                })
 
-                buffer += `<div class="col-12">`
-                buffer += `<form class="form-repeater forms_mCurvas" id="formValores_${idx}_mCurvas">`
-                buffer += `<div data-repeater-list="${idx}">`
-                buffer += `<div class="mb-3" data-repeater-item>`
-                buffer += `<div class="row g-3">`
-                buffer += `<input type="hidden" name="did" id="did_valores_${idx}_mCurvas" />`
 
-                buffer += `<div class="col-12 col-md-6 col-lg-4">`
-                buffer += `<input type="text" name="codigo" id="codigo_valores_${idx}_mCurvas" class="form-control form-control-sm campos_mCurvas camposObli_mCurvas" placeholder="Codigo" />`
-                buffer += `</div>`
-
-                buffer += `<div class="col-12 col-md-6 col-lg-7">`
-                buffer += `<input type="text" name="nombre" id="nombre_valores_${idx}_mCurvas" class="form-control form-control-sm campos_mCurvas camposObli_mCurvas" placeholder="Nombre" />`
-                buffer += `</div>`
-
-                buffer += `<div class="col-12 col-md-6 col-lg-1">`
-                buffer += `<div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer">`
-                buffer += `<button type="button" class="btn brn-sm btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar valor"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>`
-                buffer += `</div>`
-                buffer += `</div>`
-                buffer += `</div>`
-                buffer += `</div>`
-                buffer += `</div>`
-                buffer += `<div class="mb-0 position-absolute ocultarDesdeVer" style="top: 1rem; right: 1rem;">`
-                buffer += `<button type="button" class="btn btn-icon btn-sm btn-label-danger me-2" onclick="appModalCurvas.eliminarValor(${idx})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar categoria">`
-                buffer += `<span class="tf-icons ri-delete-bin-6-line ri-20px"></span>`
-                buffer += `</button>`
-                buffer += `<button type="button" class="btn btn-icon btn-sm btn-label-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar valor" data-repeater-create>`
-                buffer += `<span class="tf-icons ri-add-line ri-20px"></span>`
-                buffer += `</button>`
-                buffer += `</div>`
-                buffer += `</form>`
-                buffer += `</div>`
-
-                buffer += `</div>`
-                buffer += `</div>`
+                buffer += `</tr>`
             })
 
-            $("#listaCategorias_mCurvas").html(buffer);
+            buffer += `</tbody>`
+            buffer += `</table>`
+            buffer += `</div>`
 
-            g_categorias.forEach((categoria, idx) => {
-                globalActivarAcciones.formRepeater({
-                    id: `formValores_${idx}_mCurvas`,
-                    data: categoria.valores || []
-                });
-            })
 
-            globalActivarAcciones.tooltips({
-                idContainer: "modal_mCurvas"
-            })
+            $("#listaVariantes_mCurvas").html(buffer);
         }
 
         function validacion() {
@@ -476,7 +409,6 @@
                     }
                 });
         };
-
 
         public.eliminar = function(did) {
             globalSweetalert.confirmar({
