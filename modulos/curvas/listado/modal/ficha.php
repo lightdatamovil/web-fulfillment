@@ -57,7 +57,7 @@
                                             </div>
                                         </div>
                                     </form>
-                                    <form class="row g-5 mb-5 align-items-center mt-4 ocultarDesdeVer" id="formCategorias_mCurvas" onsubmit="return false">
+                                    <form class="row g-5 mb-5 align-items-center mt-4" id="formCategorias_mCurvas" onsubmit="return false">
                                         <h5 class="m-0">Seleccionar variantes</h5>
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <div class="form-floating form-floating-outline select2-primary">
@@ -68,7 +68,7 @@
 
                                         <div class="col-12 col-md-12 col-lg-12" id="containerCategorias_mCurvas"></div>
 
-                                        <div class="col-12 col-md-12 col-lg-12">
+                                        <div class="col-12 col-md-12 col-lg-12 ocultarDesdeVer_mCurvas">
                                             <button id="btnGenerarCurva_mCurvas" class="btn btn-outline-success waves-effect w-100" disabled onclick="appModalCurvas.generarCurva()">
                                                 <span class="tf-icons ri-sparkling-2-line ri-22px me-2"></span>Generar curva
                                             </button>
@@ -103,25 +103,13 @@
                                 <div class="tab-pane fade show active" id="tabValores_mCurvas" role="tabpanel">
                                     <div class="row g-5 align-items-baseline">
 
-                                        <div class="col-12 col-md-12 col-lg-6">
-                                            <div class="form-floating form-floating-outline">
-                                                <input type="text" id="searchValor_mCurvas" class="form-control campos_mCurvas" placeholder="Buscar valor" />
-                                                <label for="nombre_mCurvas">Buscar valor</label>
-                                            </div>
+                                        <div class="col-12 col-md-12 col-lg-12">
+                                            <input type="text" id="searchValor_mCurvas" class="form-control form-control-sm" placeholder="Buscar valor en la tabla" onkeyup="appModalCurvas.searchValor()" />
                                         </div>
 
-                                        <div class="col-12 col-md-12 col-lg-6">
-                                            <div class="form-floating form-floating-outline">
-                                                <select id="searchHabilitado_mCurvas" class="form-select campos_mCurvas">
-                                                    <option value="">Todos</option>
-                                                    <option value="1">Si</option>
-                                                    <option value="0">No</option>
-                                                </select>
-                                                <label for="searchHabilitado_mCurvas">Habilitado</label>
-                                            </div>
+                                        <div id="listaValores_mCurvas" style="overflow-y:auto">
+                                            <div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin variantes aún, agrega al menos una.</span></div>
                                         </div>
-
-                                        <div id="listaVariantes_mCurvas" style="overflow-y:auto"></div>
 
                                     </div>
 

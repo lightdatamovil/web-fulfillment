@@ -31,16 +31,38 @@
         }
 
         public.alert = function({
-            titulo = "Completar proceso",
+            titulo = "Alerta!",
+            subtitulo = "",
             color = "var(--bs-primary)",
             time = 1500
         } = {}) {
             Swal.fire({
                 title: titulo,
+                text: subtitulo,
                 icon: "warning",
                 iconColor: color,
                 showConfirmButton: false,
                 timer: time,
+            })
+        }
+
+        public.alertVolver = function({
+            titulo = "Alerta!",
+            subtitulo = "",
+            color = "var(--bs-primary)",
+        } = {}) {
+            Swal.fire({
+                title: titulo,
+                text: subtitulo,
+                icon: "warning",
+                iconColor: color,
+                confirmButtonText: "Volver",
+                showDenyButton: false,
+                showCancelButton: false,
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false
             })
         }
 

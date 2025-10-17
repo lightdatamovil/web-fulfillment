@@ -335,6 +335,19 @@
                 remove: []
             };
 
+            if (
+                Array.isArray(dataNueva) &&
+                Array.isArray(dataOriginal) &&
+                (typeof dataNueva[0] === "number" || typeof dataNueva[0] === "string")
+            ) {
+                const setNueva = new Set(dataNueva);
+                const setOriginal = new Set(dataOriginal);
+                resultado.add = dataNueva.filter(x => !setOriginal.has(x));
+                resultado.remove = dataOriginal.filter(x => !setNueva.has(x));
+
+                return resultado;
+            }
+
             const originalById = _.keyBy(dataOriginal, 'did');
             const nuevoById = _.keyBy(dataNueva, 'did');
 
@@ -388,7 +401,8 @@
             }
 
             return resultado;
-        }
+        };
+
 
 
         public.formRepeater = function({

@@ -5,7 +5,7 @@
         let donde = 0;
         let categoriasSeleccionadas = [];
         let g_columnas = []
-        let g_columnasHead = []
+        let g_columnasFiltradas = []
         const rutaAPI = "curvas"
 
         const public = {};
@@ -32,7 +32,7 @@
                 $("#titulo_mCurvas").text("Nueva curva");
                 $("#subtitulo_mCurvas").text("Creacion de curva nuevo, completar formulario.");
                 $('.campos_mCurvas').prop('disabled', false);
-                $("#btnGuardar_mCurvas, .ocultarDesdeVer").removeClass("ocultar");
+                $("#btnGuardar_mCurvas, .ocultarDesdeVer_mCurvas").removeClass("ocultar");
                 $("#btnEditar_mCurvas").addClass("ocultar")
                 $("#modal_mCurvas").modal("show")
             } else if (mode == 1) {
@@ -41,7 +41,7 @@
                 $("#titulo_mCurvas").text("Modificar curva");
                 $("#subtitulo_mCurvas").text("Modificacion de curva existente, completar formulario.");
                 $('.campos_mCurvas').prop('disabled', false);
-                $("#btnEditar_mCurvas, .ocultarDesdeVer").removeClass("ocultar");
+                $("#btnEditar_mCurvas, .ocultarDesdeVer_mCurvas").removeClass("ocultar");
                 $("#btnGuardar_mCurvas").addClass("ocultar")
                 await get()
             } else {
@@ -50,31 +50,9 @@
                 $("#titulo_mCurvas").text("Ver curva");
                 $("#subtitulo_mCurvas").text("Visualizacion de curva, no se puede modificar.");
                 $('.campos_mCurvas').prop('disabled', true);
-                $("#btnGuardar_mCurvas, #btnEditar_mCurvas, .ocultarDesdeVer").addClass("ocultar");
+                $("#btnGuardar_mCurvas, #btnEditar_mCurvas, .ocultarDesdeVer_mCurvas").addClass("ocultar");
                 await get()
             }
-        }
-
-        function get() {
-            globalRequest.get(`/${rutaAPI}/${g_did}`, {
-                onSuccess: function(result) {
-                    g_data = result.data;
-                    $("#codigo_mCurvas").val(g_data.codigo);
-                    $("#nombre_mCurvas").val(g_data.nombre);
-                    $("#descripcion_mCurvas").val(g_data.descripcion);
-                    $("#checkHabilitado_mCurvas").prop("checked", g_data.habilitado == 1);
-                    g_categorias = structuredClone(g_data.categorias)
-
-                    if (donde == 2) {
-                        $('.campos_mCurvas').prop('disabled', true);
-                        $(".ocultarDesdeVer").addClass("ocultar")
-                    } else {
-                        $(".ocultarDesdeVer").removeClass("ocultar")
-                    }
-
-                    $("#modal_mCurvas").modal("show")
-                }
-            });
         }
 
         function resetModal() {
@@ -83,10 +61,11 @@
             })
 
             $(".campos_mCurvas").val("")
+            $("#searchValor_mCurvas").val("")
             $("#checkHabilitado_mCurvas").prop("checked", true);
             $("#btnGenerarCurva_mCurvas").prop("disabled", true)
-            $("#listaValores_mCurvas").html('');
             $("#variantes_mCurvas").val(null).trigger("change");
+            $("#listaValores_mCurvas").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin variantes aún, agrega al menos una.</span></div>`);
 
             g_data = []
             g_categorias = []
@@ -96,6 +75,31 @@
                 className: "camposObli_mCurvas"
             })
         };
+
+        function get() {
+            globalRequest.get(`/${rutaAPI}/${g_did}`, {
+                onSuccess: async function(result) {
+                    g_data = result.data;
+                    g_categorias = result.data.categorias || []
+                    $("#codigo_mCurvas").val(g_data.codigo);
+                    $("#nombre_mCurvas").val(g_data.nombre);
+                    $("#checkHabilitado_mCurvas").prop("checked", g_data.habilitado == 1);
+                    $("#variantes_mCurvas").val(g_categorias.map((item) => item.did_variante)).change()
+                    await appModalCurvas.agregarVariante()
+                    await seleccionarCategorias()
+                    await appModalCurvas.generarCurva()
+
+                    if (donde == 2) {
+                        $('.campos_mCurvas').prop('disabled', true);
+                        $(".ocultarDesdeVer_mCurvas").addClass("ocultar")
+                    } else {
+                        $(".ocultarDesdeVer_mCurvas").removeClass("ocultar")
+                    }
+
+                    $("#modal_mCurvas").modal("show")
+                }
+            });
+        }
 
         public.agregarVariante = function() {
             let variantes = $("#variantes_mCurvas").val()
@@ -111,7 +115,7 @@
 
                     buffer += `<div class="col-12 col-md-${variantes.length > 1 ? "6" : "12"}">`
                     buffer += `<div class="form-floating form-floating-outline">`
-                    buffer += `<select class="form-select selectCategorias_mProductos" data-variante="${variante.did}" onchange="appModalCurvas.habilitarBtnGenerarCurva()">`
+                    buffer += `<select class="form-select campos_mCurvas selectCategorias_mProductos" id="selectCategoria_${variante.did}_mProductos" data-variante="${variante.did}" onchange="appModalCurvas.habilitarBtnGenerarCurva()">`
                     buffer += `<option value="" selected>Seleccionar</option>`
                     for (categorias of variante["categorias"]) {
                         buffer += `<option value="${categorias["did"]}">${categorias["nombre"] || "Sin nombre"}</option>`
@@ -127,6 +131,14 @@
 
             $("#containerCategorias_mCurvas").html(buffer)
             $("#btnGenerarCurva_mCurvas").prop("disabled", true);
+        }
+
+        function seleccionarCategorias() {
+            $(".selectCategorias_mProductos").each(function() {
+                const variante = $(this).data("variante");
+                const seleccionarCategoria = g_categorias.find((item) => item.did_variante == variante)
+                const categoria = $(this).val(seleccionarCategoria.did_categoria);
+            });
         }
 
         function obtenerCategoriasSeleccionadas() {
@@ -167,9 +179,14 @@
                 return categoria.valores
             })
 
+            console.log(valoresSeleccionados);
+
             g_columnas = await obtenerColumnas(valoresSeleccionados)
+            g_columnasFiltradas = [...g_columnas]
 
             await renderTablaDeValores()
+            $("#btnGenerarCurva_mCurvas").prop("disabled", true);
+
         }
 
         function obtenerColumnas(arrays) {
@@ -177,24 +194,25 @@
                 const combinaciones = [];
                 acumulado.forEach(a => {
                     actual.forEach(b => {
-                        combinaciones.push({
-                            variante: [...a.variante, b],
-                            habilitado: 1
-                        });
+                        combinaciones.push([...a, b]);
                     });
                 });
                 return combinaciones;
-            }, [{
-                variante: []
-            }]);
+            }, [
+                []
+            ]);
         }
 
-
         function renderTablaDeValores() {
-            $("#listaVariantes_mCurvas").empty();
+            $("#listaValores_mCurvas").empty();
 
             if (g_columnas.length === 0) {
-                $("#listaVariantes_mCurvas").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin variantes aún, agrega al menos una.</span></div>`);
+                $("#listaValores_mCurvas").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin variantes aún, agrega al menos una.</span></div>`);
+                return;
+            }
+
+            if (g_columnasFiltradas.length === 0) {
+                $("#listaValores_mCurvas").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">No hay coincidencias con tu busqueda</span></div>`);
                 return;
             }
 
@@ -204,7 +222,6 @@
             buffer += `<thead id="theadListado_mCurvas" class="table-thead z-1">`
 
             buffer += `<tr class="text-center">`
-            buffer += `<th class="py-3"></th>`
             categoriasSeleccionadas.forEach((categoria, idx) => {
                 buffer += `<th class="py-3"><span class="text-primary">${categoria.nombreVariante}</span><br/>${categoria.nombreCategoria}</th>`
             })
@@ -213,20 +230,11 @@
             buffer += `</thead>`
             buffer += `<tbody id="tbodyListado_mCurvas">`
 
-            g_columnas.forEach((columnas, idx) => {
+            g_columnasFiltradas.forEach((columnas, idx) => {
                 buffer += `<tr class="text-center">`
-                buffer += `<td>`
-
-                buffer += `<div class="form-check">`
-                buffer += `<input class="form-check-input campos_mCurvas" type="checkbox" value="" id="columnaHabilitado_${idx}_mCurvas" ${columnas.habilitado == 1 ? "checked": ""} />`
-                buffer += `</div>`
-
-                buffer += `</td>`
-                columnas.variante.forEach((item) => {
+                columnas.forEach((item) => {
                     buffer += `<td data-did="${item.did}">${item.nombre}</td>`
                 })
-
-
                 buffer += `</tr>`
             })
 
@@ -235,8 +243,22 @@
             buffer += `</div>`
 
 
-            $("#listaVariantes_mCurvas").html(buffer);
+            $("#listaValores_mCurvas").html(buffer);
         }
+
+        public.searchValor = function() {
+            let search = $("#searchValor_mCurvas").val().toLowerCase();
+
+            if (search === "") {
+                g_columnasFiltradas = [...g_columnas];
+            } else {
+                g_columnasFiltradas = g_columnas.filter((item) =>
+                    item.find((valor) => valor.nombre.toLowerCase().includes(search))
+                );
+            }
+
+            renderTablaDeValores();
+        };
 
         function validacion() {
             return globalValidar.obligatorios({
@@ -249,16 +271,8 @@
                 codigo: $("#codigo_mCurvas").val().trim() || null,
                 nombre: $("#nombre_mCurvas").val().trim() || null,
                 habilitado: $("#checkHabilitado_mCurvas").is(":checked") ? 1 : 0,
-                categorias: g_categorias || [],
-                orden: 1
+                categorias: categoriasSeleccionadas.map((item) => Number(item.categoria)),
             };
-
-            datos.categorias = datos.categorias.map((categoria, idx) => ({
-                ...categoria,
-                valores: globalActivarAcciones.obtenerDataFormRepeater({
-                    id: `formValores_${idx}_mCurvas`
-                })
-            }));
 
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mCurvas",
@@ -273,15 +287,9 @@
             }
 
             if (datos.categorias.length < 1) {
-                globalSweetalert.alert({
-                    titulo: "La curva debe tener al menos una categoria"
-                });
-                return;
-            }
-
-            if (!datos.categorias || datos.categorias.some(cat => !cat.valores || cat.valores.length === 0)) {
-                globalSweetalert.alert({
-                    titulo: "Las categorías deben tener al menos un valor"
+                globalSweetalert.alertVolver({
+                    titulo: "La curva debe tener al menos una categoria",
+                    subtitulo: 'Se tomaran las categorias seleccionadas cuando le de a "Generar curva"'
                 });
                 return;
             }
@@ -303,21 +311,16 @@
         };
 
         public.editar = function() {
+
             const datosNuevos = {
                 codigo: $("#codigo_mCurvas").val().trim() || null,
                 nombre: $("#nombre_mCurvas").val().trim() || null,
                 habilitado: $("#checkHabilitado_mCurvas").is(":checked") ? 1 : 0,
-                orden: 1
+                categorias: categoriasSeleccionadas.map((item) => ({
+                    did_variante: Number(item.variante),
+                    did_categoria: Number(item.categoria)
+                })),
             };
-
-            datosNuevos.categorias = g_categorias.map((categoria, idx) => {
-                return ({
-                    ...categoria,
-                    valores: globalActivarAcciones.obtenerDataFormRepeater({
-                        id: `formValores_${idx}_mCurvas`
-                    })
-                })
-            })
 
             const datosModificados = globalValidar.obtenerCambios({
                 dataNueva: datosNuevos,
@@ -325,8 +328,9 @@
             });
 
             if (Object.keys(datosModificados).length === 0) {
-                globalSweetalert.alert({
-                    titulo: "No se realizaron cambios"
+                globalSweetalert.alertVolver({
+                    titulo: "No se realizaron cambios",
+                    subtitulo: 'Si modificó las categorias el cambio se tomara cuando le de a "Generar curva"'
                 });
                 return;
             }
@@ -343,16 +347,10 @@
                 return;
             }
 
-            if (!datosNuevos.categorias || datosNuevos.categorias.length < 1) {
-                globalSweetalert.alert({
-                    titulo: "La curva debe tener al menos una categoría"
-                });
-                return;
-            }
-
-            if (datosNuevos.categorias.some(cat => !cat.valores || cat.valores.length === 0)) {
-                globalSweetalert.alert({
-                    titulo: "Las categorías deben tener al menos un valor"
+            if (datosNuevos.categorias.length < 1) {
+                globalSweetalert.alertVolver({
+                    titulo: "La curva debe tener al menos una categoria",
+                    subtitulo: 'Se tomaran las categorias seleccionadas cuando le de a "Generar curva"'
                 });
                 return;
             }
@@ -360,35 +358,8 @@
             let categoriasUpdateadas = {}
             if (datosModificados.categorias && datosModificados.categorias.length > 0) {
                 categoriasUpdateadas = globalValidar.obtenerCambiosEnArray({
-                    dataNueva: datosModificados.categorias,
-                    dataOriginal: g_data.categorias
-                })
-            }
-
-            if (categoriasUpdateadas.update && categoriasUpdateadas.update.length > 0) {
-                categoriasUpdateadas.update = categoriasUpdateadas.update.map((categoria) => {
-
-                    let valoresUpdateados = {}
-                    let original = g_data.categorias.find(item => item.did == categoria.did)
-
-                    let valoresModificados = globalValidar.obtenerCambios({
-                        dataNueva: categoria.valores,
-                        dataOriginal: original.valores
-                    });
-
-                    valoresModificados = Object.values(valoresModificados)
-
-                    if (valoresModificados && valoresModificados.length > 0) {
-                        valoresUpdateados = globalValidar.obtenerCambiosEnArray({
-                            dataNueva: valoresModificados,
-                            dataOriginal: original.valores
-                        })
-                    }
-
-                    return {
-                        ...categoria,
-                        valores: valoresUpdateados
-                    }
+                    dataNueva: datosModificados.categorias.map((item) => item.did_categoria),
+                    dataOriginal: g_data.categorias.map((item) => item.did_categoria)
                 })
             }
 

@@ -47,7 +47,7 @@
                 buffer += `<tr>`
                 buffer += `<td>${curva.codigo || "---"}</td>`
                 buffer += `<td>${curva.nombre || "---"}</td>`
-                buffer += `<td><span class="badge rounded-pill bg-label-${curva.habilitado == 0 ? 'danger' : 'success'}">${curva.habilitado == 0 ? 'Deshabilitado' : 'Habilitado'}</span></td>`
+                buffer += `<td><span class="badge rounded-pill bg-label-${curva.habilitado != 1 ? 'danger' : 'success'}">${curva.habilitado != 1 ? 'Deshabilitado' : 'Habilitado'}</span></td>`
                 buffer += `<td>`
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalCurvas.open({mode: 2, did: '${curva.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
                 buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`

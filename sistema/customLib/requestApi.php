@@ -29,7 +29,7 @@
                     error: function(xhr) {
                         globalSweetalert.errorReportable({
                             error: xhr,
-                            ruta: this.url,
+                            ruta: url,
                             metodo: this.type
                         });
                         onError(xhr);
