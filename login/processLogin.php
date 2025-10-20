@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_POST['codEmpresa'], $_POST['username'], $_POST['password'])) {
-    echo json_encode(["estado" => false, "mensaje" => "Faltan datos"]);
+    echo json_encode(["success" => false, "message" => "Faltan datos"]);
     exit;
 }
 
@@ -29,26 +29,33 @@ curl_close($curl);
 
 $result = json_decode($response, true);
 
+// print_r($result);
+// exit;
+
 if ($result && isset($result['success']) && $result['success']) {
     $data = $result['data'];
     $_SESSION['logueado'] = true;
     $_SESSION['user'] = json_encode($data['user']);
     $_SESSION['idUser'] = $data['user']['did'];
+    $_SESSION['perfilUser'] = $data['user']['perfil'];
     $_SESSION['nombreUser'] = $data['user']['nombre'];
+    $_SESSION['apellidoUser'] = $data['user']['apellido'];
     $_SESSION['idEmpresa'] = $data['company']['did'];
-    // $_SESSION['nombreEmpresa'] = $data['company']['nombre'];
     $_SESSION['codEmpresa'] = $data['company']['codigo'];
+    $_SESSION['nombreEmpresa'] = $data['company']['nombre'];
+    $_SESSION['logoEmpresa'] = $data['company']['imagen'];
+    $_SESSION['modoTrabajoEmpresa'] = $data['company']['modo_trabajo'];
     $_SESSION['authToken'] = $data['user']['token'];
 
     echo json_encode([
-        "estado" => true,
-        "mensaje" => $result['message'] ?? "Login correcto",
+        "success" => true,
+        "message" => $result['message'] ?? "Login correcto",
         "data" => $data
     ]);
 } else {
     $_SESSION['logueado'] = false;
     echo json_encode([
-        "estado" => false,
-        "mensaje" => $result['message'] ?? "Usuario o contraseña incorrectos"
+        "success" => false,
+        "message" => $result['message'] ?? "Usuario o contraseña incorrectos"
     ]);
 }

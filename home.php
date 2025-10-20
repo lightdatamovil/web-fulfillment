@@ -82,6 +82,8 @@ if (!isset($_SESSION["logueado"])) {
 
     <script src="librerias/sheetjs.js"></script>
     <script src="librerias/lodash.js"></script>
+    <script src="librerias/qrcode.js"></script>
+
 
     <!-- Helpers -->
     <script src="assets/vendor/js/helpers.js"></script>

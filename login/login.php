@@ -164,6 +164,8 @@
                             <span class="spinner-border me-1" role="status" aria-hidden="true"></span>
                             Cargando...
                         </button>
+
+                        <span id="completarCampos_login" class="badge bg-label-danger w-100 mt-5 ocultar">Debes completar todos los campos</span>
                     </div>
 
                 </div>
@@ -211,7 +213,7 @@
 
                 if (idEmpresa) {
                     const codEmpresa = localStorage.getItem("codEmpresa");
-                    // const imgBase64 = localStorage.getItem("imgEmpresa");
+                    // const imgBase64 = localStorage.getItem("logoEmpresa");
 
                     if (codEmpresa) {
                         $("#codEmpresa_login").val(codEmpresa);
@@ -234,7 +236,7 @@
                 localStorage.removeItem("perfilUser");
                 localStorage.removeItem("idEmpresa");
                 localStorage.removeItem("codEmpresa");
-                // localStorage.removeItem("imgEmpresa");
+                // localStorage.removeItem("logoEmpresa");
             };
 
             public.login = function() {
@@ -248,10 +250,12 @@
 
                 if (!codEmpresa || !username || !password) {
                     $(".campos_login").addClass("is-invalid");
-                    globalSweetalert.error("Debes completar todos los campos");
+                    $("#completarCampos_login").removeClass("ocultar")
                     $("#btnIngresar_login").removeClass("ocultar");
                     $("#btnLoading_login").addClass("ocultar");
                     return;
+                } else {
+                    $("#completarCampos_login").addClass("ocultar")
                 }
 
                 const parametros = {
@@ -266,19 +270,23 @@
                     dataType: "json",
                     data: parametros,
                     success: function(response) {
-                        if (response.estado) {
+                        if (response.success) {
                             const data = response.data
                             localStorage.setItem("didUser", data.user.did);
                             localStorage.setItem("usernameUser", data.user.username);
                             localStorage.setItem("perfilUser", data.user.perfil);
                             localStorage.setItem("idEmpresa", data.company.did);
+                            localStorage.setItem("nombreEmpresa", data.company.nombre);
                             localStorage.setItem("codEmpresa", data.company.codigo);
-                            // localStorage.setItem("imgEmpresa", data.company.imagen);
+                            localStorage.setItem("logoEmpresa", data.company.imagen);
+                            localStorage.setItem("modoTrabajoEmpresa", data.company.modo_trabajo);
                             localStorage.setItem("authToken", data.user.token);
                             location.reload();
                         } else {
                             $(".campos_login").addClass("is-invalid");
-                            globalSweetalert.error(response.mensaje);
+                            globalSweetalert.error({
+                                titulo: response.message
+                            });
                         }
                         $("#btnIngresar_login").removeClass("ocultar");
                         $("#btnLoading_login").addClass("ocultar");
@@ -298,7 +306,7 @@
 
                 localStorage.removeItem("idEmpresa");
                 localStorage.removeItem("codEmpresa");
-                // localStorage.removeItem("imgEmpresa");
+                // localStorage.removeItem("logoEmpresa");
             };
 
             public.verContraseña = function() {
