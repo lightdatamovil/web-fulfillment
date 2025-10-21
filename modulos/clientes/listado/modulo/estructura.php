@@ -49,7 +49,7 @@
                 buffer += `<td>${cliente.codigo || '---'}</td>`
                 buffer += `<td>${cliente.nombre_fantasia || '---'}</td>`
                 buffer += `<td>${cliente.razon_social || '---'}</td>`
-                buffer += `<td><span class="badge rounded-pill bg-label-${cliente.habilitado == 0 ? 'danger' : 'success'}">${cliente.habilitado == 0 ? 'Deshabilitado' : 'Habilitado'}</span></td>`
+                buffer += `<td><span class="badge rounded-pill bg-label-${cliente.habilitado == 1 ? 'success' : 'danger'}">${cliente.habilitado == 1 ? 'Habilitado' : 'Deshabilitado'}</span></td>`
                 buffer += `<td>`
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalClientes.open({mode: 2, did: '${cliente.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
                 buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`

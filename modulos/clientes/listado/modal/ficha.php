@@ -111,7 +111,7 @@
 					</div>
 
 					<div class="tab-pane fade p-4 pt-8" id="tabCuentas_mClientes" role="tabpanel">
-						<form class="row g-5 mb-5 align-items-center forms_mClientes" id="formTiendas_mClientes" onsubmit="return false">
+						<form class="row g-5 mb-5 align-items-center ocultarDesdeVer_mClientes" onsubmit="return false">
 							<div class="col-12 col-md-12 col-lg-9">
 								<div class="form-floating form-floating-outline">
 									<select id="tienda_mClientes" class="form-select campos_mClientes" onchange="appModalClientes.habilitarBtnAgregarTienda()"></select>
@@ -122,7 +122,8 @@
 								<button style="width: 100%;" id="btnAgregarTienda_mClientes" class="btn btn-label-success btnAgregar_mClientes w-100" disabled onclick="appModalClientes.renderTienda()">Agregar</button>
 							</div>
 						</form>
-						<div id="contenedorTiendas_mClientes" class="row g-3 contenedoresExtras_mClientes" style="overflow: auto;"></div>
+						<div id="mensajeCuentas_mClientes" class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-warning px-6">Sin vinculaciones aún</span></div>
+						<div id="contenedorTiendas_mClientes" class="row g-3" style="overflow: auto;"></div>
 					</div>
 
 					<div class="tab-pane fade" id="tabDirecciones_mClientes" role="tabpanel">
@@ -155,7 +156,7 @@
 								</div>
 							</div>
 							<div class=" col-12">
-								<form class="form-repeater forms_mClientes" id="formDirecciones_mClientes">
+								<form class="form-repeater" id="formDirecciones_mClientes">
 									<div data-repeater-list="direcciones">
 										<div data-repeater-item>
 											<div class="row g-3">
@@ -179,7 +180,7 @@
 													<input type="text" name="provincia" id="provincia_direcciones_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_direcciones_mClientes" placeholder="Provincia" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-1">
-													<div class="d-flex align-items-center justify-content-center h-100">
+													<div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mClientes">
 														<button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
 													</div>
 												</div>
@@ -187,7 +188,7 @@
 											<hr class="mt-3 mb-3" />
 										</div>
 									</div>
-									<div class="mb-0">
+									<div class="mb-0 ocultarDesdeVer_mClientes">
 										<button class="btn btn-outline-success" data-repeater-create>
 											<i class="ri-add-line me-1"></i>
 											<span class="align-middle">Nueva dirección</span>
@@ -219,7 +220,7 @@
 								</div>
 							</div>
 							<div class=" col-12">
-								<form class="form-repeater forms_mClientes" id="formContactos_mClientes">
+								<form class="form-repeater" id="formContactos_mClientes">
 									<div data-repeater-list="contactos">
 										<div data-repeater-item>
 											<div class="row g-3">
@@ -232,7 +233,7 @@
 													<input type="text" name="valor" id="valor_contactos_mClientes" class="form-control form-control-sm campos_mClientes camposObli_mClientes campos_contactos_mClientes" placeholder="Valor" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-1">
-													<div class="d-flex align-items-center justify-content-center h-100">
+													<div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mClientes">
 														<button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
 													</div>
 												</div>
@@ -240,7 +241,7 @@
 											<hr class="mt-3 mb-3" />
 										</div>
 									</div>
-									<div class="mb-0">
+									<div class="mb-0 ocultarDesdeVer_mClientes">
 										<button class="btn btn-outline-success" data-repeater-create>
 											<i class="ri-add-line me-1"></i>
 											<span class="align-middle">Nuevo contacto</span>
@@ -255,11 +256,11 @@
 
 				</div>
 
-				<div class="col-12 mt-7">
+				<div class="col-12 border-top pt-5 mt-2">
 					<div class="row justify-content-end g-3">
 						<div class="col-12 col-md-6 col-lg-3">
 							<button type="submit" class="btn btn-success w-100" id="btnGuardar_mClientes" onclick="appModalClientes.guardar()">Guardar</button>
-							<button type="submit" class="btn btn-success w-100" id="btnEditar_mClientes" onclick="appModalClientes.editar()">Guardar</button>
+							<button type="submit" class="btn btn-success w-100" id="btnEditar_mClientes" onclick="appModalClientes.editar()">MOd</button>
 
 						</div>
 						<div class="col-12 col-md-6 col-lg-2">

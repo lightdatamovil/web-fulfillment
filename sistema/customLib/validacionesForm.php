@@ -212,8 +212,7 @@
             dataOriginal
         }) {
 
-            const cambios = {};
-
+            // Normaliza fechas a ISO sin zona horaria
             function normalizarFecha(valor) {
                 if (!valor) return null;
                 try {
@@ -223,6 +222,7 @@
                 }
             }
 
+            // Normaliza tipos: convierte numbers a string y did a string
             function normalizarTipos(obj) {
                 if (Array.isArray(obj)) {
                     return obj.map(normalizarTipos);
@@ -230,9 +230,7 @@
                     const nuevoObj = {};
                     Object.keys(obj).forEach(k => {
                         let valor = obj[k];
-                        if (k.toLowerCase() === "did") {
-                            valor = String(valor);
-                        }
+                        if (k.toLowerCase() === "did") valor = String(valor);
                         nuevoObj[k] = normalizarTipos(valor);
                     });
                     return nuevoObj;
@@ -242,27 +240,42 @@
                 return obj;
             }
 
-            const dataNuevaNorm = normalizarTipos(dataNueva);
-            const dataOriginalNorm = normalizarTipos(dataOriginal);
+            // Ordena las propiedades de un objeto para que la comparación no dependa del orden
+            function ordenarPropiedades(obj) {
+                if (Array.isArray(obj)) return obj.map(ordenarPropiedades);
+                if (obj && typeof obj === "object") {
+                    return Object.keys(obj).sort().reduce((acc, key) => {
+                        acc[key] = ordenarPropiedades(obj[key]);
+                        return acc;
+                    }, {});
+                }
+                return obj;
+            }
+
+            // Normalizar y ordenar
+            const dataNuevaNorm = ordenarPropiedades(normalizarTipos(dataNueva));
+            const dataOriginalNorm = ordenarPropiedades(normalizarTipos(dataOriginal));
+
+            const cambios = {};
 
             Object.keys(dataNuevaNorm).forEach(key => {
                 let nuevo = dataNuevaNorm[key];
                 let original = dataOriginalNorm[key];
 
+                // Ordenar arrays de objetos para comparar sin depender del orden
                 if (Array.isArray(nuevo) && Array.isArray(original)) {
                     nuevo = _.sortBy(nuevo, obj => JSON.stringify(obj));
                     original = _.sortBy(original, obj => JSON.stringify(obj));
                 }
 
-                if (
-                    typeof nuevo === "string" &&
-                    typeof original === "string" &&
-                    (key.toLowerCase().includes("fecha") || key.toLowerCase().includes("hora"))
-                ) {
+                // Normalizar fechas si la clave tiene fecha/hora
+                if (typeof nuevo === "string" && typeof original === "string" &&
+                    (key.toLowerCase().includes("fecha") || key.toLowerCase().includes("hora"))) {
                     nuevo = normalizarFecha(nuevo);
                     original = normalizarFecha(original);
                 }
 
+                // Detectar cambios reales
                 if (!_.isEqual(nuevo, original)) {
                     cambios[key] = dataNueva[key];
                 }
@@ -270,6 +283,7 @@
 
             return cambios;
         };
+
 
 
         public.obtenerCambiosParaPUT = function({
@@ -329,6 +343,11 @@
             dataNueva,
             dataOriginal
         }) {
+
+            console.log("dataNueva", dataNueva);
+            console.log("dataOriginal", dataOriginal);
+
+
             const resultado = {
                 add: [],
                 update: [],

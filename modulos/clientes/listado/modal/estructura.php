@@ -15,7 +15,7 @@
             mode = 0,
             did = 0
         } = {}) {
-            resetModal()
+            await resetModal()
             g_did = did;
             donde = mode
             await globalLlenarSelect.tiendas({
@@ -32,9 +32,9 @@
                 $("#subtitulo_mClientes").text("Creacion de cliente nuevo, completar formulario.");
                 $('.campos_mClientes').prop('disabled', false);
                 $("#btnEditar_mClientes").addClass("ocultar")
-                $("#btnGuardar_mClientes, .forms_mClientes").removeClass("ocultar");
                 renderDirecciones()
                 renderContactos()
+                $("#btnGuardar_mClientes, .ocultarDesdeVer_mClientes").removeClass("ocultar");
                 $("#modal_mClientes").modal("show")
             } else if (mode == 1) {
                 // MODIFICAR CLIENTE
@@ -43,7 +43,7 @@
                 $("#subtitulo_mClientes").text("Modificacion de cliente existente, completar formulario.");
                 $('.campos_mClientes').prop('disabled', false);
                 $("#btnGuardar_mClientes").addClass("ocultar")
-                $("#btnEditar_mClientes, .forms_mClientes").removeClass("ocultar");
+                $("#btnEditar_mClientes, .ocultarDesdeVer_mClientes").removeClass("ocultar");
                 await get()
             } else {
                 // VER CLIENTE
@@ -51,7 +51,7 @@
                 $("#titulo_mClientes").text("Ver cliente");
                 $("#subtitulo_mClientes").text("Visualizacion de cliente, no se puede modificar.");
                 $('.campos_mClientes').prop('disabled', true);
-                $("#btnGuardar_mClientes, #btnEditar_mClientes, .forms_mClientes").addClass("ocultar");
+                $("#btnGuardar_mClientes, #btnEditar_mClientes, .ocultarDesdeVer_mClientes").addClass("ocultar");
                 await get()
             }
 
@@ -70,13 +70,23 @@
                     $("#estado_mClientes").val(g_data.habilitado || "0");
                     $("#observacion_mClientes").val(g_data.observaciones || "");
                     g_tiendas = g_data.cuentas || []
-                    g_tiendas.forEach(tienda => {
-                        appModalClientes.renderTienda(tienda.tipo, tienda.titulo, tienda.data, tienda.did);
-                    });
+                    if (g_tiendas.length > 0) {
+                        g_tiendas.forEach(tienda => {
+                            appModalClientes.renderTienda(tienda.flex, tienda.titulo, tienda.data, tienda.did);
+                        });
+                    }
                     g_direcciones = g_data.direcciones || []
                     renderDirecciones();
                     g_contactos = g_data.contactos || [];
                     renderContactos();
+
+                    if (donde == 2) {
+                        $('.campos_mClientes').prop('disabled', true);
+                        $(".ocultarDesdeVer_mClientes").addClass("ocultar")
+                    } else {
+                        $(".ocultarDesdeVer_mClientes").removeClass("ocultar")
+                    }
+
                     $("#modal_mClientes").modal("show")
                 }
             });
@@ -88,7 +98,8 @@
             })
 
             $(".campos_mClientes").val("")
-            $(".contenedoresExtras_mClientes").html("");
+            $("#mensajeCuentas_mClientes").removeClass("ocultar");
+            $("#contenedorTiendas_mClientes").empty();
             $(".btnAgregar_mClientes").prop("disabled", true);
             $("#estado_mClientes").val("1");
 
@@ -107,11 +118,12 @@
             $("#btnAgregarTienda_mClientes").prop("disabled", $("#tienda_mClientes").val() == "");
         };
 
-        public.renderTienda = function(tipo, titulo = "", data = {}, did = 0) {
+        public.renderTienda = function(flex, titulo = "", data = {}, did = 0) {
+            $("#mensajeCuentas_mClientes").addClass("ocultar")
             $("#btnAgregarTienda_mClientes").prop("disabled", true)
 
-            idUnico = `tienda_${tipo}_${Date.now()}`;
-            tipo = tipo || $("#tienda_mClientes").val()
+            idUnico = `tienda_${flex}_${Date.now()}`;
+            flex = flex || $("#tienda_mClientes").val()
             if (typeof data == 'string') {
                 data = JSON.parse(data);
             }
@@ -176,20 +188,20 @@
 
             $("#tienda_mClientes").val("")
 
-            tienda = tiendas[tipo];
+            tienda = tiendas[flex];
             if (!tienda) return '';
             vinculado = data.ml_user;
 
             let buffer = '';
-            buffer += `<div class="col-12 border rounded-5 card p-5" id="${idUnico}" data-tipo="${tipo}" data-did="${did}">`;
+            buffer += `<div class="col-12 border rounded-5 card p-5" id="${idUnico}" data-flex="${flex}" data-did="${did}">`;
             buffer += `<div class="row">`
             buffer += `<div class="d-flex align-items-center justify-content-between mb-3">`;
 
             buffer += `<div class="d-flex align-items-center justify-content-between gap-3">`;
-            buffer += `<div class="containerSvg" style="width: 50px; height: auto;">${logosTiendas[tipo]}</div>`
+            buffer += `<div class="containerSvg" style="width: 50px; height: auto;">${logosTiendas[flex]}</div>`
             buffer += `<h6 class="mb-0">${tienda.nombre}</h6>`;
 
-            if (tipo == 1 || tipo == 2) {
+            if (flex == 1 || flex == 2) {
                 if (donde == 0 && did == 0) {
                     buffer += `<span class="badge rounded-pill bg-label-warning">Debes hacer la vinculacion despues de crear el cliente</i></span>`;
                 } else {
@@ -202,8 +214,8 @@
             if (donde != 2) {
                 buffer += `<div class="d-flex align-items-center justify-content-between gap-3">`;
 
-                if (donde != 0 && (tipo == 1 || tipo == 2)) {
-                    urlVinculacion = `https://cuentasarg.lightdata.com.ar/${tipo == 1 ? "syncml.php" : "synctn.php"}`;
+                if (donde != 0 && (flex == 1 || flex == 2)) {
+                    urlVinculacion = `https://cuentasarg.lightdata.com.ar/${flex == 1 ? "syncml.php" : "synctn.php"}`;
 
                     url = vinculado ? "javascript:void(0)" : urlVinculacion;
                     target = vinculado ? "" : `target="_blank"`;
@@ -231,13 +243,11 @@
             tienda.campos.forEach(campo => {
                 valor = data[campo.key] || '';
 
-                if (tipo == 1 || tipo == 2) {
-                    if (donde != 0) {
-                        buffer += `<div class="col-12 form-floating form-floating-outline">`;
-                        buffer += `<input type="text" class="form-control" placeholder="${valor ? campo.placeholder : "Debe hacer la vinculacion" }" value="${valor}" name="${campo.key}" disabled />`;
-                        buffer += `<label>${campo.label}</label>`;
-                        buffer += `</div>`;
-                    }
+                if (flex == 1 || flex == 2) {
+                    buffer += `<div class="col-12 form-floating form-floating-outline ${donde == 0 ? "ocultar" : ""}">`;
+                    buffer += `<input type="text" class="form-control" placeholder="${valor ? campo.placeholder : "Debe hacer la vinculacion" }" value="${valor}" name="${campo.key}" disabled />`;
+                    buffer += `<label>${campo.label}</label>`;
+                    buffer += `</div>`;
                 } else {
                     buffer += `<div class="col-12 form-floating form-floating-outline">`;
                     buffer += `<input type="text" class="form-control" placeholder="${campo.placeholder}" value="${valor}" name="${campo.key}" ${donde == 2 ? "disabled" : ""}/>`;
@@ -263,7 +273,7 @@
             const tiendasFinales = [];
 
             $("#contenedorTiendas_mClientes > div").each(function() {
-                const tipo = $(this).data("tipo");
+                const flex = $(this).data("flex");
                 const did = $(this).data("did");
 
                 const inputs = $(this).find("input");
@@ -282,14 +292,16 @@
                 });
 
                 tiendasFinales.push({
-                    tipo,
+                    flex,
                     did,
                     titulo,
-                    data
+                    data,
+                    ml_id_vendedor: "",
+                    ml_user: ""
                 });
             });
 
-            g_tiendas = tiendasFinales;
+            return tiendasFinales;
         }
 
         function renderDirecciones() {
@@ -325,7 +337,7 @@
                 contactos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formContactos_mClientes"
                 }),
-                cuentas: g_tiendas,
+                cuentas: obtenerTiendasParaGuardar(),
             };
 
             globalValidar.formRepeater({
@@ -377,7 +389,7 @@
                 contactos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formContactos_mClientes"
                 }),
-                cuentas: g_tiendas,
+                cuentas: obtenerTiendasParaGuardar(),
             };
 
             globalValidar.formRepeater({
@@ -412,26 +424,27 @@
                 return;
             }
 
-            if (datosModificados.direcciones && datosModificados.direcciones.length > 0) {
-                datosNuevos.direcciones = globalValidar.obtenerCambiosEnArray({
-                    dataNueva: datosModificados.direcciones,
-                    dataOriginal: g_direcciones
-                })
-            }
+            datosNuevos.direcciones = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.direcciones,
+                dataOriginal: g_direcciones
+            })
 
-            if (datosModificados.contactos && datosModificados.contactos.length > 0) {
-                datosNuevos.contactos = globalValidar.obtenerCambiosEnArray({
-                    dataNueva: datosModificados.contactos,
-                    dataOriginal: g_contactos
-                })
-            }
+            datosNuevos.contactos = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.contactos,
+                dataOriginal: g_contactos
+            })
+
+            datosNuevos.cuentas = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.cuentas,
+                dataOriginal: g_tiendas
+            })
 
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de modificar este cliente?"
                 })
                 .then(function(confirmado) {
                     if (confirmado) {
-                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosModificados, {
+                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
                             onSuccess: function(result) {
                                 $("#modal_mClientes").modal("hide");
                                 globalSweetalert.exito();
