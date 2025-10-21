@@ -211,8 +211,6 @@
             dataNueva,
             dataOriginal
         }) {
-
-            // Normaliza fechas a ISO sin zona horaria
             function normalizarFecha(valor) {
                 if (!valor) return null;
                 try {
@@ -222,7 +220,6 @@
                 }
             }
 
-            // Normaliza tipos: convierte numbers a string y did a string
             function normalizarTipos(obj) {
                 if (Array.isArray(obj)) {
                     return obj.map(normalizarTipos);
@@ -240,7 +237,6 @@
                 return obj;
             }
 
-            // Ordena las propiedades de un objeto para que la comparación no dependa del orden
             function ordenarPropiedades(obj) {
                 if (Array.isArray(obj)) return obj.map(ordenarPropiedades);
                 if (obj && typeof obj === "object") {
@@ -252,7 +248,6 @@
                 return obj;
             }
 
-            // Normalizar y ordenar
             const dataNuevaNorm = ordenarPropiedades(normalizarTipos(dataNueva));
             const dataOriginalNorm = ordenarPropiedades(normalizarTipos(dataOriginal));
 
@@ -262,20 +257,17 @@
                 let nuevo = dataNuevaNorm[key];
                 let original = dataOriginalNorm[key];
 
-                // Ordenar arrays de objetos para comparar sin depender del orden
                 if (Array.isArray(nuevo) && Array.isArray(original)) {
                     nuevo = _.sortBy(nuevo, obj => JSON.stringify(obj));
                     original = _.sortBy(original, obj => JSON.stringify(obj));
                 }
 
-                // Normalizar fechas si la clave tiene fecha/hora
                 if (typeof nuevo === "string" && typeof original === "string" &&
                     (key.toLowerCase().includes("fecha") || key.toLowerCase().includes("hora"))) {
                     nuevo = normalizarFecha(nuevo);
                     original = normalizarFecha(original);
                 }
 
-                // Detectar cambios reales
                 if (!_.isEqual(nuevo, original)) {
                     cambios[key] = dataNueva[key];
                 }
@@ -343,11 +335,6 @@
             dataNueva,
             dataOriginal
         }) {
-
-            console.log("dataNueva", dataNueva);
-            console.log("dataOriginal", dataOriginal);
-
-
             const resultado = {
                 add: [],
                 update: [],

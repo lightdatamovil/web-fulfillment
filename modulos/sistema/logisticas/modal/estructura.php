@@ -215,12 +215,10 @@
                 return;
             }
 
-            if (datosModificados.direcciones && datosModificados.direcciones.length > 0) {
-                datosNuevos.direcciones = globalValidar.obtenerCambiosEnArray({
-                    dataNueva: datosModificados.direcciones,
-                    dataOriginal: g_direcciones
-                })
-            }
+            datosNuevos.direcciones = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.direcciones,
+                dataOriginal: g_direcciones
+            })
 
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de modificar esta logistica?"

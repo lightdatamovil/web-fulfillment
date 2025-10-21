@@ -157,13 +157,10 @@
                 return;
             }
 
-            let clientesUpdateados = {}
-            if (datosModificados.clientes_dids) {
-                clientesUpdateados = globalValidar.obtenerCambiosEnArray({
-                    dataNueva: datosModificados.clientes_dids,
-                    dataOriginal: g_data.clientes_dids
-                })
-            }
+            let clientesUpdateados = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.clientes_dids,
+                dataOriginal: g_data.clientes_dids
+            })
 
             datosNuevos.clientes_dids = clientesUpdateados
 

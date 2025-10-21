@@ -355,13 +355,10 @@
                 return;
             }
 
-            let categoriasUpdateadas = {}
-            if (datosModificados.categorias && datosModificados.categorias.length > 0) {
-                categoriasUpdateadas = globalValidar.obtenerCambiosEnArray({
-                    dataNueva: datosModificados.categorias.map((item) => item.did_categoria),
-                    dataOriginal: g_data.categorias.map((item) => item.did_categoria)
-                })
-            }
+            let categoriasUpdateadas = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.categorias.map((item) => item.did_categoria),
+                dataOriginal: g_data.categorias.map((item) => item.did_categoria)
+            })
 
             datosNuevos.categorias = categoriasUpdateadas
 
