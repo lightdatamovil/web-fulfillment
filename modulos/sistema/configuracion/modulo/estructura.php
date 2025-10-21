@@ -5,29 +5,38 @@
 
         const public = {};
 
-        public.open = function() {
+        public.open = async function() {
             $(".winapp").hide();
-            globalLoading.open();
-            get();
-            setTimeout(() => {
-                globalLoading.close();
-            }, 200);
+            await get();
             $("#modulo_configuracion").show();
         };
 
         function get() {
+            globalRequest.get(`/${rutaAPI}`, {
+                onSuccess: function(result) {
+                    g_data = result.data;
+                    completarDatos()
+
+                    $.post('modulos/configuracion/controlador.php', {
+                        modo_trabajo: g_data.modo_trabajo
+                    });
+                }
+            });
+        }
+
+        function completarDatos() {
             g_data = {
+                ...g_data,
                 nombreEmpresa: "<?php echo $_SESSION["nombreEmpresa"]; ?>",
                 codEmpresa: "<?php echo $_SESSION["codEmpresa"]; ?>",
                 logoEmpresa: "<?php echo $_SESSION["logoEmpresa"]; ?>",
-                modoTrabajoEmpresa: appSistema.modoDeTrabajoEmpresa,
             };
 
             $("#nombreFantasia_configuracion").html(g_data.nombreEmpresa);
             $("#razonSocial_configuracion").html(g_data.nombreEmpresa);
 
             $('input[name="modoDeTrabajo_configuracion"]').closest('.custom-option').removeClass('checked');
-            $(`input[name="modoDeTrabajo_configuracion"][value="${g_data.modoTrabajoEmpresa}"]`)
+            $(`input[name="modoDeTrabajo_configuracion"][value="${g_data.modo_trabajo}"]`)
                 .prop('checked', true)
                 .closest('.custom-option')
                 .addClass('checked');
@@ -48,10 +57,8 @@
 
         public.cambiarModoDeTrabajo = function(radio) {
             const datosNuevos = {
-                modoTrabajo: $(radio).val() * 1
+                modo_trabajo: $(radio).val() * 1
             };
-
-            console.log(datosNuevos);
 
             globalSweetalert.confirmar({
                     titulo: "¿Estás seguro de modificar el modo de trabajo?"
@@ -63,14 +70,15 @@
 
                         globalRequest.put(`/${rutaAPI}/toggle-modo-trabajo`, datosNuevos, {
                             onSuccess: function(result) {
-                                globalSweetalert.exito();
-                                g_data.modoTrabajoEmpresa = datosNuevos.modoTrabajo;
-                                appSistema.modoDeTrabajoEmpresa = datosNuevos.modoTrabajo;
+                                globalSweetalert.exito({
+                                    titulo: "Modo de trabajo modificado con éxito."
+                                });
+                                get()
                             }
                         });
                     } else {
                         $('input[name="modoDeTrabajo_configuracion"]').closest('.custom-option').removeClass('checked');
-                        $(`input[name="modoDeTrabajo_configuracion"][value="${g_data.modoTrabajoEmpresa}"]`)
+                        $(`input[name="modoDeTrabajo_configuracion"][value="${g_data.modo_trabajo}"]`)
                             .prop('checked', true)
                             .closest('.custom-option')
                             .addClass('checked');
