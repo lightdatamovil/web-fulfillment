@@ -338,7 +338,7 @@
             if (
                 Array.isArray(dataNueva) &&
                 Array.isArray(dataOriginal) &&
-                (typeof dataNueva[0] === "number" || typeof dataNueva[0] === "string")
+                (typeof dataNueva[0] === "number" || typeof dataNueva[0] === "string" || typeof dataOriginal[0] === "number" || typeof dataOriginal[0] === "string")
             ) {
                 const setNueva = new Set(dataNueva);
                 const setOriginal = new Set(dataOriginal);
@@ -399,6 +399,9 @@
                     resultado.remove.push(objOriginal.did);
                 }
             }
+
+            console.log("resultado", resultado);
+
 
             return resultado;
         };

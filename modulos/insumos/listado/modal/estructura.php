@@ -125,8 +125,6 @@
         };
 
         public.editar = function() {
-            console.log("ENTREEEEE");
-
             const datosNuevos = {
                 codigo: $("#codigo_mInsumos").val().trim() || null,
                 nombre: $("#nombre_mInsumos").val().trim() || null,
@@ -147,9 +145,7 @@
                 return;
             }
 
-            console.log(datosNuevos, g_data);
-
-            const datosModificados = globalValidar.obtenerCambiosParaPUT({
+            const datosModificados = globalValidar.obtenerCambios({
                 dataNueva: datosNuevos,
                 dataOriginal: g_data
             });
@@ -161,12 +157,22 @@
                 return;
             }
 
+            let clientesUpdateados = {}
+            if (datosModificados.clientes_dids) {
+                clientesUpdateados = globalValidar.obtenerCambiosEnArray({
+                    dataNueva: datosModificados.clientes_dids,
+                    dataOriginal: g_data.clientes_dids
+                })
+            }
+
+            datosNuevos.clientes_dids = clientesUpdateados
+
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de modificar este insumo?"
                 })
                 .then(function(confirmado) {
                     if (confirmado) {
-                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosModificados, {
+                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
                             onSuccess: function(result) {
                                 $("#modal_mInsumos").modal("hide");
                                 globalSweetalert.exito();

@@ -1,5 +1,5 @@
 <div class="modal fade" id="modal_mInsumos" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-simple">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-simple">
         <div class="modal-content">
 
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -26,7 +26,7 @@
                     </ul>
                 </div>
 
-                <div class="tab-content p-0">
+                <div class="tab-content h-auto p-0">
                     <div class="tab-pane fade show active" id="tabGeneral_mInsumos" role="tabpanel">
                         <form class="row g-5 align-items-baseline" onsubmit="return false">
                             <div class="col-12 col-md-12 col-lg-3">

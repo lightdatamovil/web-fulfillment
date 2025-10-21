@@ -6,6 +6,7 @@
         usernameUser: localStorage.getItem("usernameUser"),
         perfilUser: localStorage.getItem("perfilUser") * 1,
         nombreEmpresa: "<?php echo $_SESSION["nombreEmpresa"]; ?>",
+        modoDeTrabajoEmpresa: "<?php echo $_SESSION["modoTrabajoEmpresa"]; ?>",
         urlServer: "https://ffull.lightdata.app/api",
         authToken: localStorage.getItem("authToken"),
         productos: [],
