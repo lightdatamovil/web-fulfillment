@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modal_mProductos" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-xl modal-simple">
         <div class="modal-content">
 
@@ -42,10 +42,10 @@
                                 class="nav-link"
                                 role="tab"
                                 data-bs-toggle="tab"
-                                data-bs-target="#tabVariantes_mProductos"
-                                aria-controls="tabVariantes_mProductos"
+                                data-bs-target="#tabCurvas_mProductos"
+                                aria-controls="tabCurvas_mProductos"
                                 aria-selected="false">
-                                <span class="d-none d-sm-block"><i class="tf-icons ri-palette-line me-2"></i>Variantes</span>
+                                <span class="d-none d-sm-block"><i class="tf-icons ri-palette-line me-2"></i>Curvas</span>
                                 <i class="ri-palette-line ri-20px d-sm-none"></i>
                             </button>
                         </li>
@@ -83,7 +83,7 @@
                         <form class="row g-5" onsubmit="return false">
                             <div class="col-12 col-md-12 col-lg-6">
                                 <div class="form-floating form-floating-outline">
-                                    <select id="cliente_mProductos" class="form-select campos_mProductos camposObli_mProductos" onchange="appProducto.renderEcommerce()"></select>
+                                    <select id="cliente_mProductos" class="form-select campos_mProductos camposObli_mProductos" onchange="appModalProductos.renderEcommerce()"></select>
                                     <label for="cliente_mProductos">Cliente</label>
                                     <div class="invalid-feedback"> Debe seleccionar uno</div>
                                 </div>
@@ -98,7 +98,7 @@
 
                             <div class="col-12 col-md-12 col-lg-6">
                                 <div class="row g-5">
-                                    <!-- <div class="col-12">
+                                    <div class="col-12">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" id="sku_mProductos" class="form-control campos_mProductos camposObli_mProductos" placeholder="SKU" />
                                             <label for="sku_mProductos">SKU</label>
@@ -111,7 +111,7 @@
                                             <label for="ean_mProductos">EAN</label>
                                             <div class="invalid-feedback"> Debe completar el campo </div>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <div class="col-12 col-md-6">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" id="posicion_mProductos" class="form-control campos_mProductos" placeholder="Posicion" />
@@ -121,7 +121,7 @@
 
                                     <div class="col-12 col-md-6">
                                         <div class="form-floating form-floating-outline">
-                                            <select id="esCombo_mProductos" class="form-select campos_mProductos" onchange="appProducto.mostrarCombos(this)">
+                                            <select id="esCombo_mProductos" class="form-select campos_mProductos" onchange="appModalProductos.mostrarCombos(this)">
                                                 <option value="0" selected>No</option>
                                                 <option value="1">Si</option>
                                             </select>
@@ -131,21 +131,21 @@
 
                                     <div class="col-12 col-md-4">
                                         <div class="form-floating form-floating-outline">
-                                            <input type="number" step="0.1" min="0" id="alto_mProductos" class="form-control campos_mProductos" placeholder="Alto" oninput="appProducto.calcularCm3()" />
+                                            <input type="number" step="0.1" min="0" id="alto_mProductos" class="form-control campos_mProductos" placeholder="Alto" oninput="appModalProductos.calcularCm3()" />
                                             <label for="alto_mProductos">Alto</label>
                                         </div>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <div class="form-floating form-floating-outline">
-                                            <input type="number" step="0.1" min="0" id="ancho_mProductos" class="form-control campos_mProductos" placeholder="Ancho" oninput="appProducto.calcularCm3()" />
+                                            <input type="number" step="0.1" min="0" id="ancho_mProductos" class="form-control campos_mProductos" placeholder="Ancho" oninput="appModalProductos.calcularCm3()" />
                                             <label for="ancho_mProductos">Ancho</label>
                                         </div>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <div class="form-floating form-floating-outline">
-                                            <input type="number" step="0.1" min="0" id="profundo_mProductos" class="form-control campos_mProductos" placeholder="Profundo" oninput="appProducto.calcularCm3()" />
+                                            <input type="number" step="0.1" min="0" id="profundo_mProductos" class="form-control campos_mProductos" placeholder="Profundo" oninput="appModalProductos.calcularCm3()" />
                                             <label for="profundo_mProductos">Profundo</label>
                                         </div>
                                     </div>
@@ -167,62 +167,70 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12">
-                                        <div class="form-floating form-floating-outline">
-                                            <textarea type="text" id="descripcion_mProductos" class="form-control campos_mProductos h-px-100" placeholder="Descripción"></textarea>
-                                            <label for="descripcion_mProductos">Descripción</label>
-                                        </div>
-                                    </div>
 
                                 </div>
                             </div>
-                            <div class="col-12 col-md-12 col-lg-6" id="imagen_mProductos" style="height: 301px;"></div>
+                            <div class="col-12 col-md-12 col-lg-6" id="imagen_mProductos" style="height: 310px;"></div>
+                            <div class="col-12">
+                                <div class="form-floating form-floating-outline">
+                                    <textarea type="text" id="descripcion_mProductos" class="form-control campos_mProductos h-px-100" placeholder="Descripción"></textarea>
+                                    <label for="descripcion_mProductos">Descripción</label>
+                                </div>
+                            </div>
 
 
                         </form>
                     </div>
+
+
 
                     <div class="tab-pane fade" id="tabCombos_mProductos" role="tabpanel">
                         <form class="row g-5 mb-5 align-items-center forms_mProductos" id="formCombos_mProductos" onsubmit="return false">
                             <div class="col-12 col-md-12 col-lg-5">
                                 <div class="form-floating form-floating-outline">
-                                    <select id="producto_combo_mProductos" class="form-select campos_mProductos" onchange="appProducto.habilitarBtnAgregarCombos()"></select>
+                                    <select id="producto_combo_mProductos" class="form-select campos_mProductos" onchange="appModalProductos.habilitarBtnAgregarCombos()"></select>
                                     <label for="producto_combo_mProductos">Producto</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-8 col-lg-5">
                                 <div class="form-floating form-floating-outline">
-                                    <input type="number" id="cantidad_combo_mProductos" value="1" min="1" class="form-control campos_mProductos" placeholder="Valor" onchange="appProducto.habilitarBtnAgregarCombos()" onkeyup="appProducto.habilitarBtnAgregarCombos()" />
+                                    <input type="number" id="cantidad_combo_mProductos" value="1" min="1" class="form-control campos_mProductos" placeholder="Valor" onchange="appModalProductos.habilitarBtnAgregarCombos()" onkeyup="appModalProductos.habilitarBtnAgregarCombos()" />
                                     <label for="cantidad_combo_mProductos">Cantidad</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 col-lg-2">
-                                <button id="btnAgregarCombos_mProductos" class="btn btn-label-success btnAgregar_mProductos w-100" disabled onclick="appProducto.agregarCombos()">Agregar</button>
+                                <button id="btnAgregarCombos_mProductos" class="btn btn-label-success btnAgregar_mProductos w-100" disabled onclick="appModalProductos.agregarCombos()">Agregar</button>
                             </div>
                         </form>
                         <div id="contenedorCombos_mProductos" class="contenedoresExtras_mProductos"></div>
                     </div>
 
-                    <div class="tab-pane fade" id="tabVariantes_mProductos" role="tabpanel">
-                        <form class="row g-5 align-items-center forms_mProductos" id="formVariantes_mProductos" onsubmit="return false">
-                            <p class="text-muted text-center">Agregá variantes a los productos. Si selecciona dos o mas podra crear combinaciones</p>
-                            <div class="col-12 col-md-9">
+
+
+
+                    <div class="tab-pane fade" id="tabCurvas_mProductos" role="tabpanel">
+                        <div class="row g-5 align-items-baseline">
+
+                            <div class="col-12 col-md-12 col-lg-12">
                                 <div class="form-floating form-floating-outline select2-primary">
-                                    <select id="variantes_mProductos" class="select2modal form-select campos_mProductos" multiple onchange="appProducto.habilitarBtnAgregarVariante()"></select>
-                                    <label for="variantes_mProductos">Variantes</label>
+                                    <select id="curvas_mProductos" class="form-select campos_mProductos select2_mProductos" onchange="appModalProductos.generarCurva()"></select>
+                                    <label for="curvas_mProductos">Curvas</label>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-3">
-                                <button id="btnAgregarVariante_mProductos" class="w-100 btn btn-label-success btnAgregar_mProductos w-100" disabled onclick="appProducto.seleccionarVariantes(0)">Seleccionar</button>
-                            </div>
-                            <div id="contenedorSelectValores_mProductos" class="row g-3 align-items-center mt-3 contenedoresExtras_mProductos"></div>
-                        </form>
 
-                        <div id="contenedorListaVariantes_mProductos" class="row g-3 mt-3 contenedoresExtras_mProductos"></div>
+                            <div id="listaValores_mProductos" style="overflow-y:auto">
+                                <div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>
+                            </div>
+
+                        </div>
                     </div>
 
+
+
+
+
                     <div class="tab-pane fade" id="tabEcommerce_mProductos" role="tabpanel">
-                        <p class="text-muted text-center">Asigná SKUs por tienda a cada variante.</p>
+                        <p class="text-muted text-center">Asigná SKUs por tienda a cada curva.</p>
 
                         <div id="contenedorEcommerce_mProductos" class="contenedoresExtras_mProductos"></div>
                     </div>
@@ -231,13 +239,13 @@
                         <form class="row g-5 mb-5 align-items-center forms_mProductos" id="formInsumos_mProductos" onsubmit="return false">
                             <div class="col-12 col-md-12 col-lg-5">
                                 <div class="form-floating form-floating-outline">
-                                    <select id="nombre_insumo_mProductos" class="form-select campos_mProductos" onchange="appProducto.habilitarBtnAgregarInsumo()"></select>
+                                    <select id="nombre_insumo_mProductos" class="form-select campos_mProductos" onchange="appModalProductos.habilitarBtnAgregarInsumo()"></select>
                                     <label for="nombre_insumo_mProductos">Insumo</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 col-lg-3">
                                 <div class="form-floating form-floating-outline">
-                                    <input type="number" step="0.1" min="0" value="0" id="cantidad_insumo_mProductos" class="form-control campos_mProductos" placeholder="Cantidad" oninput="appProducto.habilitarBtnAgregarInsumo()" />
+                                    <input type="number" step="0.1" min="0" value="0" id="cantidad_insumo_mProductos" class="form-control campos_mProductos" placeholder="Cantidad" oninput="appModalProductos.habilitarBtnAgregarInsumo()" />
                                     <label for="cantidad_insumo_mProductos">Cantidad</label>
                                 </div>
                             </div>
@@ -249,7 +257,7 @@
                             </div>
 
                             <div class="col-12 col-md-4 col-lg-2">
-                                <button id="btnAgregarInsumos_mProductos" class="btn btn-label-success btnAgregar_mProductos w-100" disabled onclick="appProducto.agregarInsumo()">Agregar</button>
+                                <button id="btnAgregarInsumos_mProductos" class="btn btn-label-success btnAgregar_mProductos w-100" disabled onclick="appModalProductos.agregarInsumo()">Agregar</button>
                             </div>
                         </form>
                         <div id="contenedorInsumos_mProductos" class="contenedoresExtras_mProductos"></div>
@@ -259,7 +267,7 @@
                 <div class="col-12 mt-7">
                     <div class="row justify-content-end g-3">
                         <div class="col-12 col-md-6 col-lg-3">
-                            <button type="submit" class="btn btn-success w-100" id="btnGuardar_mProductos" onclick="appProducto.guardar()">Guardar</button>
+                            <button type="submit" class="btn btn-success w-100" id="btnGuardar_mProductos" onclick="appModalProductos.guardar()">Guardar</button>
                         </div>
                         <div class="col-12 col-md-6 col-lg-2">
                             <button type="reset" class="btn btn-outline-danger w-100" data-bs-dismiss="modal">Cerrar</button>

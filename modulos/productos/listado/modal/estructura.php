@@ -1,5 +1,5 @@
 <script>
-    const appProducto = (function() {
+    const appModalProductos = (function() {
         let g_did = 0;
         let g_data;
         let donde = 0;
@@ -7,44 +7,61 @@
         let g_ecommerce = [];
         let g_ecommerce_bd = []
         let g_insumos = []
-        let variantesSeleccionadas = []
+        let curvasSeleccionadas = []
         let logosTiendas = {}
+        let g_columnas_curvas = []
         let eanIguales = true
-        let g_variantes = {
+        let g_curvas = {
             did: 0,
             data: []
         };
 
-        public = {};
+        const rutaAPI = "productos"
 
-        public.open = function(type, did) {
-            resetModal()
+        const public = {};
+
+        public.open = async function({
+            mode = 0,
+            did = 0
+        } = {}) {
+            await resetModal()
             g_did = did;
-            donde = type
-            globalLlenarSelect.variantes("variantes_mProductos", true)
-            globalLlenarSelect.clientes("cliente_mProductos")
-            globalLlenarSelect.insumos("nombre_insumo_mProductos")
-            globalLlenarSelect.productos("producto_combo_mProductos")
+            donde = mode
 
-            logosTiendas = globalLogoTiendas.obtener()
+            await globalLlenarSelect.curvas({
+                id: "curvas_mProductos",
+                multiple: true
+            })
+            $("#curvas_mProductos").prepend('<option value="" selected>Sin curva</option>');
 
-            globalActivarAcciones.mostrarOcultarTab("tabCombos_mProductos", 0)
-            if (type == 0) {
+            await globalLlenarSelect.clientes({
+                id: "cliente_mProductos"
+            })
+            await globalLlenarSelect.insumos({
+                id: "nombre_insumo_mProductos"
+            })
+            await globalLlenarSelect.productos({
+                id: "producto_combo_mProductos"
+            })
+
+            logosTiendas = await globalLogoTiendas.obtener()
+
+            if (mode == 0) {
                 // NUEVO PRODUCTO
                 $("#titulo_mProductos").text("Nuevo producto");
                 $("#subtitulo_mProductos").text("Creacion de producto nuevo, completar formulario.");
                 $('.campos_mProductos').prop('disabled', false);
                 $("#btnGuardar_mProductos, .forms_mProductos").removeClass("ocultar");
                 globalInputImg.crear("imagen_mProductos")
-                $("#modalProducto").modal("show")
-            } else if (type == 1) {
+                $("#modal_mProductos").modal("show")
+            } else if (mode == 1) {
                 // MODIFICAR PRODUCTO
                 globalLoading.open()
                 $("#titulo_mProductos").text("Modificar producto");
                 $("#subtitulo_mProductos").text("Modificacion de producto existente, completar formulario.");
                 $('.campos_mProductos').prop('disabled', false);
                 $("#btnGuardar_mProductos, .forms_mProductos").removeClass("ocultar");
-                getProducto()
+                get()
             } else {
                 // VER PRODUCTO
                 globalLoading.open()
@@ -52,70 +69,66 @@
                 $("#subtitulo_mProductos").text("Visualizacion de producto, no se puede modificar.");
                 $('.campos_mProductos').prop('disabled', true);
                 $("#btnGuardar_mProductos, .forms_mProductos").addClass("ocultar");
-                getProducto()
+                get()
             }
+
+            await globalActivarAcciones.mostrarOcultarTab({
+                tab: "tabCombos_mProductos",
+                opcion: 0
+            })
+
+            await globalActivarAcciones.select2({
+                className: "select2_mProductos"
+            })
         }
 
-        function getProducto() {
-            parametros = {
-                idEmpresa: appSistema.idEmpresa,
-                did: g_did
-            };
-
-            $.ajax({
-                url: `${appSistema.urlServer}/producto/getProductoById`,
-                type: "POST",
-                data: parametros,
-                headers: {
-                    Authorization: `Bearer ${appSistema.tkn}`
-                },
-                success: function(result) {
-                    if (result.estado && result.data) {
-                        g_data = result.data;
-                        $("#cliente_mProductos").val(g_data.cliente);
-                        $("#nombre_mProductos").val(g_data.titulo);
-                        // $("#sku_mProductos").val(g_data.sku);
-                        // $("#ean_mProductos").val(g_data.ean);
-                        globalInputImg.crear("imagen_mProductos", g_data.imagen)
-                        $("#posicion_mProductos").val(g_data.posicion);
-                        $("#alto_mProductos").val(g_data.alto);
-                        $("#ancho_mProductos").val(g_data.ancho);
-                        $("#profundo_mProductos").val(g_data.profundo);
-                        $("#cm3_mProductos").val(g_data.cm3);
-                        $("#esCombo_mProductos").val(g_data.esCombo).change();
-                        $("#estado_mProductos").val(g_data.estado);
-                        $("#descripcion_mProductos").val(g_data.descripcion);
-                        g_ecommerce = g_data.ecommerce || []
-                        g_ecommerce_bd = g_data.ecommerce || []
-                        appProducto.renderEcommerce()
-                        g_combos = g_data.combos || [];
-                        renderCombos();
-                        g_variantes = g_data.variantes.length > 0 ? g_data.variantes[0] : {
-                            did: 0,
-                            data: []
-                        };
-                        variantesSeleccionadas = g_data?.variantes[0]?.data?.length > 0 ? Object.keys(g_data.variantes[0].data[0]) : [];
-                        appProducto.seleccionarVariantes(1)
-                        renderVariantes();
-                        g_insumos = g_data.insumos || []
-                        renderInsumos()
-                        globalLoading.close()
-                        $("#modalProducto").modal("show")
-                    }
-                },
-                error: function(xhr) {
-                    console.log("Error", xhr.responseText);
+        function get() {
+            globalRequest.get(`/${rutaAPI}/${g_did}`, {
+                onSuccess: function(result) {
+                    g_data = result.data;
+                    $("#cliente_mProductos").val(g_data.cliente);
+                    $("#nombre_mProductos").val(g_data.titulo);
+                    // $("#sku_mProductos").val(g_data.sku);
+                    // $("#ean_mProductos").val(g_data.ean);
+                    globalInputImg.crear("imagen_mProductos", g_data.imagen)
+                    $("#posicion_mProductos").val(g_data.posicion);
+                    $("#alto_mProductos").val(g_data.alto);
+                    $("#ancho_mProductos").val(g_data.ancho);
+                    $("#profundo_mProductos").val(g_data.profundo);
+                    $("#cm3_mProductos").val(g_data.cm3);
+                    $("#esCombo_mProductos").val(g_data.esCombo).change();
+                    $("#estado_mProductos").val(g_data.estado);
+                    $("#descripcion_mProductos").val(g_data.descripcion);
+                    g_ecommerce = g_data.ecommerce || []
+                    g_ecommerce_bd = g_data.ecommerce || []
+                    appModalProductos.renderEcommerce()
+                    g_combos = g_data.combos || [];
+                    renderCombos();
+                    g_curvas = g_data.curvas.length > 0 ? g_data.curvas[0] : {
+                        did: 0,
+                        data: []
+                    };
+                    curvasSeleccionadas = g_data?.curvas[0]?.data?.length > 0 ? Object.keys(g_data.curvas[0].data[0]) : [];
+                    appModalProductos.seleccionarCurvas(1)
+                    renderCurvas();
+                    g_insumos = g_data.insumos || []
                     globalLoading.close()
-                    globalSweetalert.error()
+                    $("#modal_mProductos").modal("show")
                 }
             });
         }
 
         public.mostrarCombos = function(select) {
             if (select.value == 1) {
-                globalActivarAcciones.mostrarOcultarTab("tabCombos_mProductos", 1)
+                globalActivarAcciones.mostrarOcultarTab({
+                    id: "tabCombos_mProductos",
+                    opcion: 1
+                })
             } else {
-                globalActivarAcciones.mostrarOcultarTab("tabCombos_mProductos", 0)
+                globalActivarAcciones.mostrarOcultarTab({
+                    id: "tabCombos_mProductos",
+                    opcion: 0
+                })
             }
         }
 
@@ -133,12 +146,14 @@
         };
 
         function resetModal() {
-            globalActivarAcciones.activarPrimerTab("tabs_mProductos")
+            globalActivarAcciones.activarPrimerTab({
+                tabList: "tabs_mProductos"
+            })
 
             $(".campos_mProductos").val("")
             $(".contenedoresExtras_mProductos").html("");
             $(".btnAgregar_mProductos").prop("disabled", true);
-            $('#variantes_mProductos').val(null).trigger('change');
+            $('#curvas_mProductos').val(null).trigger('change');
 
             $("#esCombo_mProductos").val("0");
             $("#estado_mProductos").val("1");
@@ -147,7 +162,7 @@
 
             g_data = {}
             g_combos = [];
-            g_variantes = {
+            g_curvas = {
                 did: 0,
                 data: []
             };
@@ -155,101 +170,64 @@
             g_insumos = [];
 
             globalValidar.limpiarTodas()
-            globalValidar.deshabilitarTiempoReal("camposObli_mProductos")
-        };
-
-        function validacion() {
-            return globalValidar.obligatorios("camposObli_mProductos")
-        }
-
-        public.guardar = function() {
-            const cliente = $("#cliente_mProductos").val();
-            const titulo = $("#nombre_mProductos").val();
-            // const sku = $("#sku_mProductos").val().trim();
-            // const ean = $("#ean_mProductos").val().trim();
-            const posicion = $("#posicion_mProductos").val().trim();
-            const alto = $("#alto_mProductos").val().trim();
-            const ancho = $("#ancho_mProductos").val().trim();
-            const profundo = $("#profundo_mProductos").val().trim();
-            const cm3 = $("#cm3_mProductos").val().trim();
-            const esCombo = $("#esCombo_mProductos").val();
-            const habilitado = $("#estado_mProductos").val();
-            // const imagen = globalInputImg.obtener("imagen_mProductos");
-            const descripcion = $("#descripcion_mProductos").val().trim();
-            base64 = globalInputImg.obtener("imagen_mProductos")
-            console.log("base64", base64);
-
-            const datos = {
-                idEmpresa: appSistema.idEmpresa,
-                did: g_did || 0,
-                cliente,
-                titulo,
-                // sku,
-                // ean,
-                alto,
-                ancho,
-                profundo,
-                cm3,
-                esCombo,
-                habilitado,
-                // imagen,
-                descripcion,
-                posicion,
-                combos: g_combos,
-                variantes: g_variantes,
-                ecommerce: appProducto.obtenerDatosEcommerce(),
-                insumos: g_insumos
-            };
-
-            globalValidar.habilitarTiempoReal("camposObli_mProductos", validacion)
-
-            if (validacion()) {
-                globalSweetalert.alert("Verifique los campos")
-                return
-            }
-
-            globalSweetalert.confirmar("¿Estas seguro de guardar este producto?").then(function(confirmado) {
-                if (confirmado) {
-                    globalLoading.open()
-                    $.ajax({
-                        url: `${appSistema.urlServer}/producto/postProducto`,
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(datos),
-                        headers: {
-                            Authorization: `Bearer ${appSistema.tkn}`
-                        },
-                        success: function(result) {
-                            if (result.estado) {
-                                globalLoading.close()
-                                $("#modalProducto").modal("hide")
-                                globalSweetalert.exito()
-                                appSistema.cargarProductos()
-                                appProductosListado.getListado();
-                            } else {
-                                globalLoading.close()
-                                globalSweetalert.alert(result.message)
-                            }
-                        },
-                        error: function(xhr) {
-                            console.log("Error al guardar", xhr.responseText);
-                            globalLoading.close()
-                            globalSweetalert.error()
-                        }
-                    });
-
-                }
+            globalValidar.deshabilitarTiempoReal({
+                className: "camposObli_mProductos"
             })
         };
 
-        public.habilitarBtnAgregarVariante = function() {
-            seleccion = $("#variantes_mProductos").val()
+        function validacion() {
+            return globalValidar.obligatorios({
+                className: "camposObli_mProductos"
+            })
+        }
 
-            if (seleccion.length < 1) {
-                $("#btnAgregarVariante_mProductos").prop("disabled", true)
-            } else {
-                $("#btnAgregarVariante_mProductos").prop("disabled", false)
+        public.guardar = function() {
+            const datos = {
+                cliente: $("#cliente_mProductos").val(),
+                titulo: $("#nombre_mProductos").val(),
+                // sku: $("#sku_mProductos").val().trim(),
+                // ean: $("#ean_mProductos").val().trim(),
+                alto: $("#alto_mProductos").val().trim(),
+                ancho: $("#ancho_mProductos").val().trim(),
+                profundo: $("#profundo_mProductos").val().trim(),
+                cm3: $("#cm3_mProductos").val().trim(),
+                esCombo: $("#esCombo_mProductos").val(),
+                habilitado: $("#estado_mProductos").val(),
+                // imagen: globalInputImg.obtener("imagen_mProductos"),
+                descripcion: $("#descripcion_mProductos").val().trim(),
+                posicion: $("#posicion_mProductos").val().trim(),
+                combos: g_combos,
+                curvas: g_curvas,
+                ecommerce: appModalProductos.obtenerDatosEcommerce(),
+                insumos: g_insumos
+            };
+
+            globalValidar.habilitarTiempoReal({
+                className: "camposObli_mProductos",
+                callback: validacion
+            })
+
+            if (validacion()) {
+                globalSweetalert.alert({
+                    titulo: "Verifique los campos"
+                })
+                return
             }
+
+            globalSweetalert.confirmar({
+                    titulo: "¿Estas seguro de guardar este producto?"
+                })
+                .then(function(confirmado) {
+                    if (confirmado) {
+                        globalRequest.post(`/${rutaAPI}`, datos, {
+                            onSuccess: function(result) {
+                                $("#modal_mProductos").modal("hide");
+                                globalSweetalert.exito();
+                                appModulosProductos.getListado();
+                            }
+                        });
+                    }
+                });
         };
 
         public.habilitarBtnAgregarValor = function() {
@@ -266,129 +244,80 @@
             }
         };
 
-        public.seleccionarVariantes = function(type) {
-            if (type == 0) {
-                $("#contenedorSelectValores_mProductos, #contenedorListaVariantes_mProductos").html("")
-                g_variantes.data = []
-                variantesSeleccionadas = $("#variantes_mProductos").val()
-            } else {
-                $('#variantes_mProductos').val(variantesSeleccionadas).trigger('change');
-                $("#btnAgregarVariante_mProductos").prop("disabled", true)
-            }
+        public.generarCurva = async function() {
+            curvaSeleccionada = $('#curvas_mProductos').val()
 
-            if (variantesSeleccionadas.length == 0) return;
-
-            buffer = ""
-
-            columnas = "9"
-            columnas2 = "3"
-            if (variantesSeleccionadas.length == 2) {
-                columnas = "4"
-                columnas2 = "4"
-            } else if (variantesSeleccionadas.length > 2) {
-                columnas = "3"
-                columnas2 = "3"
-            }
-
-            for (seleccionada of variantesSeleccionadas) {
-
-                varianteSeleccionada = appSistema.variantes.find((variante) => variante.did == seleccionada)
-
-                buffer += `<div class="col-12 col-md-${columnas}">`
-                buffer += `<div class="form-floating form-floating-outline">`
-                buffer += `<select class="form-select selectValores_mProductos" data-didVariante="${varianteSeleccionada["did"]}" onchange="appProducto.habilitarBtnAgregarValor()">`
-                buffer += `<option value="" selected>Selecciona</option>`
-                for (valores of varianteSeleccionada["valores"]) {
-                    buffer += `<option value="${valores["did"]}">${valores["nombre"] || "Sin nombre"}</option>`
-                }
-                buffer += `</select>`
-                buffer += `<label>${varianteSeleccionada.codigo}</label>`
-                buffer += `</div>`
-                buffer += `</div>`
-            }
-
-            buffer += `<div class="col-12 col-md-${columnas2}">`
-            buffer += `<button class="btn btn-label-success w-100" id="btnAgregarValores_mProductos" disabled onclick="appProducto.agregarVariante()">Agregar</button>`
-            buffer += `</div>`
-
-            $("#contenedorSelectValores_mProductos").html(buffer)
-        }
-
-        public.agregarVariante = function() {
-            newData = {}
-
-            $(".selectValores_mProductos").each(function() {
-                newData[$(this).data("didvariante")] = $(this).val()
-            });
-
-            existe = g_variantes.data.some((item) => globalFuncionesJs.compararDosObjetos(item, newData));
-
-            if (existe) {
-                globalSweetalert.alert("Ya existe esta variante")
-                return
-            }
-
-            g_variantes.data.push(newData)
-
-            $(".selectValores_mProductos").each(function() {
-                $(this).val("")
-            });
-
-            $("#btnAgregarValores_mProductos").prop("disabled", true)
-            renderVariantes();
-        };
-
-        function renderVariantes() {
-            if (g_variantes.data.length == 0) {
-                $("#contenedorListaVariantes_mProductos").html('<p class="text-muted text-center">Sin variantes aún.</p>');
+            if (!curvaSeleccionada) {
+                $("#listaValores_mProductos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>`);
                 return;
             }
 
-            buffer = `<table class="table table-bordered">`
-            buffer += `<thead><tr>`
+            console.log("curvaSeleccionada", curvaSeleccionada);
 
-            for (let seleccionada of variantesSeleccionadas) {
-                let varianteSeleccionada = appSistema.variantes.find(v => v.did == seleccionada)
-                buffer += `<th>${varianteSeleccionada.codigo}</th>`
+            let curva = await appSistema.curvas.find((item) => {
+                item.did == curvaSeleccionada
+                return item
+            })
+
+            console.log("curva", curva);
+
+            let valoresSeleccionados = await curva.categorias.map(cat => cat.valores);
+
+            g_columnas_curvas = await obtenerColumnas(valoresSeleccionados)
+            await renderTablaDeValores()
+        }
+
+        function obtenerColumnas(arrays) {
+            return arrays.reduce((acumulado, actual) => {
+                const combinaciones = [];
+                acumulado.forEach(a => {
+                    actual.forEach(b => {
+                        combinaciones.push([...a, b]);
+                    });
+                });
+                return combinaciones;
+            }, [
+                []
+            ]);
+        }
+
+        function renderTablaDeValores() {
+            $("#listaValores_mProductos").empty();
+
+            if (g_columnas_curvas.length === 0) {
+                $("#listaValores_mProductos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>`);
+                return;
             }
 
-            if (donde != 2) {
-                buffer += `<th>Eliminar</th>`
-            }
+            let buffer = "";
+            buffer += `<div class="table-responsive text-nowrap table-container" style="height: 450px;">`
+            buffer += `<table class="table table-hover">`
+            buffer += `<thead id="theadListado_mProductos" class="table-thead z-1">`
 
-            buffer += `</tr></thead><tbody>`
+            buffer += `<tr class="text-center">`
+            // categoriasSeleccionadas.forEach((categoria, idx) => {
+            //     buffer += `<th class="py-3"><span class="text-primary">${categoria.nombreVariante}</span><br/>${categoria.nombreCategoria}</th>`
+            // })
+            buffer += `</tr>`
 
-            g_variantes.data.forEach((item, idx) => {
-                buffer += `<tr>`
+            buffer += `</thead>`
+            buffer += `<tbody id="tbodyListado_mProductos">`
 
-                for (let seleccionada of variantesSeleccionadas) {
-                    const variante = appSistema.variantes.find(v => v.did == seleccionada)
-
-                    const valorDid = item[seleccionada]
-                    const valor = variante.valores.find(val => val.did == valorDid)
-                    const nombre = valor?.nombre || "Sin nombre"
-
-                    buffer += `<td>${nombre}</td>`
-                }
-
-                if (donde != 2) {
-                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appProducto.eliminarVariante(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
-                }
-
+            g_columnas_curvas.forEach((columnas, idx) => {
+                buffer += `<tr class="text-center">`
+                columnas.forEach((item) => {
+                    buffer += `<td data-did="${item.did}">${item.nombre}</td>`
+                })
                 buffer += `</tr>`
             })
 
-            buffer += `</tbody></table>`
+            buffer += `</tbody>`
+            buffer += `</table>`
+            buffer += `</div>`
 
-            $("#contenedorListaVariantes_mProductos").html(buffer)
-            eanIguales = true
-            appProducto.renderEcommerce()
+
+            $("#listaValores_mProductos").html(buffer);
         }
-
-        public.eliminarVariante = function(index) {
-            g_variantes.data.splice(index, 1);
-            renderVariantes();
-        };
 
         public.renderEcommerce = function() {
             valueCliente = $("#cliente_mProductos").val();
@@ -403,13 +332,13 @@
 
             let buffer = '';
 
-            g_variantes.data.forEach(variante => {
+            g_curvas.data.forEach(curva => {
                 let titulo = ""
                 let masDeUno = false
-                for (key in variante) {
-                    let valor = variante[key];
-                    let codigo = appSistema.variantes.find(v => v.did == key).codigo;
-                    let valorCodigo = appSistema.variantes.find(v => v.did == key).valores.find(v => v.did == valor).codigo;
+                for (key in curva) {
+                    let valor = curva[key];
+                    let codigo = appSistema.curvas.find(v => v.did == key).codigo;
+                    let valorCodigo = appSistema.curvas.find(v => v.did == key).valores.find(v => v.did == valor).codigo;
 
                     if (masDeUno) {
                         titulo += ` | `
@@ -429,7 +358,7 @@
                 let primerEan = true
                 cuentas.forEach(cuenta => {
                     tipo = cuenta.flex
-                    existe = g_ecommerce_bd.find(e => globalFuncionesJs.compararDosObjetos(e.variante, variante) && e.flex == tipo);
+                    existe = g_ecommerce_bd.find(e => globalFuncionesJs.compararDosObjetos(e.curva, curva) && e.flex == tipo);
 
                     if (!contadorTipos[tipo]) {
                         contadorTipos[tipo] = 1;
@@ -465,7 +394,7 @@
                     buffer += `<div class="form-floating form-floating-outline">`
 
                     if (donde == 0) {
-                        buffer += `<input type="text" class="form-control eansProducto_mProductos" ${primerEan ? `id="primerEan_mProductos" onchange="appProducto.llenarAllEan()"`: ""} placeholder="EAN" value="${existe ? existe.ean : ""}"/>`
+                        buffer += `<input type="text" class="form-control eansProducto_mProductos" ${primerEan ? `id="primerEan_mProductos" onchange="appModalProductos.llenarAllEan()"`: ""} placeholder="EAN" value="${existe ? existe.ean : ""}"/>`
                     } else {
                         buffer += `<input type="text" class="form-control" placeholder="EAN" value="${existe ? existe.ean : ""}"/>`
                     }
@@ -510,14 +439,14 @@
         public.obtenerDatosEcommerce = function() {
             let datos = [];
 
-            let indexVariante = 0;
+            let indexCurva = 0;
 
-            g_variantes.data.forEach(variante => {
+            g_curvas.data.forEach(curva => {
                 let cliente = appSistema.clientes.find(c => c.did == $("#cliente_mProductos").val());
                 let cuentas = cliente.cuentas || [];
-                existe = g_ecommerce_bd.find(e => globalFuncionesJs.compararDosObjetos(e.variante, variante));
+                existe = g_ecommerce_bd.find(e => globalFuncionesJs.compararDosObjetos(e.curva, curva));
 
-                let filas = $(`#contenedorEcommerce_mProductos table`).eq(indexVariante).find("tbody tr");
+                let filas = $(`#contenedorEcommerce_mProductos table`).eq(indexCurva).find("tbody tr");
                 filas.each((i, fila) => {
                     let inputs = $(fila).find("input");
 
@@ -528,7 +457,7 @@
 
                     datos.push({
                         did: existe ? existe.did : 0,
-                        variante: variante,
+                        curva: curva,
                         flex: cuentas[i].flex,
                         didCuenta: cuentas[i].did,
                         sku: sku,
@@ -538,7 +467,7 @@
                     });
                 });
 
-                indexVariante++;
+                indexCurva++;
             });
 
             return datos;
@@ -603,7 +532,7 @@
                 buffer += `<td>${titulo}</td>`
                 buffer += `<td>${c.cantidad}</td>`
                 if (donde != 2) {
-                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appProducto.eliminarCombo(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
+                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appModalProductos.eliminarCombo(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
                 }
                 buffer += `</tr>`
             });
@@ -684,7 +613,7 @@
                 buffer += `<td><span class="badge rounded-pill bg-label-${c.habilitado == 1 ? "success" : "danger"}">${c.habilitado == 1 ? "Habilitado" : "Deshabilitado"}</span></td>`
 
                 if (donde != 2) {
-                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appProducto.eliminarInsumo(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
+                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appModalProductos.eliminarInsumo(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
                 }
                 buffer += `</tr>`
             });
@@ -701,38 +630,21 @@
         };
 
         public.eliminar = function(did) {
-            const datos = {
-                idEmpresa: appSistema.idEmpresa,
-                did
-            }
-
-            globalSweetalert.confirmar("¿Estas seguro de eliminar esta producto?", "var(--bs-danger)").then(function(confirmado) {
+            globalSweetalert.confirmar({
+                titulo: "¿Estas seguro de eliminar este producto?",
+                color: "var(--bs-danger)"
+            }).then(function(confirmado) {
                 if (confirmado) {
-                    globalLoading.open()
-                    $.ajax({
-                        url: `${appSistema.urlServer}/producto/deleteProducto`,
-                        data: datos,
-                        type: "POST",
-                        contentType: "application/json",
-                        headers: {
-                            Authorization: `Bearer ${appSistema.tkn}`
-                        },
-                        data: JSON.stringify(datos),
-                        success: function(result) {
-                            globalLoading.close()
-                            globalSweetalert.exito("Eliminado con exito!")
-                            appSistema.cargarProductos()
-                            appProductosListado.getListado();
-                        },
-                        error: function(xhr) {
-                            console.log("Error al guardar", xhr.responseText);
-                            globalLoading.close()
-                            globalSweetalert.error()
+                    globalRequest.delete(`/${rutaAPI}/${did}`, {
+                        onSuccess: function(result) {
+                            globalSweetalert.exito({
+                                titulo: "Eliminado con éxito!"
+                            });
+                            appModulosProductos.getListado();
                         }
                     });
-
                 }
-            })
+            });
         };
 
         return public;

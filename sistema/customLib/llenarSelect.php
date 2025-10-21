@@ -24,6 +24,27 @@
             $(`#${id}`).html(buffer)
         }
 
+        public.curvas = function({
+            id,
+            multiple = false
+        }) {
+            if (appSistema.curvas.length == 0) {
+                $(`#${id}`).html(`<option value="" ${multiple ? "" : "selected"} disabled>Sin curvas</option>`)
+                return
+            }
+
+            buffer = ""
+            if (!multiple) {
+                buffer = `<option value="" selected>Seleccionar curva</option>`
+            }
+
+            for (curva of appSistema.curvas) {
+                buffer += `<option value="${curva["did"]}">${curva["codigo"] || "Sin codigo"} - ${curva["nombre"] || "Sin nombre"}</option>`
+            }
+
+            $(`#${id}`).html(buffer)
+        }
+
         public.clientes = function({
             id,
             multiple = false

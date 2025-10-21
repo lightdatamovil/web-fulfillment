@@ -11,6 +11,7 @@
         authToken: localStorage.getItem("authToken"),
         productos: [],
         variantes: [],
+        curvas: [],
         clientes: [],
         insumos: [],
         ecommerce: {
@@ -87,6 +88,7 @@
                 onSuccess: (result) => {
                     this.productos = result.data.productos;
                     this.variantes = result.data.variantes;
+                    this.curvas = result.data.curvas;
                     this.clientes = result.data.clientes;
                     this.insumos = result.data.insumos;
                 },
