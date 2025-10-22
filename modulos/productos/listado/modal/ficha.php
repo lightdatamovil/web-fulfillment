@@ -185,28 +185,57 @@
 
 
                     <div class="tab-pane fade" id="tabCombos_mProductos" role="tabpanel">
-                        <form class="row g-5 mb-5 align-items-center forms_mProductos" id="formCombos_mProductos" onsubmit="return false">
-                            <div class="col-12 col-md-12 col-lg-5">
-                                <div class="form-floating form-floating-outline">
-                                    <select id="producto_combo_mProductos" class="form-select campos_mProductos" onchange="appModalProductos.habilitarBtnAgregarCombos()"></select>
-                                    <label for="producto_combo_mProductos">Producto</label>
+                        <div class="row">
+                            <div class="col-12 bg-body mb-4 d-none d-lg-block" style="height: 44px;">
+
+                                <div class="row h-100">
+                                    <div class="col-5 h-100">
+                                        <div class="d-flex align-items-center h-100 ps-3 fw-semibold">Producto</div>
+                                    </div>
+                                    <div class="col-6 h-100">
+                                        <div class="d-flex align-items-center h-100 fw-semibold">Cantidad</div>
+                                    </div>
+
+                                    <div class="col-1 h-100 p-0">
+                                        <div class="d-flex align-items-center h-100 fw-semibold"></div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="col-12 col-md-8 col-lg-5">
-                                <div class="form-floating form-floating-outline">
-                                    <input type="number" id="cantidad_combo_mProductos" value="1" min="1" class="form-control campos_mProductos" placeholder="Valor" onchange="appModalProductos.habilitarBtnAgregarCombos()" onkeyup="appModalProductos.habilitarBtnAgregarCombos()" />
-                                    <label for="cantidad_combo_mProductos">Cantidad</label>
-                                </div>
+                            <div class=" col-12">
+                                <form class="form-repeater" id="formCombos_mProductos">
+                                    <div data-repeater-list="combos">
+                                        <div data-repeater-item>
+                                            <div class="row g-3">
+                                                <input type="hidden" name="did" id="did_combos_mProductos" />
+                                                <div class="col-12 col-md-6 col-lg-5">
+                                                    <select name="producto" id="producto_combos_mProductos" class="form-select form-select-sm campos_mProductos camposObli_mProductos campos_combos_mProductos"></select>
+                                                </div>
+
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <input type="number" name="cantidad" id="cantidad_combos_mProductos" class="form-control form-control-sm campos_mProductos camposObli_mProductos campos_combos_mProductos" placeholder="Cantidad" />
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-1">
+                                                    <div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mProductos">
+                                                        <button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="mt-3 mb-3" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-0 ocultarDesdeVer_mProductos">
+                                        <button class="btn btn-outline-success" data-repeater-create>
+                                            <i class="ri-add-line me-1"></i>
+                                            <span class="align-middle">Nuevo producto</span>
+                                        </button>
+                                    </div>
+                                </form>
+
                             </div>
-                            <div class="col-12 col-md-4 col-lg-2">
-                                <button id="btnAgregarCombos_mProductos" class="btn btn-label-success btnAgregar_mProductos w-100" disabled onclick="appModalProductos.agregarCombos()">Agregar</button>
-                            </div>
-                        </form>
-                        <div id="contenedorCombos_mProductos" class="contenedoresExtras_mProductos"></div>
+
+                        </div>
                     </div>
-
-
-
 
                     <div class="tab-pane fade" id="tabCurvas_mProductos" role="tabpanel">
                         <div class="row g-5 align-items-baseline">
@@ -225,45 +254,65 @@
                         </div>
                     </div>
 
-
-
-
-
                     <div class="tab-pane fade" id="tabEcommerce_mProductos" role="tabpanel">
-                        <p class="text-muted text-center">Asigná SKUs por tienda a cada curva.</p>
+                        <div class="d-flex justify-content-center mb-5"><span class="badge rounded-pill bg-label-primary px-6">Asigna SKU por tienda a cada variante</span></div>
 
                         <div id="contenedorEcommerce_mProductos" class="contenedoresExtras_mProductos"></div>
                     </div>
 
                     <div class="tab-pane fade" id="tabInsumos_mProductos" role="tabpanel">
-                        <form class="row g-5 mb-5 align-items-center forms_mProductos" id="formInsumos_mProductos" onsubmit="return false">
-                            <div class="col-12 col-md-12 col-lg-5">
-                                <div class="form-floating form-floating-outline">
-                                    <select id="nombre_insumo_mProductos" class="form-select campos_mProductos" onchange="appModalProductos.habilitarBtnAgregarInsumo()"></select>
-                                    <label for="nombre_insumo_mProductos">Insumo</label>
+                        <div class="row">
+                            <div class="col-12 bg-body mb-4 d-none d-lg-block" style="height: 44px;">
+
+                                <div class="row h-100">
+                                    <div class="col-5 h-100">
+                                        <div class="d-flex align-items-center h-100 ps-3 fw-semibold">Insumo</div>
+                                    </div>
+                                    <div class="col-6 h-100">
+                                        <div class="d-flex align-items-center h-100 fw-semibold">Cantidad</div>
+                                    </div>
+
+                                    <div class="col-1 h-100 p-0">
+                                        <div class="d-flex align-items-center h-100 fw-semibold"></div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4 col-lg-3">
-                                <div class="form-floating form-floating-outline">
-                                    <input type="number" step="0.1" min="0" value="0" id="cantidad_insumo_mProductos" class="form-control campos_mProductos" placeholder="Cantidad" oninput="appModalProductos.habilitarBtnAgregarInsumo()" />
-                                    <label for="cantidad_insumo_mProductos">Cantidad</label>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="checkInsumoHabilitado_mUsuarios" />
-                                    <label class="form-check-label" for="checkInsumoHabilitado_mUsuarios">Habilitado</label>
-                                </div>
+                            <div class=" col-12">
+                                <form class="form-repeater" id="formInsumos_mProductos">
+                                    <div data-repeater-list="insumos">
+                                        <div data-repeater-item>
+                                            <div class="row g-3">
+                                                <input type="hidden" name="did" id="did_insumos_mProductos" />
+                                                <div class="col-12 col-md-6 col-lg-5">
+                                                    <select name="insumo" id="insumo_insumos_mProductos" class="form-select form-select-sm campos_mProductos camposObli_mProductos campos_insumos_mProductos"></select>
+                                                </div>
+
+                                                <div class="col-12 col-md-6 col-lg-6">
+                                                    <input type="number" name="cantidad" id="cantidad_insumos_mProductos" class="form-control form-control-sm campos_mProductos camposObli_mProductos campos_insumos_mProductos" placeholder="Cantidad" />
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-1">
+                                                    <div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mProductos">
+                                                        <button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="mt-3 mb-3" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-0 ocultarDesdeVer_mProductos">
+                                        <button class="btn btn-outline-success" data-repeater-create>
+                                            <i class="ri-add-line me-1"></i>
+                                            <span class="align-middle">Nuevo insumo</span>
+                                        </button>
+                                    </div>
+                                </form>
+
                             </div>
 
-                            <div class="col-12 col-md-4 col-lg-2">
-                                <button id="btnAgregarInsumos_mProductos" class="btn btn-label-success btnAgregar_mProductos w-100" disabled onclick="appModalProductos.agregarInsumo()">Agregar</button>
-                            </div>
-                        </form>
-                        <div id="contenedorInsumos_mProductos" class="contenedoresExtras_mProductos"></div>
+                        </div>
                     </div>
                 </div>
-
                 <div class="col-12 mt-7">
                     <div class="row justify-content-end g-3">
                         <div class="col-12 col-md-6 col-lg-3">

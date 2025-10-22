@@ -7,9 +7,9 @@
         let g_ecommerce = [];
         let g_ecommerce_bd = []
         let g_insumos = []
-        let curvasSeleccionadas = []
+        let curvaSeleccionada = {}
+        let valoresEcommerceSeleccionados = []
         let logosTiendas = {}
-        let g_columnas_curvas = []
         let eanIguales = true
         let g_curvas = {
             did: 0,
@@ -53,6 +53,8 @@
                 $('.campos_mProductos').prop('disabled', false);
                 $("#btnGuardar_mProductos, .forms_mProductos").removeClass("ocultar");
                 globalInputImg.crear("imagen_mProductos")
+                renderCombos()
+                renderInsumos()
                 $("#modal_mProductos").modal("show")
             } else if (mode == 1) {
                 // MODIFICAR PRODUCTO
@@ -88,8 +90,8 @@
                     g_data = result.data;
                     $("#cliente_mProductos").val(g_data.cliente);
                     $("#nombre_mProductos").val(g_data.titulo);
-                    // $("#sku_mProductos").val(g_data.sku);
-                    // $("#ean_mProductos").val(g_data.ean);
+                    $("#sku_mProductos").val(g_data.sku);
+                    $("#ean_mProductos").val(g_data.ean);
                     globalInputImg.crear("imagen_mProductos", g_data.imagen)
                     $("#posicion_mProductos").val(g_data.posicion);
                     $("#alto_mProductos").val(g_data.alto);
@@ -104,29 +106,37 @@
                     appModalProductos.renderEcommerce()
                     g_combos = g_data.combos || [];
                     renderCombos();
-                    g_curvas = g_data.curvas.length > 0 ? g_data.curvas[0] : {
-                        did: 0,
-                        data: []
-                    };
-                    curvasSeleccionadas = g_data?.curvas[0]?.data?.length > 0 ? Object.keys(g_data.curvas[0].data[0]) : [];
-                    appModalProductos.seleccionarCurvas(1)
-                    renderCurvas();
                     g_insumos = g_data.insumos || []
+                    renderInsumos()
                     globalLoading.close()
                     $("#modal_mProductos").modal("show")
                 }
             });
         }
 
+        function renderCombos() {
+            globalActivarAcciones.formRepeater({
+                id: "formCombos_mProductos",
+                data: g_combos
+            })
+        };
+
+        function renderInsumos() {
+            globalActivarAcciones.formRepeater({
+                id: "formInsumos_mProductos",
+                data: g_insumos
+            })
+        };
+
         public.mostrarCombos = function(select) {
             if (select.value == 1) {
                 globalActivarAcciones.mostrarOcultarTab({
-                    id: "tabCombos_mProductos",
+                    tab: "tabCombos_mProductos",
                     opcion: 1
                 })
             } else {
                 globalActivarAcciones.mostrarOcultarTab({
-                    id: "tabCombos_mProductos",
+                    tab: "tabCombos_mProductos",
                     opcion: 0
                 })
             }
@@ -230,41 +240,20 @@
                 });
         };
 
-        public.habilitarBtnAgregarValor = function() {
-            let permitir = true
+        public.generarCurva = function() {
+            const valor = $('#curvas_mProductos').val()
 
-            $(".selectValores_mProductos").each(function() {
-                if ($(this).val() == "") permitir = false
-            });
-
-            if (!permitir) {
-                $("#btnAgregarValores_mProductos").prop("disabled", true)
-            } else {
-                $("#btnAgregarValores_mProductos").prop("disabled", false)
-            }
-        };
-
-        public.generarCurva = async function() {
-            curvaSeleccionada = $('#curvas_mProductos').val()
-
-            if (!curvaSeleccionada) {
+            if (!valor) {
+                curvaSeleccionada = {}
                 $("#listaValores_mProductos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>`);
                 return;
             }
 
-            console.log("curvaSeleccionada", curvaSeleccionada);
+            curvaSeleccionada = appSistema.curvas.find(item => item.did == valor)
+            const valoresSeleccionados = curvaSeleccionada.categorias.map(cat => cat.valores);
+            const columnasObtenidas = obtenerColumnas(valoresSeleccionados)
 
-            let curva = await appSistema.curvas.find((item) => {
-                item.did == curvaSeleccionada
-                return item
-            })
-
-            console.log("curva", curva);
-
-            let valoresSeleccionados = await curva.categorias.map(cat => cat.valores);
-
-            g_columnas_curvas = await obtenerColumnas(valoresSeleccionados)
-            await renderTablaDeValores()
+            renderTablaDeValores(columnasObtenidas)
         }
 
         function obtenerColumnas(arrays) {
@@ -281,10 +270,10 @@
             ]);
         }
 
-        function renderTablaDeValores() {
+        function renderTablaDeValores(columnasCurva) {
             $("#listaValores_mProductos").empty();
 
-            if (g_columnas_curvas.length === 0) {
+            if (columnasCurva.length === 0) {
                 $("#listaValores_mProductos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>`);
                 return;
             }
@@ -295,15 +284,15 @@
             buffer += `<thead id="theadListado_mProductos" class="table-thead z-1">`
 
             buffer += `<tr class="text-center">`
-            // categoriasSeleccionadas.forEach((categoria, idx) => {
-            //     buffer += `<th class="py-3"><span class="text-primary">${categoria.nombreVariante}</span><br/>${categoria.nombreCategoria}</th>`
-            // })
+            curvaSeleccionada.categorias.forEach((categoria, idx) => {
+                buffer += `<th class="py-3"><span class="text-primary">${appSistema.variantes.find(item => item.did == categoria.did_variante).nombre}</span><br/>${categoria.nombre}</th>`
+            });
             buffer += `</tr>`
 
             buffer += `</thead>`
             buffer += `<tbody id="tbodyListado_mProductos">`
 
-            g_columnas_curvas.forEach((columnas, idx) => {
+            columnasCurva.forEach((columnas, idx) => {
                 buffer += `<tr class="text-center">`
                 columnas.forEach((item) => {
                     buffer += `<td data-did="${item.did}">${item.nombre}</td>`
@@ -317,6 +306,8 @@
 
 
             $("#listaValores_mProductos").html(buffer);
+            valoresEcommerceSeleccionados = columnasCurva
+            appModalProductos.renderEcommerce()
         }
 
         public.renderEcommerce = function() {
@@ -332,24 +323,24 @@
 
             let buffer = '';
 
-            g_curvas.data.forEach(curva => {
+            valoresEcommerceSeleccionados.forEach(valores => {
+                if (valores.habilitado == 0) return;
+
                 let titulo = ""
                 let masDeUno = false
-                for (key in curva) {
-                    let valor = curva[key];
-                    let codigo = appSistema.curvas.find(v => v.did == key).codigo;
-                    let valorCodigo = appSistema.curvas.find(v => v.did == key).valores.find(v => v.did == valor).codigo;
 
-                    if (masDeUno) {
-                        titulo += ` | `
-                    }
+                valores.forEach((valor) => {
+                    categoria = curvaSeleccionada.categorias.find(cat => cat.valores.some(v => v.did == valor.did));
+                    variante = appSistema.variantes.find(item => item.did == categoria.did_variante)
+                    valor = categoria.valores.find(v => v.did == valor.did);
+
+                    titulo += `<div class="text-center ${masDeUno ? "border-start border-primary ps-3" : ""}">${variante.nombre}<br/>${categoria.nombre}: <span class="text-primary">${valor.nombre}</span></div>`
                     masDeUno = true
-                    titulo += `${codigo}: <span class="badge rounded-pill bg-label-warning">${valorCodigo}</span>`
-                }
+                })
 
                 buffer += `<table class="table table-bordered">`
                 buffer += `<thead><tr>`
-                buffer += `<th colspan="5">${titulo}</th>`
+                buffer += `<th colspan="5" class="p-3"><div class="d-flex gap-3 align-items-center justify-content-center">${titulo}</div></th>`
                 buffer += `</tr></thead><tbody>`
 
                 let contadorTipos = {};
@@ -368,15 +359,17 @@
 
                     buffer += `<tr>`
 
-                    buffer += `<td class="text-center">`
+                    buffer += `<td>`
+                    buffer += `<div class="d-flex align-items-center flex-column gap-1">`
                     buffer += `<div class="containerSvg" style="width: 50px; height: auto;">${logosTiendas[tipo]}</div>`
-                    buffer += `<p class="text-muted" style="margin: 3px 0 0 0;">${cuenta.titulo || cuenta.did}</p>`
+                    buffer += `<p class="m-0 text-center">${cuenta.titulo || cuenta.did}</p>`
+                    buffer += `</div>`
                     buffer += `</td>`
 
                     buffer += `<td>`
-                    buffer += `<div class="form-check mt-4">`
-                    buffer += `<input class="form-check-input" type="checkbox" ${existe ? existe.actualizar == 1 ? "checked": "" : "" }/>`
-                    buffer += `<label class="form-check-label">Sincronizar stock entre tiendas</label>`
+                    buffer += `<div class="form-check m-0 p-0 d-flex align-items-center flex-column gap-1">`
+                    buffer += `<input class="form-check-input m-0" type="checkbox" ${existe ? existe.actualizar == 1 ? "checked": "" : "" }/>`
+                    buffer += `<p class="m-0 text-center" style="font-size: 12px; white-space: nowrap;">Sincronizar stock<br/>entre tiendas</p>`
                     buffer += `</div>`
                     buffer += `</td>`
 
@@ -471,162 +464,6 @@
             });
 
             return datos;
-        };
-
-        public.habilitarBtnAgregarCombos = function() {
-            producto = $("#producto_combo_mProductos").val() || ""
-            cantidad = $("#cantidad_combo_mProductos").val() * 1;
-
-            if (producto != "" && cantidad > 0) {
-                $("#btnAgregarCombos_mProductos").prop("disabled", false)
-            } else {
-                $("#btnAgregarCombos_mProductos").prop("disabled", true)
-            }
-        }
-
-        public.agregarCombos = function() {
-            producto = $("#producto_combo_mProductos").val();
-            cantidad = $("#cantidad_combo_mProductos").val();
-
-            existe = g_combos.find(v => v.did === producto);
-
-            if (existe) {
-                existe.cantidad = cantidad;
-            } else {
-                g_combos.push({
-                    did: producto,
-                    cantidad,
-                });
-            }
-
-            $("#producto_combo_mProductos").val('');
-            $("#cantidad_combo_mProductos").val('1');
-
-            $("#btnAgregarCombos_mProductos").prop("disabled", true)
-            renderCombos();
-        };
-
-        function renderCombos() {
-            if (g_combos.length === 0) {
-                $("#contenedorCombos_mProductos").html('<p class="text-muted text-center">Sin combos aún.</p>');
-                return;
-            }
-
-            buffer = `<table class="table table-bordered">`
-            buffer += `<thead>`
-            buffer += `<tr>`
-            buffer += `<th>Producto</th>`
-            buffer += `<th>Cantidad</th>`
-            if (donde != 2) {
-                buffer += `<th>Eliminar</th>`
-            }
-            buffer += `</tr>`
-            buffer += `</thead>`
-
-            buffer += `<tbody>`
-
-            g_combos.forEach((c, idx) => {
-                titulo = appSistema.productos.find(p => p.did == c.did)?.titulo || "Sin titulo";
-
-                buffer += `<tr>`
-                buffer += `<td>${titulo}</td>`
-                buffer += `<td>${c.cantidad}</td>`
-                if (donde != 2) {
-                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appModalProductos.eliminarCombo(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
-                }
-                buffer += `</tr>`
-            });
-
-            buffer += `</tbody>`
-            buffer += `</table>`
-
-            $("#contenedorCombos_mProductos").html(buffer);
-        };
-
-        public.eliminarCombo = function(index) {
-            g_combos.splice(index, 1);
-            renderCombos();
-        };
-
-        public.habilitarBtnAgregarInsumo = function() {
-            insumo = $("#nombre_insumo_mProductos").val() || ""
-            cantidad = $("#cantidad_insumo_mProductos").val() * 1;
-
-            if (insumo != "" && cantidad > 0) {
-                $("#btnAgregarInsumos_mProductos").prop("disabled", false)
-            } else {
-                $("#btnAgregarInsumos_mProductos").prop("disabled", true)
-            }
-        }
-
-        public.agregarInsumo = function() {
-            insumo = $("#nombre_insumo_mProductos").val();
-            cantidad = $("#cantidad_insumo_mProductos").val();
-            habilitado = $("#checkInsumoHabilitado_mUsuarios").is(":checked") ? 1 : 0;
-
-            existe = g_insumos.find(i => i.did === insumo);
-
-            if (existe) {
-                existe.cantidad = cantidad;
-                existe.habilitado = habilitado;
-            } else {
-                g_insumos.push({
-                    did: insumo,
-                    cantidad,
-                    habilitado
-                });
-            }
-
-            $("#nombre_insumo_mProductos").val('');
-            $("#cantidad_insumo_mProductos").val('0');
-            $("#checkInsumoHabilitado_mUsuarios").prop("checked", false);
-
-            $("#btnAgregarInsumos_mProductos").prop("disabled", true)
-            renderInsumos();
-        };
-
-        function renderInsumos() {
-            if (g_insumos.length === 0) {
-                $("#contenedorInsumos_mProductos").html('<p class="text-muted text-center">Sin insumos aún.</p>');
-                return;
-            }
-
-            buffer = `<table class="table table-bordered">`
-            buffer += `<thead>`
-            buffer += `<tr>`
-            buffer += `<th>Insumo</th>`
-            buffer += `<th>Cantidad</th>`
-            buffer += `<th>Estado</th>`
-            if (donde != 2) {
-                buffer += `<th>Eliminar</th>`
-            }
-            buffer += `</tr>`
-            buffer += `</thead>`
-
-            buffer += `<tbody>`
-
-            g_insumos.forEach((c, idx) => {
-                let nombre = appSistema.insumos.find(i => i.did == c.did).nombre
-                buffer += `<tr>`
-                buffer += `<td>${nombre}</td>`
-                buffer += `<td>${c.cantidad}</td>`
-                buffer += `<td><span class="badge rounded-pill bg-label-${c.habilitado == 1 ? "success" : "danger"}">${c.habilitado == 1 ? "Habilitado" : "Deshabilitado"}</span></td>`
-
-                if (donde != 2) {
-                    buffer += `<td><button type="button" class="btn btn-icon rounded-pill btn-text-danger" onclick="appModalProductos.eliminarInsumo(${idx})" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button></td>`
-                }
-                buffer += `</tr>`
-            });
-
-            buffer += `</tbody>`
-            buffer += `</table>`
-
-            $("#contenedorInsumos_mProductos").html(buffer);
-        };
-
-        public.eliminarInsumo = function(index) {
-            g_insumos.splice(index, 1);
-            renderInsumos();
         };
 
         public.eliminar = function(did) {

@@ -260,7 +260,7 @@
 					<div class="row justify-content-end g-3">
 						<div class="col-12 col-md-6 col-lg-3">
 							<button type="submit" class="btn btn-success w-100" id="btnGuardar_mClientes" onclick="appModalClientes.guardar()">Guardar</button>
-							<button type="submit" class="btn btn-success w-100" id="btnEditar_mClientes" onclick="appModalClientes.editar()">MOd</button>
+							<button type="submit" class="btn btn-success w-100" id="btnEditar_mClientes" onclick="appModalClientes.editar()">Guardar</button>
 
 						</div>
 						<div class="col-12 col-md-6 col-lg-2">
