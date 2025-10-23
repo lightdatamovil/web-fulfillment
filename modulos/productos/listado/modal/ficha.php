@@ -83,7 +83,7 @@
                         <form class="row g-5" onsubmit="return false">
                             <div class="col-12 col-md-12 col-lg-6">
                                 <div class="form-floating form-floating-outline">
-                                    <select id="cliente_mProductos" class="form-select campos_mProductos camposObli_mProductos" onchange="appModalProductos.renderEcommerce()"></select>
+                                    <select id="cliente_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_mProductos" onchange="appModalProductos.renderEcommerce()"></select>
                                     <label for="cliente_mProductos">Cliente</label>
                                     <div class="invalid-feedback"> Debe seleccionar uno</div>
                                 </div>
@@ -159,11 +159,11 @@
 
                                     <div class="col-12 col-md-6">
                                         <div class="form-floating form-floating-outline">
-                                            <select id="estado_mProductos" class="form-select campos_mProductos">
+                                            <select id="habilitado_mProductos" class="form-select campos_mProductos">
                                                 <option value="1" selected>Habilitado</option>
                                                 <option value="0">Deshabilitado</option>
                                             </select>
-                                            <label for="estado_mProductos">Estado</label>
+                                            <label for="habilitado_mProductos">Estado</label>
                                         </div>
                                     </div>
 
@@ -171,6 +171,7 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-12 col-lg-6" id="imagen_mProductos" style="height: 310px;"></div>
+
                             <div class="col-12">
                                 <div class="form-floating form-floating-outline">
                                     <textarea type="text" id="descripcion_mProductos" class="form-control campos_mProductos h-px-100" placeholder="Descripción"></textarea>
@@ -208,12 +209,12 @@
                                         <div data-repeater-item>
                                             <div class="row g-3">
                                                 <input type="hidden" name="did" id="did_combos_mProductos" />
-                                                <div class="col-12 col-md-6 col-lg-5">
-                                                    <select name="producto" id="producto_combos_mProductos" class="form-select form-select-sm campos_mProductos camposObli_mProductos campos_combos_mProductos"></select>
+                                                <div class="col-12 col-md-6 col-lg-8">
+                                                    <select name="didProducto" id="producto_combos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_mProductos"></select>
                                                 </div>
 
-                                                <div class="col-12 col-md-6 col-lg-6">
-                                                    <input type="number" name="cantidad" id="cantidad_combos_mProductos" class="form-control form-control-sm campos_mProductos camposObli_mProductos campos_combos_mProductos" placeholder="Cantidad" />
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <input type="text" name="cantidad" id="cantidad_combos_mProductos" class="form-control campos_mProductos camposObli_mProductos" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloNumeros(this)" />
                                                 </div>
                                                 <div class="col-12 col-md-6 col-lg-1">
                                                     <div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mProductos">
@@ -257,7 +258,7 @@
                     <div class="tab-pane fade" id="tabEcommerce_mProductos" role="tabpanel">
                         <div class="d-flex justify-content-center mb-5"><span class="badge rounded-pill bg-label-primary px-6">Asigna SKU por tienda a cada variante</span></div>
 
-                        <div id="contenedorEcommerce_mProductos" class="contenedoresExtras_mProductos"></div>
+                        <div id="contenedorEcommerce_mProductos"></div>
                     </div>
 
                     <div class="tab-pane fade" id="tabInsumos_mProductos" role="tabpanel">
@@ -284,13 +285,15 @@
                                         <div data-repeater-item>
                                             <div class="row g-3">
                                                 <input type="hidden" name="did" id="did_insumos_mProductos" />
-                                                <div class="col-12 col-md-6 col-lg-5">
-                                                    <select name="insumo" id="insumo_insumos_mProductos" class="form-select form-select-sm campos_mProductos camposObli_mProductos campos_insumos_mProductos"></select>
+
+                                                <div class="col-12 col-md-6 col-lg-8">
+                                                    <select name="didInsumo" id="insumo_insumos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_mProductos"></select>
                                                 </div>
 
-                                                <div class="col-12 col-md-6 col-lg-6">
-                                                    <input type="number" name="cantidad" id="cantidad_insumos_mProductos" class="form-control form-control-sm campos_mProductos camposObli_mProductos campos_insumos_mProductos" placeholder="Cantidad" />
+                                                <div class="col-12 col-md-6 col-lg-3">
+                                                    <input type="text" name="cantidad" id="cantidad_insumos_mProductos" class="form-control campos_mProductos camposObli_mProductos" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloDecimales(this)" />
                                                 </div>
+
                                                 <div class="col-12 col-md-6 col-lg-1">
                                                     <div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mProductos">
                                                         <button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>
@@ -313,10 +316,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 mt-7">
+                <div class="col-12 border-top pt-5 mt-2">
                     <div class="row justify-content-end g-3">
                         <div class="col-12 col-md-6 col-lg-3">
                             <button type="submit" class="btn btn-success w-100" id="btnGuardar_mProductos" onclick="appModalProductos.guardar()">Guardar</button>
+                            <button type="submit" class="btn btn-success w-100" id="btnEditar_mProductos" onclick="appModalProductos.editar()">Guardar</button>
                         </div>
                         <div class="col-12 col-md-6 col-lg-2">
                             <button type="reset" class="btn btn-outline-danger w-100" data-bs-dismiss="modal">Cerrar</button>

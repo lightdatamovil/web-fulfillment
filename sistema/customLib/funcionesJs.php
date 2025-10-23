@@ -3,6 +3,16 @@
 
         const public = {}
 
+        public.inputSoloNumeros = function(input) {
+            input.value = input.value.replace(/[^0-9]/g, "")
+        }
+
+        public.inputSoloDecimales = function(input) {
+            input.value = input.value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*)\./g, "$1")
+        }
+
         public.compararDosObjetos = function(a, b) {
             if (a === b) return true;
 

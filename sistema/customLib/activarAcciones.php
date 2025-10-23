@@ -101,12 +101,136 @@
             });
         }
 
+        public.toggleOffcanvas = function({
+            id
+        }) {
+            const offcanvasEl = document.getElementById(id);
+            if (!offcanvasEl) return;
+            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+            offcanvas.toggle();
+        }
+
+        public.inicializarExpandirImagen = function() {
+            const lightbox = new PhotoSwipeLightbox({
+                dataSource: [],
+                pswpModule: PhotoSwipe,
+                initialZoomLevel: 'fit',
+                secondaryZoomLevel: 3,
+                maxZoomLevel: 5,
+            });
+
+            lightbox.on('uiRegister', function() {
+                lightbox.pswp.ui.registerElement({
+                    name: 'download-button',
+                    order: 9,
+                    isButton: true,
+                    tagName: 'button',
+                    html: '',
+                    className: 'pswp__download-button',
+                    onInit: (el, pswp) => {
+                        pswp.on('change', () => {
+                            const imageUrl = pswp.currSlide.data.src;
+                            if (imageUrl.startsWith("data:image")) {
+                                el.style.display = "none";
+                            } else {
+                                el.style.display = "";
+                            }
+                        });
+
+                        el.addEventListener('click', async (e) => {
+                            e.preventDefault();
+
+                            const imageUrl = pswp.currSlide.data.src;
+                            if (imageUrl.startsWith("data:image")) {
+                                return;
+                            }
+
+                            try {
+                                const arrUrl = imageUrl.split('/');
+                                const nombreFoto = arrUrl[arrUrl.length - 1];
+
+                                const body = {
+                                    idEmpresa,
+                                    did: arrUrl[arrUrl.length - 2],
+                                    nombreFoto,
+                                };
+
+                                const response = await fetch('https://altaenvios.lightdata.com.ar/api/descargarFoto', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(body),
+                                });
+
+                                if (!response.ok) throw new Error('Fallo la descarga');
+
+                                const blob = await response.blob();
+                                const blobUrl = URL.createObjectURL(blob);
+
+                                const tempLink = document.createElement('a');
+                                tempLink.href = blobUrl;
+                                tempLink.download = nombreFoto;
+                                document.body.appendChild(tempLink);
+                                tempLink.click();
+                                document.body.removeChild(tempLink);
+                                URL.revokeObjectURL(blobUrl);
+                            } catch (err) {
+                                console.error('Error al descargar la imagen:', err);
+                                Swal.fire({
+                                    title: "Error al descargar",
+                                    icon: "warning",
+                                    iconColor: "#C70000",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                            }
+                        });
+                    }
+
+                });
+            });
+
+            lightbox.init();
+
+            return lightbox;
+        }
+
+
+        // USO EXPANDIR IMAGEN
+
+        // lightboxExpandir = globalActivarAcciones.inicializarExpandirImagen();
+
+        //    public.expandirImagen = function(event, src) {
+        //     event.stopPropagation();
+
+        //     const img = new Image();
+        //     img.src = src;
+
+        //     img.onload = function() {
+        //         lightboxExpandir.options.dataSource = [{
+        //             src: src,
+        //             width: img.naturalWidth,
+        //             height: img.naturalHeight
+        //         }];
+        //         lightboxExpandir.loadAndOpen(0);
+        //     };
+
+        // };
+
+        // /USO EXPANDIR IMAGEN
+
+
         public.formRepeater = function({
             id,
             data = []
         }) {
             const $repeater = $(`#${id}`);
             let contador = 0;
+
+            // Obtener sufijo (lo que viene después del último "_")
+            const partesId = id.split("_");
+            const sufijoModulo = partesId[partesId.length - 1];
 
             if (!$repeater.data('template')) {
                 $repeater.data('template', $repeater.html());
@@ -121,17 +245,22 @@
                     const self = $(this);
 
                     self.find('input, select, textarea').each(function() {
-                        if (!$(this).val()) {
-                            $(this).val('');
-                        }
+                        if (!$(this).val()) $(this).val('');
+
                         const idOriginal = $(this).attr('id');
                         if (idOriginal) $(this).attr('id', `${idOriginal}_${contador}`);
+                    });
+
+                    self.find(`select.select2_${sufijoModulo}`).each(function() {
+                        globalActivarAcciones.select2({
+                            className: `select2_${sufijoModulo}`
+                        })
                     });
 
                     self.stop(true, true).slideDown();
                     globalActivarAcciones.tooltips({
                         idContainer: id
-                    })
+                    });
                 },
 
                 hide: function(deleteElement) {
@@ -169,6 +298,7 @@
                 $repeater.setList(data);
             }
         };
+
 
 
         public.obtenerDataFormRepeater = function({

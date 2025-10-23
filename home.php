@@ -80,10 +80,10 @@ if (!isset($_SESSION["logueado"])) {
     <!-- SELECT BOOTSTRAP -->
     <link rel="stylesheet" href="assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
 
-    <script src="librerias/sheetjs.js"></script>
-    <script src="librerias/lodash.js"></script>
-    <script src="librerias/qrcode.js"></script>
-
+    <link rel="stylesheet" href="librerias/photoswipe/photoswipe.css">
+    <script src="librerias/sheetjs/sheetjs.js"></script>
+    <script src="librerias/lodash/lodash.js"></script>
+    <script src="librerias/qrcode/qrcode.js"></script>
 
     <!-- Helpers -->
     <script src="assets/vendor/js/helpers.js"></script>
@@ -366,6 +366,11 @@ if (!isset($_SESSION["logueado"])) {
     <script src="assets/js/forms-typeahead.js"></script>
     <script src="assets/js/forms-extras.js"></script>
 
+    <!-- LIBRERIA DE PANTALLA COMPLETA Y ZOOM DE IMAGENES -->
+    <script src="/librerias/photoswipe/photoswipe.umd.min.js"></script>
+    <script src="/librerias/photoswipe/photoswipe-lightbox.umd.min.js"></script>
+    <!-- / LIBRERIA DE PANTALLA COMPLETA Y ZOOM DE IMAGENES -->
+
     <!-- APP SISTEMA -->
     <?php include("sistema/sistema.php"); ?>
 
@@ -383,6 +388,7 @@ if (!isset($_SESSION["logueado"])) {
     <?php include("sistema/customLib/sinInformacion.php"); ?>
     <?php include("sistema/customLib/ordenTablas.php"); ?>
     <?php include("sistema/customLib/requestApi.php"); ?>
+    <?php include("sistema/customLib/previewImagenes.php"); ?>
 
     <!-- NO BORRAR, DEJAR SIMEPRE AL FINAL -->
     <?php include("router.php"); ?>
