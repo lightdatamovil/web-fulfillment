@@ -121,7 +121,7 @@
 
                                     <div class="col-12 col-md-6">
                                         <div class="form-floating form-floating-outline">
-                                            <select id="esCombo_mProductos" class="form-select campos_mProductos" onchange="appModalProductos.mostrarCombos(this)">
+                                            <select id="esCombo_mProductos" class="form-select campos_mProductos" onchange="appModalProductos.mostrarCombos()">
                                                 <option value="0" selected>No</option>
                                                 <option value="1">Si</option>
                                             </select>
@@ -182,8 +182,6 @@
 
                         </form>
                     </div>
-
-
 
                     <div class="tab-pane fade" id="tabCombos_mProductos" role="tabpanel">
                         <div class="row">

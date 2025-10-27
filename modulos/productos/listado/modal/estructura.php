@@ -104,23 +104,26 @@
             globalRequest.get(`/${rutaAPI}/${g_did}`, {
                 onSuccess: function(result) {
                     g_data = result.data;
-                    $("#cliente_mProductos").val(g_data.did_cliente);
+                    $("#cliente_mProductos").val(g_data.did_cliente).change();
                     $("#nombre_mProductos").val(g_data.titulo);
                     $("#sku_mProductos").val(g_data.sku);
                     $("#ean_mProductos").val(g_data.ean);
                     $("#posicion_mProductos").val(g_data.posicion);
-                    $("#esCombo_mProductos").val(g_data.es_combo);
+                    $("#esCombo_mProductos").val(g_data.es_combo).change();
                     $("#alto_mProductos").val(g_data.alto);
                     $("#ancho_mProductos").val(g_data.ancho);
                     $("#profundo_mProductos").val(g_data.profundo);
                     $("#cm3_mProductos").val(g_data.cm3);
                     $("#habilitado_mProductos").val(g_data.habilitado);
                     $("#descripcion_mProductos").val(g_data.descripcion);
+                    $("#curvas_mProductos").val(g_data.did_curva).change();
 
-                    globalImageCarousel.loadImages({
-                        id: "imagen_mProductos",
-                        arrUrls: [g_data.imagen]
-                    })
+                    if (g_data.imagen) {
+                        globalImageCarousel.loadImages({
+                            id: "imagen_mProductos",
+                            arrUrls: [g_data.imagen]
+                        })
+                    }
 
                     g_ecommerce = g_data.ecommerce || []
                     appModalProductos.renderEcommerce()
@@ -129,6 +132,14 @@
                     renderCombos();
                     g_insumos = g_data.insumos || []
                     renderInsumos()
+
+                    if (donde == 2) {
+                        $('.campos_mProductos').prop('disabled', true);
+                        $(".ocultarDesdeVer_mProductos").addClass("ocultar")
+                    } else {
+                        $('.campos_mProductos').prop('disabled', false);
+                        $(".ocultarDesdeVer_mProductos").removeClass("ocultar")
+                    }
 
                     $("#modal_mProductos").modal("show")
                 }
@@ -176,7 +187,9 @@
 
             if (!valor) {
                 curvaSeleccionada = {}
+                g_ecommerce = []
                 $("#listaValores_mProductos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>`);
+                appModalProductos.renderEcommerce()
                 return;
             }
 
@@ -252,12 +265,18 @@
             let valueCliente = $("#cliente_mProductos").val();
 
             if (valueCliente == "") {
-                $("#contenedorEcommerce_mProductos").html('');
+                $("#contenedorEcommerce_mProductos").empty('');
                 return;
             }
 
             let cliente = appSistema.clientes.find(c => c.did == valueCliente);
             let cuentas = cliente?.cuentas || [];
+
+            if (g_ecommerce.length < 1) {
+                g_ecommerce = [{
+                    variantes_valores: []
+                }];
+            }
 
             let buffer = '';
 
@@ -265,14 +284,19 @@
                 let titulo = ""
                 let masDeUno = false
 
-                item.variantes_valores.forEach((valor) => {
-                    let categoria = curvaSeleccionada.categorias.find(cat => cat.valores.some(v => v.did == valor));
-                    let variante = appSistema.variantes.find(item => item.did == categoria.did_variante)
-                    let valorSeleccionado = categoria.valores.find(v => v.did == valor);
+                if (item.variantes_valores.length > 0) {
+                    item.variantes_valores.forEach((valor) => {
+                        let categoria = curvaSeleccionada.categorias.find(cat => cat.valores.some(v => v.did == valor));
+                        let variante = appSistema.variantes.find(item => item.did == categoria.did_variante)
+                        let valorSeleccionado = categoria.valores.find(v => v.did == valor);
 
-                    titulo += `<div class="text-center ${masDeUno ? "border-start border-primary ps-3" : ""}">${variante.nombre}<br/>${categoria.nombre}: <span class="text-primary">${valorSeleccionado.nombre}</span></div>`
-                    masDeUno = true
-                })
+                        titulo += `<div class="text-center ${masDeUno ? "border-start border-primary ps-3" : ""}">${variante.nombre}<br/>${categoria.nombre}: <span class="text-primary">${valorSeleccionado.nombre}</span></div>`
+                        masDeUno = true
+                    })
+
+                } else {
+                    titulo = `Default`
+                }
 
                 buffer += `<table class="table table-bordered tablasEcommerce_mProductos" data-valores='${JSON.stringify(item.variantes_valores)}' data-did="${item.did ? item.did : ""}" data-index="${idx}">`
                 buffer += `<thead><tr>`
@@ -283,7 +307,7 @@
 
                 let primerEan = true
                 cuentas.forEach(cuenta => {
-                    let dataCuenta = item.grupo?.find(i => i.didCuenta == cuenta.did) || {}
+                    let dataCuenta = item.grupos?.find(i => i.didCuenta == cuenta.did) || {}
 
                     buffer += `<tr>`
 
@@ -296,7 +320,7 @@
 
                     buffer += `<td>`
                     buffer += `<div class="form-check m-0 p-0 d-flex align-items-center flex-column gap-1">`
-                    buffer += `<input class="form-check-input m-0" type="checkbox" id="syncTablaEccomerce_${idx}_mProductos" ${dataCuenta.sync ? "checked": "" }/>`
+                    buffer += `<input class="form-check-input m-0 campos_mProductos" type="checkbox" id="syncTablaEccomerce_${idx}_mProductos" ${dataCuenta.sync ? "checked": "" }/>`
                     buffer += `<p class="m-0 text-center" style="font-size: 12px; white-space: nowrap;">Sincronizar stock<br/>entre tiendas</p>`
                     buffer += `</div>`
                     buffer += `</td>`
@@ -304,7 +328,7 @@
                     buffer += `<td>`
                     buffer += `<div class="col-12">`
                     buffer += `<div class="form-floating form-floating-outline">`
-                    buffer += `<input type="text" class="form-control" placeholder="SKU" id="skuTablaEccomerce_${idx}_mProductos" value="${dataCuenta.sku || ""}"/>`
+                    buffer += `<input type="text" class="form-control campos_mProductos" placeholder="SKU" id="skuTablaEccomerce_${idx}_mProductos" value="${dataCuenta.sku || ""}"/>`
                     buffer += `<label for="">SKU</label>`
                     buffer += `</div>`
                     buffer += `</div>`
@@ -315,9 +339,9 @@
                     buffer += `<div class="form-floating form-floating-outline">`
 
                     if (donde == 0) {
-                        buffer += `<input type="text" class="form-control eansProducto_mProductos" id="eanTablaEccomerce_${idx}_mProductos" ${primerEan ? `onchange="appModalProductos.llenarAllEan()"`: ""} placeholder="EAN" value="${dataCuenta.ean || ""}"/>`
+                        buffer += `<input type="text" class="form-control campos_mProductos eansProducto_mProductos" id="eanTablaEccomerce_${idx}_mProductos" ${primerEan ? `onchange="appModalProductos.llenarAllEan()"`: ""} placeholder="EAN" value="${dataCuenta.ean || ""}"/>`
                     } else {
-                        buffer += `<input type="text" class="form-control" id="eanTablaEccomerce_${idx}_mProductos" placeholder="EAN" value="${dataCuenta.ean || ""}"/>`
+                        buffer += `<input type="text" class="form-control campos_mProductos" id="eanTablaEccomerce_${idx}_mProductos" placeholder="EAN" value="${dataCuenta.ean || ""}"/>`
                     }
                     buffer += `<label for="">EAN</label>`
                     buffer += `</div>`
@@ -328,7 +352,7 @@
                     buffer += `<td>`
                     buffer += `<div class="col-12">`
                     buffer += `<div class="form-floating form-floating-outline">`
-                    buffer += `<input type="text" class="form-control" placeholder="URL" id="urlTablaEccomerce_${idx}_mProductos" value="${dataCuenta.url || ""}"/>`
+                    buffer += `<input type="text" class="form-control campos_mProductos" placeholder="URL" id="urlTablaEccomerce_${idx}_mProductos" value="${dataCuenta.url || ""}"/>`
                     buffer += `<label for="">URL</label>`
                     buffer += `</div>`
                     buffer += `</div>`
@@ -353,7 +377,7 @@
                 const variantes_valores = JSON.parse($tabla.attr("data-valores"));
                 const index = $tabla.attr("data-index");
 
-                const grupo = [];
+                const grupos = [];
 
                 $tabla.find("tbody tr").each(function() {
                     const $fila = $(this);
@@ -365,7 +389,7 @@
                     const url = $fila.find(`#urlTablaEccomerce_${index}_mProductos`).val() || "";
                     const sync = $fila.find(`#syncTablaEccomerce_${index}_mProductos`).is(":checked") ? 1 : 0;
 
-                    grupo.push({
+                    grupos.push({
                         did,
                         didCuenta,
                         sku,
@@ -377,16 +401,17 @@
 
                 datos.push({
                     variantes_valores,
-                    grupo
+                    grupos
                 });
             });
 
             return datos;
         };
 
+        public.mostrarCombos = function() {
+            let select = $("#esCombo_mProductos").val();
 
-        public.mostrarCombos = function(select) {
-            if (select.value == 1) {
+            if (select == 1) {
                 globalActivarAcciones.mostrarOcultarTab({
                     tab: "tabCombos_mProductos",
                     opcion: 1
@@ -447,7 +472,7 @@
                 }),
                 descripcion: $("#descripcion_mProductos").val().trim() || "",
                 posicion: $("#posicion_mProductos").val().trim() || 0,
-                didCurva: $("#curvas_mProductos").val() || null,
+                did_curva: $("#curvas_mProductos").val() || null,
                 ecommerce: obtenerDatosEcommerce(),
                 combos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formCombos_mProductos"
@@ -490,10 +515,6 @@
                 }
             }
 
-            console.log("datos", datos);
-            return
-
-
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de guardar este producto?"
                 })
@@ -527,7 +548,7 @@
                 }),
                 descripcion: $("#descripcion_mProductos").val().trim() || "",
                 posicion: $("#posicion_mProductos").val().trim() || 0,
-                didCurva: $("#curvas_mProductos").val() || null,
+                did_curva: $("#curvas_mProductos").val() || null,
                 ecommerce: obtenerDatosEcommerce(),
                 combos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formCombos_mProductos"

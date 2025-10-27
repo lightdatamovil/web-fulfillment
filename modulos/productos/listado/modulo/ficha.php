@@ -62,7 +62,7 @@
             <table class="table table-hover">
                 <thead id="theadListado_productos" class="table-thead">
                     <tr>
-                        <th data-order="cliente">Cliente</th>
+                        <th data-order="did_cliente">Cliente</th>
                         <th data-order="titulo">Titulo</th>
                         <th data-order="sku">SKU</th>
                         <th data-order="habilitado">Estado</th>

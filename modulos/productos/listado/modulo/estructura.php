@@ -41,6 +41,7 @@
 
         public.limpiarCampos = function() {
             $(".campos_productos").val("")
+            $(".select2_productos").trigger("change")
         };
 
         function renderListado() {
@@ -56,7 +57,7 @@
             };
 
             g_data.forEach(producto => {
-                cliente = appSistema.clientes.find((cliente) => cliente.did == producto.did_cliente);
+                cliente = appSistema.clientes.find((cliente) => cliente.did == producto.did_cliente).nombre_fantasia;
 
                 buffer += `<tr>`
                 buffer += `<td>${cliente || "---"}</td>`
@@ -100,8 +101,9 @@
                 page_size: public.limitePorPagina,
                 sort_by: order,
                 sort_dir: direction,
-                nombre: $("#filtroNombre_productos").val(),
-                codigo: $("#filtroCodigo_productos").val(),
+                did_cliente: $("#filtroClientes_productos").val(),
+                titulo: $("#filtroTitulo_productos").val(),
+                sku: $("#filtroSku_productos").val(),
                 habilitado: $("#filtroEstado_productos").val()
             };
 
