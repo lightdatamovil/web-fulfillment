@@ -15,16 +15,16 @@
         public.open = async function() {
             $(".winapp").hide();
             $("#modulo_enviosSincronizar").show();
-            await appModuloEnviosSincronizar.getListado();
-            await globalActivarAcciones.filtrarConEnter({
-                className: "inputs_enviosSincronizar",
-                callback: appModuloEnviosSincronizar.getListado
-            })
-            await globalOrdenTablas.activar({
-                idThead: "theadListado_enviosSincronizar",
-                callback: appModuloEnviosSincronizar.getListado,
-                defaultOrder: "codigo"
-            })
+            // await appModuloEnviosSincronizar.getListado();
+            // await globalActivarAcciones.filtrarConEnter({
+            //     className: "inputs_enviosSincronizar",
+            //     callback: appModuloEnviosSincronizar.getListado
+            // })
+            // await globalOrdenTablas.activar({
+            //     idThead: "theadListado_enviosSincronizar",
+            //     callback: appModuloEnviosSincronizar.getListado,
+            //     defaultOrder: "codigo"
+            // })
         };
 
         public.limpiarCampos = function() {

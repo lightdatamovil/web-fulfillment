@@ -1,129 +1,299 @@
 <script>
-    const appPedido = (function() {
+    const appModalPedidos = (function() {
         let g_did = 0;
         let g_data;
-        let logosTiendas = {}
+        let g_productos;
+        let donde = 0;
+        const rutaAPI = "pedidos"
 
         const public = {};
 
-        public.open = function(did) {
-            globalLoading.open()
-            resetModal();
-            g_did = did
-            logosTiendas = globalLogoTiendas.obtener()
-            getPedido()
+        public.open = async function({
+            mode = 0,
+            did = 0
+        } = {}) {
+            await resetModal()
+            g_did = did;
+            donde = mode
+
+            await globalLlenarSelect.clientes({
+                id: "cliente_mPedidos",
+            })
+
+            await globalLlenarSelect.productos({
+                id: "producto_productos_mPedidos"
+            })
+
+            if (mode == 0) {
+                // NUEVO PEDIDO
+                $("#titulo_mPedidos").text("Nuevo pedido");
+                $("#subtitulo_mPedidos").text("Creacion de pedido nuevo, completar formulario.");
+                $('.campos_mPedidos').prop('disabled', false);
+                $("#checkHabilitado_mPedidos").prop("checked", true);
+                $("#tienda_mPedidos").prop('disabled', true);
+                $("#btnEditar_mPedidos").addClass("ocultar");
+                $("#btnGuardar_mPedidos, .ocultarDesdeVer_mPedidos").removeClass("ocultar");
+                renderProductos()
+                $("#modal_mPedidos").modal("show")
+            } else if (mode == 1) {
+                // MODIFICAR PEDIDO
+                await globalLoading.open()
+                $("#titulo_mPedidos").text("Modificar pedido");
+                $("#subtitulo_mPedidos").html("Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios ");
+                $('.campos_mPedidos').prop('disabled', false);
+                $("#btnGuardar_mPedidos").addClass("ocultar");
+                $("#btnEditar_mPedidos, .ocultarDesdeVer_mPedidos").removeClass("ocultar");
+                await get()
+            } else {
+                // VER PEDIDO
+                await globalLoading.open()
+                $("#titulo_mPedidos").text("Ver pedido");
+                $("#subtitulo_mPedidos").text("Visualizacion de pedido, no se puede modificar.");
+                $('.campos_mPedidos').prop('disabled', true);
+                $("#btnGuardar_mPedidos, #btnEditar_mPedidos, .ocultarDesdeVer_mPedidos").addClass("ocultar");
+                await get()
+            }
+
+            await globalActivarAcciones.select2({
+                className: "select2_mPedidos"
+            })
         }
 
-        function getPedido() {
-            parametros = {
-                idEmpresa: appSistema.idEmpresa,
-                did: g_did
-            };
+        function get() {
+            globalRequest.get(`/${rutaAPI}/${g_did}`, {
+                onSuccess: function(result) {
+                    g_data = result.data;
+                    $("#cliente_mPedidos").val(g_data.did_cliente).change();
+                    $("#tienda_mPedidos").val(g_data.did_cuenta).change();
+                    $("#idVenta_mPedidos").val(g_data.id_venta);
+                    $("#comprador_mPedidos").val(g_data.comprador);
+                    $("#total_mPedidos").val(g_data.total);
+                    $("#observacion_mPedidos").val(g_data.observacion);
+                    $("#calle_mPedidos").val(g_data.direccion.calle);
+                    $("#numero_mPedidos").val(g_data.direccion.numero);
+                    $("#cp_mPedidos").val(g_data.direccion.cp);
+                    $("#localidad_mPedidos").val(g_data.direccion.localidad);
+                    $("#provincia_mPedidos").val(g_data.direccion.provincia);
+                    $("#latitud_mPedidos").val(g_data.direccion.latitud);
+                    $("#longitud_mPedidos").val(g_data.direccion.longitud);
+                    $("#referencia_mPedidos").val(g_data.direccion.referencia);
 
-            $.ajax({
-                url: `${appSistema.urlServer}/pedido/getPedidoById`,
-                type: "POST",
-                data: parametros,
-                headers: {
-                    Authorization: `Bearer ${appSistema.tkn}`
-                },
-                success: function(result) {
-                    if (result.estado && result.data) {
-                        g_data = result.data;
-                        render();
-                        globalLoading.close()
-                        $("#modalPedido").modal("show")
+                    g_productos = g_data.productos || []
+                    renderProductos();
+
+                    if (donde == 2) {
+                        $('.campos_mPedidos').prop('disabled', true);
+                        $(".ocultarDesdeVer_mPedidos").addClass("ocultar")
+                    } else {
+                        $('.campos_mPedidos').prop('disabled', false);
+                        $(".ocultarDesdeVer_mPedidos").removeClass("ocultar")
                     }
-                },
-                error: function(xhr) {
-                    console.log("Error", xhr.responseText);
-                    globalLoading.close()
-                    globalSweetalert.error()
+                    $("#modal_mPedidos").modal("show")
                 }
             });
         }
 
-        function render() {
-            const htmlStatus = `<span class="badge rounded-pill bg-label-${appSistema.dbEstadosPedidos[g_data.status].color} me-2">${appSistema.dbEstadosPedidos[g_data.status].traduccion}</span>`
+        function resetModal() {
+            globalActivarAcciones.activarPrimerTab({
+                tabList: "tabs_mPedidos"
+            })
 
-            $("#tienda_mPedidos").html(logosTiendas[g_data.flex] ? logosTiendas[g_data.flex] : "")
-            $("#cliente_mPedidos").html(g_data.cliente || "")
-            $("#numero_mPedidos").html(g_data.number || "Sin numero");
-            $("#comprador_mPedidos").html(g_data.nombreComprador || "Sin comprador");
-            $("#fecha_mPedidos").html(g_data.fecha_venta ? globalFuncionesJs.formatearFecha(g_data.fecha_venta) : "Sin fecha");
-            $("#status_mPedidos").html(htmlStatus)
+            $(".campos_mPedidos").val("")
+            $(".select2_mPedidos").trigger("change")
+            g_productos = [];
 
-            if (g_data.items.length == 0) {
-                $("#items_mPedidos").html('<p class="text-muted text-center">Sin items aún.</p>');
+            globalValidar.limpiarTodas()
+            globalValidar.deshabilitarTiempoReal({
+                className: "camposObli_mPedidos"
+            })
+        };
+
+        public.changeCliente = function() {
+            let clienteSeleccionado = $("#cliente_mPedidos").val()
+            let buffer = ""
+
+            if (!clienteSeleccionado) {
+                buffer += `<option value="">Selecciona un cliente para acceder</option>`
+
+                $("#tienda_mPedidos").html(buffer);
+                $("#tienda_mPedidos").prop('disabled', true);
             } else {
-                buffer = `<table class="table table-bordered">`
-                buffer += `<thead>`
-                buffer += `<tr>`
-                buffer += `<th>ID</th>`
-                buffer += `<th>Descripcion</th>`
-                buffer += `<th>Cantidad</th>`
-                buffer += `</tr>`
-                buffer += `</thead>`
+                let cliente = appSistema.clientes.find((item) => item.did == clienteSeleccionado)
 
-                buffer += `<tbody>`
+                buffer += `<option value="">Selecciona una tienda</option>`
 
-                g_data.items.forEach((i, idx) => {
-                    buffer += `<tr>`
-                    buffer += `<td>${i.user_product_id}</td>`
-                    buffer += `<td>${i.descripcion}</td>`
-                    buffer += `<td>${i.cantidad}</td>`
-                    buffer += `</tr>`
+                cliente.cuentas.forEach(cuenta => {
+                    buffer += `<option value="${cuenta.did}">${cuenta.titulo} - ${appSistema.ecommerce[cuenta.flex]}</option>`
                 });
 
-                buffer += `</tbody>`
-                buffer += `</table>`
-
-                $("#items_mPedidos").html(buffer);
+                $("#tienda_mPedidos").html(buffer);
+                $("#tienda_mPedidos").prop('disabled', false);
             }
         }
 
-        function resetModal() {
-            $("#tienda_mPedidos").empty();
-            $("#cliente_mPedidos").empty();
-            $("#numero_mPedidos").empty();
-            $("#comprador_mPedidos").empty();
-            $("#fecha_mPedidos").empty();
-            $("#status_mPedidos").empty()
-            $("#items_mPedidos").empty()
+        function renderProductos() {
+            globalActivarAcciones.formRepeater({
+                id: "formProductos_mPedidos",
+                data: g_productos
+            })
+        };
+
+        function validacion() {
+            return globalValidar.obligatorios({
+                className: "camposObli_mPedidos"
+            })
+        }
+
+        public.guardar = function() {
+            const datos = {
+                did_cliente: $("#cliente_mPedidos").val() || null,
+                did_cuenta: $("#tienda_mPedidos").val() || null,
+                id_venta: $("#idVenta_mPedidos").val().trim() || "",
+                comprador: $("#comprador_mPedidos").val().trim() || "",
+                total: $("#total_mPedidos").val().trim() || "",
+                observacion: $("#observacion_mPedidos").val().trim() || "",
+                direccion: {
+                    calle: $("#calle_mPedidos").val().trim() || "",
+                    numero: $("#numero_mPedidos").val().trim() || "",
+                    cp: $("#cp_mPedidos").val().trim() || "",
+                    localidad: $("#localidad_mPedidos").val().trim() || "",
+                    provincia: $("#provincia_mPedidos").val().trim() || "",
+                    latitud: $("#latitud_mPedidos").val().trim() || "",
+                    longitud: $("#longitud_mPedidos").val().trim() || "",
+                    referencia: $("#referencia_mPedidos").val().trim() || "",
+                },
+                productos: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formProductos_mPedidos"
+                }),
+            };
+
+            globalValidar.formRepeater({
+                id: "formProductos_mPedidos"
+            })
+
+            globalValidar.habilitarTiempoReal({
+                className: "camposObli_mPedidos",
+                callback: validacion
+            });
+
+            if (validacion()) {
+                globalSweetalert.alert({
+                    titulo: "Verifique los campos"
+                });
+                return;
+            }
+
+            if (datos.productos.length === 0) {
+                globalSweetalert.alert({
+                    titulo: "Debe agregar al menos un producto"
+                });
+                return;
+            }
+
+            globalSweetalert.confirmar({
+                    titulo: "¿Estas seguro de guardar esta pedido?"
+                })
+                .then(function(confirmado) {
+                    if (confirmado) {
+                        globalRequest.post(`/${rutaAPI}`, datos, {
+                            onSuccess: function(result) {
+                                $("#modal_mPedidos").modal("hide");
+                                globalSweetalert.exito();
+                                appModuloPedidos.getListado();
+                            }
+                        });
+                    }
+                });
+        };
+
+        public.editar = function() {
+            const datosNuevos = {
+                did_cliente: $("#cliente_mPedidos").val() || null,
+                did_cuenta: $("#tienda_mPedidos").val() || null,
+                id_venta: $("#idVenta_mPedidos").val().trim() || "",
+                comprador: $("#comprador_mPedidos").val().trim() || "",
+                total: $("#total_mPedidos").val().trim() || "",
+                observacion: $("#observacion_mPedidos").val().trim() || "",
+                direccion: {
+                    calle: $("#calle_mPedidos").val().trim() || "",
+                    numero: $("#numero_mPedidos").val().trim() || "",
+                    cp: $("#cp_mPedidos").val().trim() || "",
+                    localidad: $("#localidad_mPedidos").val().trim() || "",
+                    provincia: $("#provincia_mPedidos").val().trim() || "",
+                    latitud: $("#latitud_mPedidos").val().trim() || "",
+                    longitud: $("#longitud_mPedidos").val().trim() || "",
+                    referencia: $("#referencia_mPedidos").val().trim() || "",
+                },
+                productos: globalActivarAcciones.obtenerDataFormRepeater({
+                    id: "formProductos_mPedidos"
+                }),
+            };
+
+            globalValidar.formRepeater({
+                id: "formProductos_mPedidos"
+            })
+
+            globalValidar.habilitarTiempoReal({
+                className: "camposObli_mPedidos",
+                callback: validacion
+            });
+
+            if (validacion()) {
+                globalSweetalert.alert({
+                    titulo: "Verifique los campos"
+                });
+                return;
+            }
+
+            const datosModificados = globalValidar.obtenerCambios({
+                dataNueva: datosNuevos,
+                dataOriginal: g_data
+            });
+
+            if (Object.keys(datosModificados).length === 0) {
+                globalSweetalert.alert({
+                    titulo: "No se realizaron cambios"
+                });
+                return;
+            }
+
+            datosNuevos.productos = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.productos,
+                dataOriginal: g_productos
+            })
+
+            globalSweetalert.confirmar({
+                    titulo: "¿Estas seguro de modificar esta pedido?"
+                })
+                .then(function(confirmado) {
+                    if (confirmado) {
+                        globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
+                            onSuccess: function(result) {
+                                $("#modal_mPedidos").modal("hide");
+                                globalSweetalert.exito();
+                                appModuloPedidos.getListado();
+                            }
+                        });
+                    }
+                });
         };
 
         public.eliminar = function(did) {
-            const datos = {
-                idEmpresa: appSistema.idEmpresa,
-                did
-            }
-
-            globalSweetalert.confirmar("¿Estas seguro de eliminar este pedido?", "var(--bs-danger)").then(function(confirmado) {
+            globalSweetalert.confirmar({
+                titulo: "¿Estas seguro de eliminar esta pedido?",
+                color: "var(--bs-danger)"
+            }).then(function(confirmado) {
                 if (confirmado) {
-                    globalLoading.open()
-                    $.ajax({
-                        url: `${appSistema.urlServer}/pedido/deletePedido`,
-                        data: datos,
-                        type: "POST",
-                        contentType: "application/json",
-                        headers: {
-                            Authorization: `Bearer ${appSistema.tkn}`
-                        },
-                        data: JSON.stringify(datos),
-                        success: function(result) {
-                            globalLoading.close()
-                            globalSweetalert.exito("Eliminado con exito!")
-                            appPedidosListado.getListado();
-                        },
-                        error: function(xhr) {
-                            console.log("Error al guardar", xhr.responseText);
-                            globalLoading.close()
-                            globalSweetalert.error()
+                    globalRequest.delete(`/${rutaAPI}/${did}`, {
+                        onSuccess: function(result) {
+                            globalSweetalert.exito({
+                                titulo: "Eliminado con éxito!"
+                            });
+                            appModuloPedidos.getListado();
                         }
                     });
-
                 }
-            })
+            });
         };
 
         return public;

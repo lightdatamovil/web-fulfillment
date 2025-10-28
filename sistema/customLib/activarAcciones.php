@@ -43,25 +43,29 @@
             className
         }) {
             $(`.${className}`).each(function() {
-                if ($(this).hasClass("select2-hidden-accessible")) {
-                    $(this).select2('destroy');
+                const $el = $(this);
+
+                // Destruir solo si realmente está inicializado
+                if ($el.data('select2')) {
+                    $el.select2('destroy');
                 }
 
-                const $modalParent = $(this).closest('.modal');
+                const $modalParent = $el.closest('.modal');
 
                 if ($modalParent.length) {
-                    $(this).select2({
+                    $el.select2({
                         dropdownParent: $modalParent,
                         dropdownCssClass: 'select2-inside-modal',
                         width: '100%'
                     });
                 } else {
-                    $(this).select2({
+                    $el.select2({
                         width: '100%'
                     });
                 }
             });
-        }
+        };
+
 
         public.activarPrimerTab = function({
             tabList

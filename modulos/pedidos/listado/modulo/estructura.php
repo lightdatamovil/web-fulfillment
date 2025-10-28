@@ -1,37 +1,74 @@
 <script>
-	const appPedidosListado = (function() {
+	const appModuloPedidos = (function() {
 		let g_data;
-		let paginaActual = 1;
-		let totalPaginas = 1;
-		let limitePorPagina = 10;
+		let g_meta;
+		let order = "";
+		let direction = "";
 		let openModulo = 0
+		const rutaAPI = "pedidos"
 
 		const public = {};
 
-		public.open = function() {
+		public.paginaActual = 1;
+		public.limitePorPagina = 10;
+
+		public.open = async function() {
 			$(".winapp").hide();
-			$("#ContainerPedidosListado").show();
-			globalLlenarSelect.clientes("filtroCliente_pedidos")
-			globalLlenarSelect.estadosPedidos("filtroEstado_pedidos")
-			globalLlenarSelect.tiendas("filtroOrigen_pedidos")
-			appPedidosListado.getListado();
-			globalActivarAcciones.filtrarConEnter("inputs_pedidos", () => appPedidosListado.getListado(1))
+			$("#modulo_pedidos").show();
+
+			await globalLlenarSelect.clientes({
+				id: "filtroClientes_pedidos",
+				multiple: true
+			})
+
+			await globalLlenarSelect.estadosPedidos({
+				id: "filtroEstado_pedidos",
+				multiple: true
+			})
+
+			await globalLlenarSelect.tiendas({
+				id: "filtroOrigen_pedidos",
+				multiple: true
+			})
+
+			await globalActivarAcciones.select2({
+				className: "select2_pedidos"
+			})
+
+			await appModuloPedidos.getListado();
+
+			await globalActivarAcciones.filtrarConEnter({
+				className: "inputs_pedidos",
+				callback: appModuloPedidos.getListado
+			})
+
+			await globalOrdenTablas.activar({
+				idThead: "theadListado_pedidos",
+				callback: appModuloPedidos.getListado,
+				defaultOrder: "titulo"
+			})
 		};
 
 		public.limpiarCampos = function() {
-			$(".campos_pedidos").val("");
+			$(".campos_pedidos").val("")
+			$(".select2_pedidos").trigger("change")
 		};
 
 		function renderListado() {
 			$("#tbodyListado_pedidos").empty()
-			buffer = ""
+			let buffer = ""
 
-			if (!g_data.data || g_data.data.length < 1) {
-				globalSinInformacion.tablasVacias("tbodyListado_pedidos", openModulo)
+			if (!g_data || g_data.length < 1) {
+				globalSinInformacion.tablasVacias({
+					idTbody: "tbodyListado_pedidos",
+					open: openModulo
+				})
 				return
 			};
 
-			g_data.data.forEach(pedido => {
+			g_data.forEach(pedido => {
+				const cliente = appSistema.clientes.find(c => c.did == pedido.cliente)?.nombre_fantasia || "<b>Cliente eliminado</b>";
+
 				htmlArmado = `<span class="badge badge-center rounded-pill bg-success"><i class="ri-check-line"></i></span>`
 				htmlNoArmado = `<span class="badge badge-center rounded-pill bg-danger"><i class="ri-close-large-line"></i></span>`
 
@@ -41,7 +78,7 @@
 				}
 
 				buffer += `<tr>`
-				buffer += `<td>${pedido.cliente || '---'}</td>`
+				buffer += `<td>${cliente || '---'}</td>`
 				buffer += `<td>${pedido.fecha || '---'}</td>`
 				buffer += `<td>${pedido.origen ? appSistema.ecommerce[pedido.origen] : '---'}</td>`
 				buffer += `<td>${pedido.idVenta || '---'}</td>`
@@ -51,10 +88,13 @@
 				buffer += `<td>${pedido.armado == 1 ? htmlArmado : htmlNoArmado}</td>`
 				buffer += `<td>${pedido.ot || '---'}</td>`
 				buffer += `<td>`
-				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appPedido.open('${pedido.did}')" title="Ver">`
+				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidos.open({mode: 2, did: '${pedido.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
 				buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`
 				buffer += `</button>`
-				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appPedido.eliminar('${pedido.did}')" title="Eliminar">`
+				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidos.open({mode: 1, did: '${pedido.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">`
+				buffer += `<i class="tf-icons ri-pencil-line ri-22px"></i>`
+				buffer += `</button>`
+				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidos.eliminar('${pedido.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
 				buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
 				buffer += `</button>`
 				buffer += `</td>`
@@ -62,79 +102,51 @@
 			});
 
 			$("#tbodyListado_pedidos").html(buffer)
-			$("#totalRegistros_pedidos").text(g_data.totalRegistros)
-			$("#totalPaginas_pedidos").text(g_data.totalPaginas)
+			$("#totalRegistros_pedidos").text(g_meta.totalItems)
+			$("#totalPaginas_pedidos").text(g_meta.totalPages)
+			globalActivarAcciones.tooltips({
+				idContainer: "modulo_pedidos"
+			})
 
 		}
 
-		public.getListado = function(type) {
-			openModulo = type
-			cliente = $("#filtroCliente_pedidos").val();
-			idVenta = $("#filtroIdVenta_pedidos").val().trim();
-			comprador = $("#filtroComprador_pedidos").val().trim();
-			estado = $("#filtroEstado_pedidos").val();
-			armado = $("#filtroArmado_pedidos").val();
-			origen = $("#filtroOrigen_pedidos").val();
-			ot = $("#filtroOT_pedidos").val().trim();
+		public.getListado = function({
+			type = 0,
+			orderBy = "",
+			orderDir = ""
+		} = {}) {
+			openModulo = type;
+			order = orderBy || order;
+			direction = orderDir || direction;
 
 			const parametros = {
-				"idEmpresa": appSistema.idEmpresa,
-				"pagina": type == 1 ? 1 : paginaActual,
-				"cantidad": limitePorPagina,
-				"cliente": cliente,
-				"idVenta": idVenta,
-				"comprador": comprador,
-				"estado": estado,
-				"armado": armado,
-				"origen": origen,
-				"ot": ot
+				page: type === 1 ? 1 : public.paginaActual,
+				page_size: public.limitePorPagina,
+				sort_by: order,
+				sort_dir: direction,
+				cliente: $("#filtroCliente_pedidos").val(),
+				id_venta: $("#filtroIdVenta_pedidos").val().trim(),
+				comprador: $("#filtroComprador_pedidos").val().trim(),
+				estado: $("#filtroEstado_pedidos").val(),
+				armado: $("#filtroArmado_pedidos").val(),
+				origen: $("#filtroOrigen_pedidos").val(),
+				ot: $("#filtroOT_pedidos").val().trim(),
 			};
 
-			globalLoading.open()
-			$.ajax({
-				url: `${appSistema.urlServer}/pedido/getPedidos`,
-				type: "POST",
-				data: JSON.stringify(parametros),
-				contentType: "application/json",
-				headers: {
-					Authorization: `Bearer ${appSistema.tkn}`
+			const queryString = $.param(parametros);
+
+			globalRequest.get(`/${rutaAPI}?${queryString}`, {
+				onSuccess: function(result) {
+					g_data = result.data;
+					g_meta = result.meta;
+					public.paginaActual = parseInt(g_meta.page);
+					renderListado();
+					globalPaginado.generar({
+						idBase: "_pedidos",
+						meta: g_meta,
+						estructura: appModuloPedidos
+					});
 				},
-				success: function(result) {
-					g_data = result
-
-					if (g_data.estado && g_data.data) {
-						paginaActual = parseInt(g_data.pagina);
-						totalPaginas = parseInt(g_data.totalPaginas);
-						renderListado();
-
-						globalPaginado.generarFooter({
-							idBase: "_pedidos",
-							totalRegistros: g_data.totalRegistros,
-							totalPaginas: g_data.totalPaginas,
-							paginaActual: g_data.pagina,
-							limitePorPagina: g_data.cantidad,
-							onPageChange: (pagina) => {
-								paginaActual = pagina;
-								public.getListado();
-							},
-							onLimiteChange: (nuevoLimite) => {
-								limitePorPagina = nuevoLimite;
-								paginaActual = 1;
-								public.getListado();
-							}
-						});
-
-					}
-					globalLoading.close()
-
-				},
-				error: function() {
-					globalLoading.close()
-					globalSweetalert.error()
-				},
-				complete: function() {
-					globalLoading.close()
-				}
 			});
 		};
 

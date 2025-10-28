@@ -1,6 +1,7 @@
 <script>
 	const appPedidosSubidaMasiva = (function() {
 		let g_data;
+		let pedidosObtenidos = []
 		let columnasHojaPedidos = ["Numero de tracking", "Fecha de venta", "Valor declarado", "Peso declarado", "Destinatario", "Teléfono de contacto", "Dirección", "Localidad", "Código postal", "Observaciones", "Email", "Total a cobrar", "Logistica Inversa"]
 		let columnasHojaProductos = ["Numero de tracking", "SKU", "EAN", "Cantidad"]
 		let iconosPedidos = {
@@ -18,24 +19,26 @@
 			"Total a cobrar": "ri-money-dollar-circle-line",
 			"Logistica Inversa": "ri-loop-left-line"
 		}
-		let pedidosFinal = []
+		const rutaAPI = "pedidos"
+
 
 		const public = {};
 
 		public.open = function() {
 			$(".winapp").hide();
-			$("#ContainerPedidosSubidaMasiva").show();
-			globalLlenarSelect.clientes("filtroCliente_pedidosSubidaMasiva")
+			$("#modulo_pedidosSubidaMasiva").show();
+			globalLlenarSelect.clientes({
+				id: "cliente_pedidosSubidaMasiva"
+			})
 			appPedidosSubidaMasiva.limpiarCampos()
 		};
 
 		public.limpiarCampos = function() {
-			pedidosFinal = []
-			$('#archivo_pedidosSubidaMasiva').val('');
-			$('#filtroCliente_pedidosSubidaMasiva').val('');
+			pedidosObtenidos = []
+			$('#archivo_pedidosSubidaMasiva').val('')
+			$('#cliente_pedidosSubidaMasiva').val('').change();
 			$('#containerTable_pedidosSubidaMasiva').empty();
 			$("#instrucciones_pedidosSubidaMasiva").css("display", "")
-
 		}
 
 		public.descargarModelo = function() {
@@ -50,12 +53,6 @@
 
 		public.subirExcel = async function() {
 			const archivo = $('#archivo_pedidosSubidaMasiva')[0].files[0];
-			cliente = $("#filtroCliente_pedidosSubidaMasiva").val()
-
-			if (!cliente) {
-				$('#archivo_pedidosSubidaMasiva').val('');
-				return globalSweetalert.alert("Debe seleccionar un cliente");
-			}
 
 			if (archivo) {
 				try {
@@ -68,15 +65,19 @@
 
 					armarPedidos()
 				} catch (err) {
-					globalSweetalert.error('Error al leer el archivo:', err);
+					globalSweetalert.error({
+						titulo: `Error al leer el archivo: ${err}`,
+					});
 				}
 			} else {
-				globalSweetalert.alert("Debe seleccionar un archivo para subir");
+				globalSweetalert.alert({
+					titulo: "Debe seleccionar un archivo para subir"
+				});
 			}
 		}
 
 		function armarPedidos() {
-			pedidosFinal = g_data.pedidos.map(pedidoArray => {
+			pedidosObtenidos = g_data.pedidos.map(pedidoArray => {
 				let pedidoObj = columnasHojaPedidos.reduce((acc, key, index) => {
 					acc[key] = pedidoArray[index] ?? null;
 					return acc;
@@ -96,14 +97,15 @@
 				return pedidoObj;
 			});
 
-			console.log(pedidosFinal);
 			renderTable()
 		}
 
 
 		function renderTable() {
-			if (pedidosFinal.length < 1) {
-				globalSweetalert.error("Excel vacio o incorrecto");
+			if (pedidosObtenidos.length < 1) {
+				globalSweetalert.error({
+					titulo: "Excel vacio o incorrecto"
+				});
 				$('#archivo_pedidosSubidaMasiva').val('');
 				return
 			}
@@ -112,7 +114,7 @@
 
 			buffer += `<div class="accordion accordion-custom-button" id="containerAccordion_pedidosSubidaMasiva" style="height: 600px; overflow-y: auto; overflow-x:hidden;">`
 
-			pedidosFinal.forEach(pedido => {
+			pedidosObtenidos.forEach(pedido => {
 				buffer += `<div class="accordion-item rounded-0">`
 				buffer += `<h2 class="accordion-header" id="heading_${pedido[columnasHojaPedidos[0]]}_pedidoSubidaMasiva">`
 				buffer += `<button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#acorrdion_${pedido[columnasHojaPedidos[0]]}_pedidoSubidaMasiva" aria-expanded="false" aria-controls="acorrdion_${pedido[columnasHojaPedidos[0]]}_pedidoSubidaMasiva">`
@@ -179,14 +181,14 @@
 
 			buffer += `</div>`
 
-			buffer += `<div class="card-footer">`
+			buffer += `<div class="card-footer border-top">`
 			buffer += `<div class="col-12">`
 			buffer += `<div class="row g-3 justify-content-end">`
 			buffer += `<div class="col-12 col-md-6 col-lg-2">`
 			buffer += `<button type="reset" class="btn btn-outline-danger w-100" onclick="appPedidosSubidaMasiva.limpiarCampos()"><span class=" tf-icons ri-close-circle-fill ri-19px me-2"></span>Cancelar</button>`
 			buffer += `</div>`
 			buffer += `<div class="col-12 col-md-6 col-lg-3">`
-			buffer += `<button type="submit" class="btn btn-success w-100"><span class=" tf-icons ri-upload-cloud-2-fill ri-19px me-2"></span>Subir</button>`
+			buffer += `<button type="button" class="btn btn-success w-100" onclick="appPedidosSubidaMasiva.guardar()"><span class=" tf-icons ri-upload-cloud-2-fill ri-19px me-2"></span>Subir</button>`
 			buffer += `</div>`
 			buffer += `</div>`
 			buffer += `</div>`
@@ -208,6 +210,45 @@
 
 			return `${day}/${month}/${year}`
 		}
+
+		public.guardar = function() {
+			const datos = {
+				cliente: $("#cliente_pedidosSubidaMasiva").val(),
+				pedidos: pedidosObtenidos
+			};
+
+
+			if (datos.cliente == "") {
+				globalSweetalert.alert({
+					titulo: "Debe seleccionar un cliente"
+				});
+				return;
+			}
+
+			if (datos.pedidos.length < 0) {
+				globalSweetalert.alert({
+					titulo: "Debe seleccionar un excel con al menos un pedido"
+				});
+				return;
+			}
+
+
+			globalSweetalert.confirmar({
+					titulo: "¿Estas seguro de subir estos pedido?"
+				})
+				.then(function(confirmado) {
+					if (confirmado) {
+						globalRequest.post(`/${rutaAPI}`, datos, {
+							onSuccess: function(result) {
+								globalSweetalert.exito({
+									titulo: "Pedidos subidos con exito!"
+								});
+								appPedidosSubidaMasiva.limpiarCampos()
+							}
+						});
+					}
+				});
+		};
 
 		return public;
 	})();

@@ -121,6 +121,16 @@
                 "icono": "menu-icon tf-icons ri-shopping-bag-3-line",
                 "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
                 "hijos": []
+            },
+            {
+                "id": 42,
+                "nombre": "Importar masivo",
+                "titulo": "Importar masivo",
+                "ruta": "importador-masivo",
+                "accion": "appImportadorMasivo.open();",
+                "icono": "menu-icon tf-icons ri-download-cloud-2-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
             }
         ]
     },
@@ -136,7 +146,7 @@
                 "nombre": "Listado",
                 "titulo": "Pedidos",
                 "ruta": "pedidos",
-                "accion": "appModuloPedidos.open();",
+                "accion": "appPedidosListado.open();",
                 "icono": "menu-icon tf-icons ri-checkbox-circle-line",
                 "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
                 "hijos": []
@@ -205,6 +215,16 @@
                 "ruta": "armado-ot",
                 "accion": "appOTListado.open()",
                 "icono": "menu-icon tf-icons ri-list-check-3",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
+                "hijos": []
+            },
+            {
+                "id": 82,
+                "nombre": "Asignación",
+                "titulo": "Asignación OT",
+                "ruta": "asignacion-ot",
+                "accion": "appOTAsignacion.open()",
+                "icono": "menu-icon tf-icons ri-user-follow-line",
                 "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
                 "hijos": []
             }

@@ -57,7 +57,7 @@
             };
 
             g_data.forEach(producto => {
-                cliente = appSistema.clientes.find((cliente) => cliente.did == producto.did_cliente).nombre_fantasia;
+                const cliente = appSistema.clientes.find(c => c.did == producto.did_cliente)?.nombre_fantasia || "<b>Cliente eliminado</b>";
 
                 buffer += `<tr>`
                 buffer += `<td>${cliente || "---"}</td>`

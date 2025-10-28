@@ -118,10 +118,10 @@
                     $("#descripcion_mProductos").val(g_data.descripcion);
                     $("#curvas_mProductos").val(g_data.did_curva).change();
 
-                    if (g_data.imagen) {
+                    if (g_data.files.length > 0) {
                         globalImageCarousel.loadImages({
                             id: "imagen_mProductos",
-                            arrUrls: [g_data.imagen]
+                            arrUrls: g_data.files
                         })
                     }
 
@@ -461,17 +461,17 @@
                 titulo: $("#nombre_mProductos").val().trim() || "",
                 sku: $("#sku_mProductos").val().trim() || "",
                 ean: $("#ean_mProductos").val().trim() || "",
-                alto: $("#alto_mProductos").val().trim() || "",
-                ancho: $("#ancho_mProductos").val().trim() || "",
-                profundo: $("#profundo_mProductos").val().trim() || "",
-                cm3: $("#cm3_mProductos").val().trim() || "",
+                alto: $("#alto_mProductos").val().trim() || null,
+                ancho: $("#ancho_mProductos").val().trim() || null,
+                profundo: $("#profundo_mProductos").val().trim() || null,
+                cm3: $("#cm3_mProductos").val().trim() || null,
                 es_combo: $("#esCombo_mProductos").val() || 0,
                 habilitado: $("#habilitado_mProductos").val() || 0,
-                imagen: globalImageCarousel.getImages({
+                files: globalImageCarousel.getImages({
                     id: "imagen_mProductos"
                 }),
                 descripcion: $("#descripcion_mProductos").val().trim() || "",
-                posicion: $("#posicion_mProductos").val().trim() || 0,
+                posicion: $("#posicion_mProductos").val().trim() || "",
                 did_curva: $("#curvas_mProductos").val() || null,
                 ecommerce: obtenerDatosEcommerce(),
                 combos: globalActivarAcciones.obtenerDataFormRepeater({
@@ -537,17 +537,17 @@
                 titulo: $("#nombre_mProductos").val().trim() || "",
                 sku: $("#sku_mProductos").val().trim() || "",
                 ean: $("#ean_mProductos").val().trim() || "",
-                alto: $("#alto_mProductos").val().trim() || "",
-                ancho: $("#ancho_mProductos").val().trim() || "",
-                profundo: $("#profundo_mProductos").val().trim() || "",
-                cm3: $("#cm3_mProductos").val().trim() || "",
+                alto: $("#alto_mProductos").val().trim() || null,
+                ancho: $("#ancho_mProductos").val().trim() || null,
+                profundo: $("#profundo_mProductos").val().trim() || null,
+                cm3: $("#cm3_mProductos").val().trim() || null,
                 es_combo: $("#esCombo_mProductos").val() || 0,
                 habilitado: $("#habilitado_mProductos").val() || 0,
-                imagen: globalImageCarousel.getImages({
+                files: globalImageCarousel.getImages({
                     id: "imagen_mProductos"
                 }),
                 descripcion: $("#descripcion_mProductos").val().trim() || "",
-                posicion: $("#posicion_mProductos").val().trim() || 0,
+                posicion: $("#posicion_mProductos").val().trim() || "",
                 did_curva: $("#curvas_mProductos").val() || null,
                 ecommerce: obtenerDatosEcommerce(),
                 combos: globalActivarAcciones.obtenerDataFormRepeater({

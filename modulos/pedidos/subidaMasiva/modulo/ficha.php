@@ -1,4 +1,4 @@
-<div class="winapp" id='ContainerPedidosSubidaMasiva' style="display:none;">
+<div class="winapp" id='modulo_pedidosSubidaMasiva' style="display:none;">
 
 	<div class="card mb-6">
 		<div class="card-body">
@@ -16,8 +16,8 @@
 
 				<div class="col-12 col-md-6 col-lg-4">
 					<div class="form-floating form-floating-outline">
-						<select id="filtroCliente_pedidosSubidaMasiva" class="form-select campos_pedidosSubidaMasiva"></select>
-						<label for="filtroCliente_pedidosSubidaMasiva">Cliente</label>
+						<select id="cliente_pedidosSubidaMasiva" class="form-select campos_pedidosSubidaMasiva"></select>
+						<label for="cliente_pedidosSubidaMasiva">Cliente</label>
 					</div>
 				</div>
 
