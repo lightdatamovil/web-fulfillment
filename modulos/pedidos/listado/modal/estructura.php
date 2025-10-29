@@ -63,10 +63,8 @@
             globalRequest.get(`/${rutaAPI}/${g_did}`, {
                 onSuccess: function(result) {
                     g_data = result.data;
-                    $("#cliente_mPedidos").val(g_data.did_cliente).change();
-                    $("#tienda_mPedidos").val(g_data.did_cuenta).change();
                     $("#idVenta_mPedidos").val(g_data.id_venta);
-                    $("#comprador_mPedidos").val(g_data.comprador);
+                    $("#comprador_nombre_mPedidos").val(g_data.comprador);
                     $("#total_mPedidos").val(g_data.total);
                     $("#observacion_mPedidos").val(g_data.observacion);
                     $("#calle_mPedidos").val(g_data.direccion.calle);
@@ -100,6 +98,14 @@
 
             $(".campos_mPedidos").val("")
             $(".select2_mPedidos").trigger("change")
+
+
+            const fechaActual = globalFuncionesJs.formatearFecha({
+                para: "date"
+            })
+            $("#fechaVenta_mPedidos").val(fechaActual);
+            $("#deadline_mPedidos").val(fechaActual);
+
             g_productos = [];
 
             globalValidar.limpiarTodas()
@@ -108,35 +114,80 @@
             })
         };
 
-        public.changeCliente = function() {
-            let clienteSeleccionado = $("#cliente_mPedidos").val()
-            let buffer = ""
-
-            if (!clienteSeleccionado) {
-                buffer += `<option value="">Selecciona un cliente para acceder</option>`
-
-                $("#tienda_mPedidos").html(buffer);
-                $("#tienda_mPedidos").prop('disabled', true);
-            } else {
-                let cliente = appSistema.clientes.find((item) => item.did == clienteSeleccionado)
-
-                buffer += `<option value="">Selecciona una tienda</option>`
-
-                cliente.cuentas.forEach(cuenta => {
-                    buffer += `<option value="${cuenta.did}">${cuenta.titulo} - ${appSistema.ecommerce[cuenta.flex]}</option>`
-                });
-
-                $("#tienda_mPedidos").html(buffer);
-                $("#tienda_mPedidos").prop('disabled', false);
-            }
-        }
-
         function renderProductos() {
             globalActivarAcciones.formRepeater({
                 id: "formProductos_mPedidos",
                 data: g_productos
             })
         };
+
+        public.renderVariantes = function(select) {
+            const $item = $(select).closest("[data-repeater-item]");
+            const productoSeleccionado = $(select).val();
+            const $selectVariante = $item.find("select[name$='[did_producto_variante_valor]']"); // ← clave
+
+            if (productoSeleccionado) {
+                let variantes = obtenerVariantes(productoSeleccionado);
+
+                let buffer = ""
+
+                buffer += `<option value="">Seleccionar variante</option>`
+                variantes.forEach(v => buffer += `<option value="${v.did_producto_variante_valor}">${v.nombre_producto_variante_valor}</option>`);
+                $selectVariante.prop("disabled", false).html(buffer);
+            } else {
+                $selectVariante.prop("disabled", true).html('<option value="">Selecciona el producto para ver</option>');
+            }
+        };
+
+
+        function obtenerVariantes(didProducto) {
+            const producto = appSistema.productos.find(p => p.did == didProducto);
+            if (!producto) return [{
+                did_producto_variante_valor: "default",
+                nombre_producto_variante_valor: "Default"
+            }]
+
+            const {
+                did_curva,
+                valores
+            } = producto;
+            if (!did_curva || !valores?.length) return [{
+                did_producto_variante_valor: "default",
+                nombre_producto_variante_valor: "Default"
+            }];
+
+            const curva = appSistema.curvas.find(c => c.did == did_curva);
+            if (!curva) return [{
+                did_producto_variante_valor: "default",
+                nombre_producto_variante_valor: "Default"
+            }]
+
+            const resultado = valores.map(grupo => {
+                const partes = grupo.valores.map(valorDid => {
+
+                    for (const categoria of curva.categorias) {
+                        const did_variante = categoria.did_variante
+                        const nombreVariante = appSistema.variantes.find(v => v.did == did_variante)?.nombre || "Variante desconocida";
+                        const valorEncontrado = categoria.valores.find(v => v.did == valorDid);
+                        if (valorEncontrado) {
+                            return `${nombreVariante} ${categoria.nombre.toLowerCase()}: ${valorEncontrado.nombre}`;
+                        }
+                    }
+                    return null;
+                }).filter(Boolean);
+
+                return {
+                    did_producto_variante_valor: grupo.valores.join(", "),
+                    nombre_producto_variante_valor: partes.join(" | ")
+                };
+            });
+
+            return resultado;
+        }
+
+
+
+
 
         function validacion() {
             return globalValidar.obligatorios({
@@ -146,12 +197,23 @@
 
         public.guardar = function() {
             const datos = {
+                fecha_venta: globalFuncionesJs.formatearFecha({
+                    fecha: $("#fechaVenta_mPedidos").val(),
+                    para: "api"
+                }),
                 did_cliente: $("#cliente_mPedidos").val() || null,
-                did_cuenta: $("#tienda_mPedidos").val() || null,
                 id_venta: $("#idVenta_mPedidos").val().trim() || "",
-                comprador: $("#comprador_mPedidos").val().trim() || "",
                 total: $("#total_mPedidos").val().trim() || "",
+                deadline: globalFuncionesJs.formatearFecha({
+                    fecha: $("#deadline_mPedidos").val(),
+                    para: "api"
+                }),
                 observacion: $("#observacion_mPedidos").val().trim() || "",
+                comprador: {
+                    nombre: $("#comprador_nombre_mPedidos").val().trim() || "",
+                    telefono: $("#comprador_telefono_mPedidos").val().trim() || "",
+                    email: $("#comprador_email_mPedidos").val().trim() || ""
+                },
                 direccion: {
                     calle: $("#calle_mPedidos").val().trim() || "",
                     numero: $("#numero_mPedidos").val().trim() || "",
@@ -164,7 +226,7 @@
                 },
                 productos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formProductos_mPedidos"
-                }),
+                })
             };
 
             globalValidar.formRepeater({
@@ -208,12 +270,23 @@
 
         public.editar = function() {
             const datosNuevos = {
+                fecha_venta: globalFuncionesJs.formatearFecha({
+                    fecha: $("#fechaVenta_mPedidos").val(),
+                    para: "api"
+                }),
                 did_cliente: $("#cliente_mPedidos").val() || null,
-                did_cuenta: $("#tienda_mPedidos").val() || null,
                 id_venta: $("#idVenta_mPedidos").val().trim() || "",
-                comprador: $("#comprador_mPedidos").val().trim() || "",
                 total: $("#total_mPedidos").val().trim() || "",
+                deadline: globalFuncionesJs.formatearFecha({
+                    fecha: $("#deadline_mPedidos").val(),
+                    para: "api"
+                }),
                 observacion: $("#observacion_mPedidos").val().trim() || "",
+                comprador: {
+                    nombre: $("#comprador_nombre_mPedidos").val().trim() || "",
+                    telefono: $("#comprador_telefono_mPedidos").val().trim() || "",
+                    email: $("#comprador_email_mPedidos").val().trim() || ""
+                },
                 direccion: {
                     calle: $("#calle_mPedidos").val().trim() || "",
                     numero: $("#numero_mPedidos").val().trim() || "",
@@ -226,7 +299,7 @@
                 },
                 productos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formProductos_mPedidos"
-                }),
+                })
             };
 
             globalValidar.formRepeater({

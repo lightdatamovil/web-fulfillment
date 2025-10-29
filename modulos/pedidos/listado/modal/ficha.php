@@ -59,18 +59,16 @@
 
 								<div class="col-12 col-md-12 col-lg-6">
 									<div class="form-floating form-floating-outline">
-										<select id="cliente_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_mPedidos" onchange="appModalPedidos.changeCliente()"></select>
-										<label for="cliente_mPedidos">Cliente</label>
-										<div class="invalid-feedback"> Debe seleccionar uno</div>
+										<input class="form-control campos_mPedidos camposObli_mPedidos" type="date" id="fechaVenta_mPedidos" />
+										<label for="fechaVenta_mPedidos">Fecha venta</label>
+										<div class="invalid-feedback"> Debe completar el campo </div>
 									</div>
 								</div>
 
 								<div class="col-12 col-md-12 col-lg-6">
 									<div class="form-floating form-floating-outline">
-										<select id="tienda_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_mPedidos" disabled>
-											<option value="">Selecciona un cliente para acceder</option>
-										</select>
-										<label for="tienda_mPedidos">Tienda</label>
+										<select id="cliente_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_mPedidos"></select>
+										<label for="cliente_mPedidos">Cliente</label>
 										<div class="invalid-feedback"> Debe seleccionar uno</div>
 									</div>
 								</div>
@@ -84,25 +82,51 @@
 								</div>
 
 								<div class="col-12 col-md-12 col-lg-4">
-									<div class="form-floating form-floating-outline">
-										<input type="text" id="comprador_mPedidos" class="form-control campos_mPedidos camposObli_mPedidos" placeholder="Comprador" />
-										<label for="comprador_mPedidos">Comprador</label>
+									<div class="input-group">
+										<span class="input-group-text">$</span>
+										<input type="text" id="total_mPedidos" class="form-control rounded-end campos_mPedidos camposObli_mPedidos" placeholder="Total" oninput="globalFuncionesJs.inputSoloNumeros(this)" />
 										<div class="invalid-feedback"> Debe completar el campo </div>
 									</div>
 								</div>
 
 								<div class="col-12 col-md-12 col-lg-4">
 									<div class="form-floating form-floating-outline">
-										<input type="text" id="total_mPedidos" class="form-control campos_mPedidos camposObli_mPedidos" placeholder="Total" />
-										<label for="total_mPedidos">Total</label>
+										<input class="form-control campos_mPedidos" type="date" id="deadline_mPedidos" />
+										<label for="deadline_mPedidos">Deadline</label>
 										<div class="invalid-feedback"> Debe completar el campo </div>
 									</div>
 								</div>
 
 								<div class="col-12 col-md-12">
 									<div class="form-floating form-floating-outline">
-										<textarea type="text" id="observacion_mPedidos" class="form-control campos_mPedidos h-px-100" placeholder="Observaciones internas"></textarea>
+										<textarea type="text" id="observacion_mPedidos" class="form-control campos_mPedidos h-px-100" placeholder="Observacion"></textarea>
 										<label for="observacion_mPedidos">Observacion</label>
+									</div>
+								</div>
+
+							</form>
+							<form class="row g-5 align-items-baseline border-top mt-5" onsubmit="return false">
+								<h5 class="mb-0 mt-3">Comprador</h5>
+								<div class="col-12 col-md-12 col-lg-4">
+									<div class="form-floating form-floating-outline">
+										<input type="text" id="comprador_nombre_mPedidos" class="form-control campos_mPedidos camposObli_mPedidos" placeholder="Comprador" />
+										<label for="comprador_nombre_mPedidos">Nombre</label>
+										<div class="invalid-feedback"> Debe completar el campo </div>
+									</div>
+								</div>
+
+								<div class="col-12 col-md-12 col-lg-4">
+									<div class="form-floating form-floating-outline">
+										<input type="text" id="comprador_telefono_mPedidos" class="form-control campos_mPedidos" placeholder="Comprador" oninput="globalFuncionesJs.inputSoloNumeros(this)" />
+										<label for="comprador_telefono_mPedidos">Telefono</label>
+									</div>
+								</div>
+
+								<div class="col-12 col-md-12 col-lg-4">
+									<div class="form-floating form-floating-outline">
+										<input type="text" id="comprador_email_mPedidos" class="form-control campos_mPedidos camposVerif_mPedidos" placeholder="Comprador" />
+										<label for="comprador_email_mPedidos">Email</label>
+										<div class="invalid-feedback">Ingrese un email válido</div>
 									</div>
 								</div>
 
@@ -117,10 +141,13 @@
 							<div class="col-12 bg-body mb-4 d-none d-lg-block" style="height: 44px;">
 
 								<div class="row bg-body rounded-3 h-100">
-									<div class="col-8 h-100">
+									<div class="col-3 h-100">
 										<div class="d-flex align-items-center h-100 ps-3 fw-semibold">Producto</div>
 									</div>
-									<div class="col-3 h-100">
+									<div class="col-6 h-100">
+										<div class="d-flex align-items-center h-100 fw-semibold">Valores</div>
+									</div>
+									<div class="col-2 h-100">
 										<div class="d-flex align-items-center h-100 fw-semibold">Cantidad</div>
 									</div>
 
@@ -136,11 +163,17 @@
 										<div data-repeater-item>
 											<div class="row g-3">
 												<input type="hidden" name="did" id="did_productos_mPedidos" />
-												<div class="col-12 col-md-6 col-lg-8">
-													<select name="did_producto" id="producto_productos_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_mPedidos"></select>
+												<div class="col-12 col-md-6 col-lg-3">
+													<select name="did_producto" id="producto_productos_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_mPedidos" onchange="appModalPedidos.renderVariantes(this)"></select>
 												</div>
 
-												<div class="col-12 col-md-6 col-lg-3">
+												<div class="col-12 col-md-6 col-lg-6">
+													<select name="did_producto_variante_valor" id="variantes_productos_mPedidos" class="form-select camposObli_mPedidos select2_mPedidos" disabled>
+														<option value="">Selecciona el producto para ver</option>
+													</select>
+												</div>
+
+												<div class="col-12 col-md-6 col-lg-2">
 													<input type="text" name="cantidad" id="cantidad_productos_mPedidos" class="form-control campos_mPedidos camposObli_mPedidos" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloNumeros(this)" />
 												</div>
 												<div class="col-12 col-md-6 col-lg-1">

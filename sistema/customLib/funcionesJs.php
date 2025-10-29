@@ -43,18 +43,33 @@
             }).format(precio);
         }
 
-        public.formatearFecha = function(fechaISO) {
-            const fecha = new Date(fechaISO);
+        public.formatearFecha = function({
+            fecha,
+            para
+        }) {
+            const f = fecha ? new Date(fecha) : new Date();
 
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11
-            const anio = fecha.getFullYear();
+            const dia = String(f.getDate()).padStart(2, "0");
+            const mes = String(f.getMonth() + 1).padStart(2, "0");
+            const anio = f.getFullYear();
+            const horas = String(f.getHours()).padStart(2, "0");
+            const minutos = String(f.getMinutes()).padStart(2, "0");
 
-            const horas = String(fecha.getHours()).padStart(2, '0');
-            const minutos = String(fecha.getMinutes()).padStart(2, '0');
+            switch (para) {
+                case "frontend":
+                    return `${dia}/${mes}/${anio} ${horas}:${minutos}`;
+                case "api":
+                    return `${anio}-${mes}-${dia} ${horas}:${minutos}:00`;
+                case "datetimeLocal":
+                    return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
+                case "date":
+                    return `${anio}-${mes}-${dia}`;
+                default:
+                    return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
+            }
+        };
 
-            return `${dia}/${mes}/${anio} ${horas}:${minutos}`;
-        }
+
 
         return public;
 
