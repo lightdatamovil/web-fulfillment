@@ -42,8 +42,12 @@
 
 				<div class="col-12 col-md-6 col-lg-3">
 					<div class="form-floating form-floating-outline">
-						<input type="text" class="form-control campos_pedidos inputs_pedidos" id="filtroOT_pedidos" placeholder="OT" />
-						<label for="filtroOT_pedidos">Buscar por OT</label>
+						<select id="filtroTrabajado_pedidos" class="form-select campos_pedidos">
+							<option value="" selected>Todos</option>
+							<option value="1">Si</option>
+							<option value="0">No</option>
+						</select>
+						<label for="filtroTrabajado_pedidos">Trabajado</label>
 					</div>
 				</div>
 
@@ -92,11 +96,11 @@
 						<th data-order="fecha">Fecha</th>
 						<th data-order="flex">Origen</th>
 						<th data-order="id_venta">#Venta</th>
-						<th data-order="comprador">Comprador</th>
+						<!-- <th data-order="comprador">Comprador</th> -->
 						<th data-order="estado">Estado</th>
-						<th data-order="total">Total</th>
+						<!-- <th data-order="total">Total</th> -->
 						<th class="text-center" data-order="armado">Armado</th>
-						<th data-order="ot">OT</th>
+						<th class="text-center" data-order="trabajado">Trabajar</th>
 						<th>Acciones</th>
 					</tr>
 				</thead>

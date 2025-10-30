@@ -184,27 +184,8 @@
                 "nombre": "Armado",
                 "titulo": "Armado PV",
                 "ruta": "armado-pv",
-                "accion": "appPVArmado.open()",
+                "accion": "appModuloPedidoDeVenta.open()",
                 "icono": "menu-icon tf-icons ri-shopping-cart-line",
-                "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
-                "hijos": []
-            }
-        ]
-    },
-    {
-        "id": 80,
-        "nombre": "Orden de trabajo",
-        "accion": null,
-        "icono": "ri-list-check-3",
-        "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
-        "hijos": [
-            {
-                "id": 81,
-                "nombre": "Listado",
-                "titulo": "Armado OT",
-                "ruta": "armado-ot",
-                "accion": "appOTListado.open()",
-                "icono": "menu-icon tf-icons ri-list-check-3",
                 "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
                 "hijos": []
             }
