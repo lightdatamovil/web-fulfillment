@@ -164,11 +164,11 @@
 											<div class="row g-3">
 												<input type="hidden" name="did" id="did_productos_mPedidos" />
 												<div class="col-12 col-md-6 col-lg-3">
-													<select name="did_producto" id="producto_productos_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_mPedidos" onchange="appModalPedidos.renderVariantes(this)"></select>
+													<select name="did_producto" id="producto_productos_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_repeater_mPedidos producto_productos_mPedidos" onchange="appModalPedidos.renderVariantes(this)"></select>
 												</div>
 
 												<div class="col-12 col-md-6 col-lg-6">
-													<select name="did_producto_variante_valor" id="variantes_productos_mPedidos" class="form-select camposObli_mPedidos select2_mPedidos" disabled>
+													<select name="did_producto_variante_valor" id="variantes_productos_mPedidos" class="form-select camposObli_mPedidos select2_repeater_mPedidos variantes_productos_mPedidos" disabled>
 														<option value="">Selecciona el producto para ver</option>
 													</select>
 												</div>

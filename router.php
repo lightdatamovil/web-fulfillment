@@ -1,5 +1,4 @@
 <?php
-session_start();
 $logueado = isset($_SESSION["logueado"]) && $_SESSION["logueado"] == true ? 'true' : 'false';
 $jsonData = file_get_contents('sistema/configMenu/menuDefault.json');
 ?>

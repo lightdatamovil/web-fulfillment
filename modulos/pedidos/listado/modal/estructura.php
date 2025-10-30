@@ -63,10 +63,23 @@
             globalRequest.get(`/${rutaAPI}/${g_did}`, {
                 onSuccess: function(result) {
                     g_data = result.data;
+                    $("#fechaVenta_mPedidos").val(globalFuncionesJs.formatearFecha({
+                        fecha: g_data.fecha_venta,
+                        para: "date"
+                    }))
+                    $("#cliente_mPedidos").val(g_data.did_cliente);
                     $("#idVenta_mPedidos").val(g_data.id_venta);
-                    $("#comprador_nombre_mPedidos").val(g_data.comprador);
                     $("#total_mPedidos").val(g_data.total);
+                    $("#deadline_mPedidos").val(globalFuncionesJs.formatearFecha({
+                        fecha: g_data.deadline,
+                        para: "date"
+                    }))
                     $("#observacion_mPedidos").val(g_data.observacion);
+
+                    $("#comprador_nombre_mPedidos").val(g_data.comprador.nombre);
+                    $("#comprador_telefono_mPedidos").val(g_data.comprador.telefono);
+                    $("#comprador_email_mPedidos").val(g_data.comprador.email);
+
                     $("#calle_mPedidos").val(g_data.direccion.calle);
                     $("#numero_mPedidos").val(g_data.direccion.numero);
                     $("#cp_mPedidos").val(g_data.direccion.cp);
@@ -79,8 +92,20 @@
                     g_productos = g_data.productos || []
                     renderProductos();
 
+                    $(".producto_productos_mPedidos").each(function() {
+                        $(this).trigger("change");
+                        const valor = $(this).val()
+                        const producto = g_productos.find(p => p.did_producto == valor);
+
+                        if (producto) {
+                            const selectVariante = $(this).closest('[data-repeater-item]').find('.variantes_productos_mPedidos');
+                            const variante = producto.did_producto_variante_valor || "default"
+                            selectVariante.val(variante).trigger("change");
+                        }
+                    });
+
                     if (donde == 2) {
-                        $('.campos_mPedidos').prop('disabled', true);
+                        $('.campos_mPedidos, .variantes_productos_mPedidos').prop('disabled', true);
                         $(".ocultarDesdeVer_mPedidos").addClass("ocultar")
                     } else {
                         $('.campos_mPedidos').prop('disabled', false);
@@ -177,17 +202,13 @@
                 }).filter(Boolean);
 
                 return {
-                    did_producto_variante_valor: grupo.valores.join(", "),
+                    did_producto_variante_valor: grupo.did_productos_variantes_valores,
                     nombre_producto_variante_valor: partes.join(" | ")
                 };
             });
 
             return resultado;
         }
-
-
-
-
 
         function validacion() {
             return globalValidar.obligatorios({
@@ -251,6 +272,13 @@
                 });
                 return;
             }
+
+            datos.productos = datos.productos.map((item) => {
+                return {
+                    ...item,
+                    did_producto_variante_valor: item.did_producto_variante_valor === "default" ? null : item.did_producto_variante_valor
+                }
+            })
 
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de guardar esta pedido?"

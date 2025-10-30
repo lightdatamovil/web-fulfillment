@@ -40,12 +40,19 @@
         // globalActivarAcciones.tooltips({ id: "ID_DEL_MODULO_O_MODAL" })
 
         public.select2 = function({
-            className
+            className,
+            container = null // 👈 nuevo parámetro opcional
         }) {
-            $(`.${className}`).each(function() {
-                const $el = $(this);
+            let $targets;
 
-                // Destruir solo si realmente está inicializado
+            if (container) {
+                $targets = container.find(`.${className}`);
+            } else {
+                $targets = $(`.${className}`);
+            }
+
+            $targets.each(function() {
+                const $el = $(this);
                 if ($el.data('select2')) {
                     $el.select2('destroy');
                 }
@@ -65,7 +72,6 @@
                 }
             });
         };
-
 
         public.activarPrimerTab = function({
             tabList
@@ -232,7 +238,6 @@
             const $repeater = $(`#${id}`);
             let contador = 0;
 
-            // Obtener sufijo (lo que viene después del último "_")
             const partesId = id.split("_");
             const sufijoModulo = partesId[partesId.length - 1];
 
@@ -250,15 +255,15 @@
 
                     self.find('input, select, textarea').each(function() {
                         if (!$(this).val()) $(this).val('');
-
                         const idOriginal = $(this).attr('id');
                         if (idOriginal) $(this).attr('id', `${idOriginal}_${contador}`);
                     });
 
-                    self.find(`select.select2_${sufijoModulo}`).each(function() {
+                    self.find(`select.select2_repeater_${sufijoModulo}`).each(function() {
                         globalActivarAcciones.select2({
-                            className: `select2_${sufijoModulo}`
-                        })
+                            className: `select2_repeater_${sufijoModulo}`,
+                            container: self
+                        });
                     });
 
                     self.stop(true, true).slideDown();
@@ -269,8 +274,8 @@
 
                 hide: function(deleteElement) {
                     const self = $(this);
-
                     const totalFilas = self.parent().find('[data-repeater-item]').length;
+
                     if (totalFilas <= 1) {
                         globalSweetalert.alert({
                             titulo: "Debe haber al menos una fila"
@@ -278,9 +283,9 @@
                         return;
                     }
 
-                    const todosVacios = self.find('input:not([type="hidden"]),select:not([type="hidden"]),textarea:not([type="hidden"])').toArray().every(input => {
-                        return $(input).val() ? $(input).val().trim() == '' : true;
-                    });
+                    const todosVacios = self.find('input:not([type="hidden"]),select:not([type="hidden"]),textarea:not([type="hidden"])')
+                        .toArray()
+                        .every(input => $(input).val() ? $(input).val().trim() == '' : true);
 
                     if (todosVacios) {
                         self.stop(true, true).slideUp(deleteElement);
@@ -301,7 +306,18 @@
             if (data && data.length > 0) {
                 $repeater.setList(data);
             }
+
+            // 👇 ESTE BLOQUE ES LA SOLUCIÓN 👇
+            if (!data || data.length === 0) {
+                $repeater.find(`select.select2_repeater_${sufijoModulo}`).each(function() {
+                    globalActivarAcciones.select2({
+                        className: `select2_repeater_${sufijoModulo}`,
+                        container: $repeater
+                    });
+                });
+            }
         };
+
 
 
 

@@ -15,6 +15,7 @@
         clientes: [],
         insumos: [],
         ecommerce: {
+            0: "Directo",
             1: "Mercado Libre",
             2: "Tiendanube",
             3: "Shopify",

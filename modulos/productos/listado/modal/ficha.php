@@ -208,7 +208,7 @@
                                             <div class="row g-3">
                                                 <input type="hidden" name="did" id="did_combos_mProductos" />
                                                 <div class="col-12 col-md-6 col-lg-8">
-                                                    <select name="didProducto" id="producto_combos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_mProductos"></select>
+                                                    <select name="didProducto" id="producto_combos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_repeater_mProductos"></select>
                                                 </div>
 
                                                 <div class="col-12 col-md-6 col-lg-3">
@@ -285,7 +285,7 @@
                                                 <input type="hidden" name="did" id="did_insumos_mProductos" />
 
                                                 <div class="col-12 col-md-6 col-lg-8">
-                                                    <select name="didInsumo" id="insumo_insumos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_mProductos"></select>
+                                                    <select name="didInsumo" id="insumo_insumos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_repeater_mProductos"></select>
                                                 </div>
 
                                                 <div class="col-12 col-md-6 col-lg-3">

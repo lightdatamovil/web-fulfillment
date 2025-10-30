@@ -45,7 +45,7 @@
 			await globalOrdenTablas.activar({
 				idThead: "theadListado_pedidos",
 				callback: appModuloPedidos.getListado,
-				defaultOrder: "titulo"
+				defaultOrder: "fecha"
 			})
 		};
 
@@ -67,10 +67,7 @@
 			};
 
 			g_data.forEach(pedido => {
-				const cliente = appSistema.clientes.find(c => c.did == pedido.cliente)?.nombre_fantasia || "<b>Cliente eliminado</b>";
-
-				htmlArmado = `<span class="badge badge-center rounded-pill bg-success"><i class="ri-check-line"></i></span>`
-				htmlNoArmado = `<span class="badge badge-center rounded-pill bg-danger"><i class="ri-close-large-line"></i></span>`
+				const cliente = appSistema.clientes.find(c => c.did == pedido.did_cliente)?.nombre_fantasia || "<b>Cliente eliminado</b>";
 
 				htmlEstado = pedido.estado || "---"
 				if (pedido.estado && appSistema.estadosPedidos[pedido.estado]) {
@@ -79,13 +76,13 @@
 
 				buffer += `<tr>`
 				buffer += `<td>${cliente || '---'}</td>`
-				buffer += `<td>${pedido.fecha || '---'}</td>`
-				buffer += `<td>${pedido.origen ? appSistema.ecommerce[pedido.origen] : '---'}</td>`
-				buffer += `<td>${pedido.idVenta || '---'}</td>`
+				buffer += `<td>${globalFuncionesJs.formatearFecha({fecha: pedido.fecha, para: "frontend"}) || '---'}</td>`
+				buffer += `<td>${appSistema.ecommerce[pedido.flex] || '---'}</td>`
+				buffer += `<td>${pedido.id_venta || '---'}</td>`
 				buffer += `<td class="text-wrap">${pedido.comprador || '---'}</td>`
 				buffer += `<td>${htmlEstado}</td>`
 				buffer += `<td>${pedido.total ? globalFuncionesJs.convertirPrecio(pedido.total) : '---'}</td>`
-				buffer += `<td>${pedido.armado == 1 ? htmlArmado : htmlNoArmado}</td>`
+				buffer += `<td class="text-center"><span class="badge badge-center rounded-pill bg-label-${pedido.armado == 1 ? "success" : "danger"}"><i class="ri-${pedido.armado == 1 ? "check" : "close-large"}-line"></i></span></td>`
 				buffer += `<td>${pedido.ot || '---'}</td>`
 				buffer += `<td>`
 				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidos.open({mode: 2, did: '${pedido.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
@@ -124,13 +121,13 @@
 				page_size: public.limitePorPagina,
 				sort_by: order,
 				sort_dir: direction,
-				cliente: $("#filtroCliente_pedidos").val(),
 				id_venta: $("#filtroIdVenta_pedidos").val().trim(),
 				comprador: $("#filtroComprador_pedidos").val().trim(),
-				estado: $("#filtroEstado_pedidos").val(),
 				armado: $("#filtroArmado_pedidos").val(),
-				origen: $("#filtroOrigen_pedidos").val(),
 				ot: $("#filtroOT_pedidos").val().trim(),
+				did_cliente: $("#filtroClientes_pedidos").val().join(","),
+				flex: $("#filtroOrigen_pedidos").val().join(","),
+				estado: $("#filtroEstado_pedidos").val().join(","),
 			};
 
 			const queryString = $.param(parametros);

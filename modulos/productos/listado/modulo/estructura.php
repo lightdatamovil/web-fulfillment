@@ -101,7 +101,7 @@
                 page_size: public.limitePorPagina,
                 sort_by: order,
                 sort_dir: direction,
-                did_cliente: $("#filtroClientes_productos").val(),
+                did_cliente: $("#filtroClientes_productos").val().join(","),
                 titulo: $("#filtroTitulo_productos").val(),
                 sku: $("#filtroSku_productos").val(),
                 habilitado: $("#filtroEstado_productos").val()

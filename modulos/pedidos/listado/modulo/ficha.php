@@ -68,8 +68,6 @@
 					</div>
 				</div>
 
-
-
 			</div>
 
 			<div class="row g-3 mb-3">
@@ -90,14 +88,14 @@
 			<table class="table table-hover">
 				<thead id="theadListado_pedidos" class="table-thead">
 					<tr>
-						<th data-order="cliente">Cliente</th>
+						<th data-order="did_cliente">Cliente</th>
 						<th data-order="fecha">Fecha</th>
-						<th data-order="origen">Origen</th>
-						<th data-order="venta">#Venta</th>
+						<th data-order="flex">Origen</th>
+						<th data-order="id_venta">#Venta</th>
 						<th data-order="comprador">Comprador</th>
 						<th data-order="estado">Estado</th>
 						<th data-order="total">Total</th>
-						<th data-order="armado">Armado</th>
+						<th class="text-center" data-order="armado">Armado</th>
 						<th data-order="ot">OT</th>
 						<th>Acciones</th>
 					</tr>
