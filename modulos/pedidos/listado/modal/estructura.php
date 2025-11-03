@@ -31,9 +31,9 @@
                 $('.campos_mPedidos').prop('disabled', false);
                 $("#checkHabilitado_mPedidos").prop("checked", true);
                 $("#tienda_mPedidos").prop('disabled', true);
-                $("#btnEditar_mPedidos").addClass("ocultar");
+                $("#btnEditar_mPedidos, #listaProductos_mPedidos").addClass("ocultar");
                 $("#btnGuardar_mPedidos, .ocultarDesdeVer_mPedidos").removeClass("ocultar");
-                renderProductos()
+                renderProductosRepeater()
                 $("#modal_mPedidos").modal("show")
             } else if (mode == 1) {
                 // MODIFICAR PEDIDO
@@ -50,6 +50,7 @@
                 $("#titulo_mPedidos").text("Ver pedido");
                 $("#subtitulo_mPedidos").text("Visualizacion de pedido, no se puede modificar.");
                 $('.campos_mPedidos').prop('disabled', true);
+                $("#listaProductos_mPedidos").removeClass("ocultar");
                 $("#btnGuardar_mPedidos, #btnEditar_mPedidos, .ocultarDesdeVer_mPedidos").addClass("ocultar");
                 await get()
             }
@@ -67,7 +68,7 @@
                         fecha: g_data.fecha_venta,
                         para: "date"
                     }))
-                    $("#cliente_mPedidos").val(g_data.did_cliente);
+                    $("#cliente_mPedidos").val(g_data.did_cliente).change();
                     $("#idVenta_mPedidos").val(g_data.id_venta);
                     $("#total_mPedidos").val(g_data.total);
                     $("#deadline_mPedidos").val(globalFuncionesJs.formatearFecha({
@@ -90,19 +91,20 @@
                     $("#referencia_mPedidos").val(g_data.direccion.referencia);
 
                     g_productos = g_data.productos || []
-                    renderProductos();
+                    renderProductosListado()
+                    // renderProductosRepeater();
 
-                    $(".producto_productos_mPedidos").each(function() {
-                        $(this).trigger("change");
-                        const valor = $(this).val()
-                        const producto = g_productos.find(p => p.did_producto == valor);
+                    // $(".producto_productos_mPedidos").each(function() {
+                    //     $(this).trigger("change");
+                    //     const valor = $(this).val()
+                    //     const producto = g_productos.find(p => p.did_producto == valor);
 
-                        if (producto) {
-                            const selectVariante = $(this).closest('[data-repeater-item]').find('.variantes_productos_mPedidos');
-                            const variante = producto.did_producto_variante_valor || "default"
-                            selectVariante.val(variante).trigger("change");
-                        }
-                    });
+                    //     if (producto) {
+                    //         const selectVariante = $(this).closest('[data-repeater-item]').find('.variantes_productos_mPedidos');
+                    //         const variante = producto.did_producto_variante_valor || "default"
+                    //         selectVariante.val(variante).trigger("change");
+                    //     }
+                    // });
 
                     if (donde == 2) {
                         $('.campos_mPedidos, .variantes_productos_mPedidos').prop('disabled', true);
@@ -139,12 +141,52 @@
             })
         };
 
-        function renderProductos() {
+        function renderProductosRepeater() {
             globalActivarAcciones.formRepeater({
                 id: "formProductos_mPedidos",
                 data: g_productos
             })
         };
+
+        function renderProductosListado() {
+            $("#listaProductos_mPedidos").empty();
+
+            if (g_productos.length === 0) {
+                $("#listaProductos_mPedidos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>`);
+                return;
+            }
+
+            let buffer = "";
+            buffer += `<div class="table-responsive text-nowrap table-container" style="height: 450px;">`
+            buffer += `<table class="table table-hover">`
+            buffer += `<thead id="theadListaProductos_mPedidos" class="table-thead z-1">`
+
+            buffer += `<tr>`
+            buffer += `<th class="py-3">Producto</th>`
+            buffer += `<th class="py-3">Combinacion</th>`
+            buffer += `<th class="py-3 text-center">Cantidad</th>`
+            buffer += `</tr>`
+
+            buffer += `</thead>`
+            buffer += `<tbody id="tbodyListaProductos_mPedidos">`
+
+            g_productos.forEach((producto, idx) => {
+                buffer += `<tr>`
+                buffer += `<td>${producto.descripcion || "Sin informacion"}</td>`
+                const varianteDescripcionParse = producto.variante_descripcion ? JSON.parse(producto.variante_descripcion) : []
+                const varianteDescripcion = varianteDescripcionParse.map((item) => `${item.name}${item.value_name ? `: ${item.value_name}` : "" }`)
+                buffer += `<td>${varianteDescripcion.join(" | ") || "Default"}</td>`
+                buffer += `<td class="text-center">${producto.cantidad || "1"}</td>`
+                buffer += `</tr>`
+            })
+
+            buffer += `</tbody>`
+            buffer += `</table>`
+            buffer += `</div>`
+
+
+            $("#listaProductos_mPedidos").html(buffer);
+        }
 
         public.renderVariantes = function(select) {
             const $item = $(select).closest("[data-repeater-item]");
@@ -152,62 +194,106 @@
             const $selectVariante = $item.find("select[name$='[did_producto_variante_valor]']"); // ← clave
 
             if (productoSeleccionado) {
-                let variantes = obtenerVariantes(productoSeleccionado);
+                let variantes = obtenerVariantes({
+                    didProducto: productoSeleccionado
+                });
 
                 let buffer = ""
 
                 buffer += `<option value="">Seleccionar variante</option>`
-                variantes.forEach(v => buffer += `<option value="${v.did_producto_variante_valor}">${v.nombre_producto_variante_valor}</option>`);
+                variantes.forEach(v => buffer += `<option value="${v.did_producto_variante_valor}">${v.variante_descripcion}</option>`);
                 $selectVariante.prop("disabled", false).html(buffer);
             } else {
                 $selectVariante.prop("disabled", true).html('<option value="">Selecciona el producto para ver</option>');
             }
         };
 
-
-        function obtenerVariantes(didProducto) {
+        function obtenerVariantes({
+            type = 0,
+            didProducto,
+            didProductoVarianteValor
+        }) {
             const producto = appSistema.productos.find(p => p.did == didProducto);
-            if (!producto) return [{
-                did_producto_variante_valor: "default",
-                nombre_producto_variante_valor: "Default"
-            }]
+            const defaultVariante = {
+                name: "Default",
+                id: "",
+                value_id: "",
+                value_name: "",
+            };
+
+            const retornoDefault = (titulo = "Sin información") => {
+                if (type == 0) {
+                    return [{
+                        did_producto_variante_valor: "default",
+                        variante_descripcion: "Default"
+                    }];
+                }
+                return {
+                    titulo,
+                    variante_descripcion: JSON.stringify([defaultVariante])
+                };
+            };
+
+            if (!producto) return retornoDefault();
 
             const {
+                titulo,
                 did_curva,
                 valores
             } = producto;
-            if (!did_curva || !valores?.length) return [{
-                did_producto_variante_valor: "default",
-                nombre_producto_variante_valor: "Default"
-            }];
+            if (!did_curva || !valores?.length) return retornoDefault(titulo);
 
             const curva = appSistema.curvas.find(c => c.did == did_curva);
-            if (!curva) return [{
-                did_producto_variante_valor: "default",
-                nombre_producto_variante_valor: "Default"
-            }]
+            if (!curva) return retornoDefault(titulo);
 
-            const resultado = valores.map(grupo => {
-                const partes = grupo.valores.map(valorDid => {
-
-                    for (const categoria of curva.categorias) {
-                        const did_variante = categoria.did_variante
-                        const nombreVariante = appSistema.variantes.find(v => v.did == did_variante)?.nombre || "Variante desconocida";
-                        const valorEncontrado = categoria.valores.find(v => v.did == valorDid);
-                        if (valorEncontrado) {
-                            return `${nombreVariante} ${categoria.nombre.toLowerCase()}: ${valorEncontrado.nombre}`;
+            if (type == 0) {
+                return valores.map(grupo => {
+                    const partes = grupo.valores.map(valorDid => {
+                        for (const categoria of curva.categorias) {
+                            const variante = appSistema.variantes.find(v => v.did == categoria.did_variante);
+                            const valorEncontrado = categoria.valores.find(v => v.did == valorDid);
+                            if (valorEncontrado) {
+                                return `${variante?.nombre || "Variante desconocida"} ${categoria.nombre.toLowerCase()}: ${valorEncontrado.nombre}`;
+                            }
                         }
+                        return null;
+                    }).filter(Boolean);
+
+                    return {
+                        did_producto_variante_valor: grupo.did_productos_variantes_valores,
+                        variante_descripcion: partes.join(" | ")
+                    };
+                });
+            }
+
+            const combinacion = valores.find(v => v.did_productos_variantes_valores == didProductoVarianteValor);
+            if (!combinacion) return retornoDefault(titulo);
+
+            const partes = combinacion.valores.map(valorDid => {
+                for (const categoria of curva.categorias) {
+                    const variante = appSistema.variantes.find(v => v.did == categoria.did_variante);
+                    const valorEncontrado = categoria.valores.find(v => v.did == valorDid);
+                    if (valorEncontrado) {
+                        return {
+                            name: variante?.nombre || "",
+                            id: "",
+                            value_id: valorDid || "",
+                            value_name: valorEncontrado.nombre || "",
+                        };
                     }
-                    return null;
-                }).filter(Boolean);
-
+                }
                 return {
-                    did_producto_variante_valor: grupo.did_productos_variantes_valores,
-                    nombre_producto_variante_valor: partes.join(" | ")
+                    name: "Sin información",
+                    id: "",
+                    value_id: "",
+                    value_name: "Sin información",
                 };
-            });
+            }).filter(Boolean);
 
-            return resultado;
+            return {
+                titulo: titulo || "",
+                variante_descripcion: JSON.stringify(partes)
+            };
         }
 
         function validacion() {
@@ -274,9 +360,17 @@
             }
 
             datos.productos = datos.productos.map((item) => {
+                const data = obtenerVariantes({
+                    type: 1,
+                    didProducto: item.did_producto,
+                    didProductoVarianteValor: item.did_producto_variante_valor
+                }) || {}
+
                 return {
                     ...item,
-                    did_producto_variante_valor: item.did_producto_variante_valor === "default" ? null : item.did_producto_variante_valor
+                    did_producto_variante_valor: item.did_producto_variante_valor === "default" ? null : item.did_producto_variante_valor,
+                    descripcion: data.titulo || "",
+                    variante_descripcion: data.variante_descripcion || ""
                 }
             })
 

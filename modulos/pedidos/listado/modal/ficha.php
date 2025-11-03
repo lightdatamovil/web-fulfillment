@@ -138,7 +138,7 @@
 
 					<div class="tab-pane fade" id="tabProductos_mPedidos" role="tabpanel">
 						<div class="row">
-							<div class="col-12 bg-body mb-4 d-none d-lg-block" style="height: 44px;">
+							<div class="col-12 bg-body mb-4 d-none d-lg-block ocultarDesdeVer_mPedidos" style="height: 44px;">
 
 								<div class="row bg-body rounded-3 h-100">
 									<div class="col-3 h-100">
@@ -157,7 +157,7 @@
 
 								</div>
 							</div>
-							<div class="col-12">
+							<div class="col-12 ocultarDesdeVer_mPedidos">
 								<form class="form-repeater" id="formProductos_mPedidos">
 									<div data-repeater-list="productos">
 										<div data-repeater-item>
@@ -195,6 +195,7 @@
 
 							</div>
 
+							<div id="listaProductos_mPedidos" class="ocultar" style="overflow-y:auto"></div>
 						</div>
 
 					</div>
