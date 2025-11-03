@@ -70,11 +70,6 @@
                 $("#btnGuardar_mProductos").addClass("ocultar");
                 $("#btnEditar_mProductos, .ocultarDesdeVer_mProductos").removeClass("ocultar");
                 await get()
-                await globalImageCarousel.init({
-                    id: "imagen_mProductos",
-                    type: "subir",
-                    multiple: false
-                });
             } else {
                 // VER PRODUCTO
                 await globalLoading.open()
@@ -82,11 +77,6 @@
                 $("#subtitulo_mProductos").text("Visualizacion de producto, no se puede modificar.");
                 $('.campos_mProductos').prop('disabled', true);
                 $("#btnGuardar_mProductos, #btnEditar_mProductos, .ocultarDesdeVer_mProductos").addClass("ocultar");
-                await globalImageCarousel.init({
-                    id: "imagen_mProductos",
-                    type: "ver",
-                    multiple: false
-                });
                 await get()
             }
 
@@ -118,12 +108,12 @@
                     $("#descripcion_mProductos").val(g_data.descripcion);
                     $("#curvas_mProductos").val(g_data.did_curva).change();
 
-                    if (g_data.files.length > 0) {
-                        globalImageCarousel.loadImages({
-                            id: "imagen_mProductos",
-                            arrUrls: g_data.files
-                        })
-                    }
+                    globalImageCarousel.init({
+                        id: "imagen_mProductos",
+                        type: donde == 1 ? "subir" : "ver",
+                        arrUrls: g_data.files,
+                        multiple: false
+                    });
 
                     g_ecommerce = g_data.ecommerce || []
                     appModalProductos.renderEcommerce()
@@ -272,6 +262,8 @@
             let cliente = appSistema.clientes.find(c => c.did == valueCliente);
             let cuentas = cliente?.cuentas || [];
 
+            if (cuentas.length < 1) return
+
             if (g_ecommerce.length < 1) {
                 g_ecommerce = [{
                     variantes_valores: []
@@ -309,12 +301,12 @@
                 cuentas.forEach(cuenta => {
                     let dataCuenta = item.grupos?.find(i => i.didCuenta == cuenta.did) || {}
 
-                    buffer += `<tr>`
+                    buffer += `<tr data-did="${dataCuenta.did || ""}">`
 
                     buffer += `<td>`
                     buffer += `<div class="d-flex align-items-center flex-column gap-1">`
                     buffer += `<div class="containerSvg" style="width: 50px; height: auto;">${logosTiendas[cuenta.flex]}</div>`
-                    buffer += `<p class="m-0 text-center" id="cuentaTablaEccomerce_${idx}_mProductos" data-didCuenta="${cuenta.did}" >${cuenta.titulo || cuenta.did}</p>`
+                    buffer += `<p class="m-0 text-center" id="cuentaTablaEccomerce_${idx}_mProductos" data-didCuenta="${cuenta.did}">${cuenta.titulo || cuenta.did}</p>`
                     buffer += `</div>`
                     buffer += `</td>`
 
@@ -374,7 +366,8 @@
 
             $(".tablasEcommerce_mProductos").each(function() {
                 const $tabla = $(this);
-                const variantes_valores = JSON.parse($tabla.attr("data-valores"));
+                const did_variante_valores = Number($tabla.attr("data-did")) || null
+                const variantes_valores = JSON.parse($tabla.attr("data-valores")) || [];
                 const index = $tabla.attr("data-index");
 
                 const grupos = [];
@@ -382,7 +375,7 @@
                 $tabla.find("tbody tr").each(function() {
                     const $fila = $(this);
 
-                    const did = $fila.find(`[id^="cuentaTablaEccomerce_${index}_mProductos"]`).data("did") || "";
+                    const did = Number($fila.attr("data-did")) || null;
                     const didCuenta = $fila.find(`[id^="cuentaTablaEccomerce_${index}_mProductos"]`).data("didcuenta") || null;
                     const sku = $fila.find(`#skuTablaEccomerce_${index}_mProductos`).val() || "";
                     const ean = $fila.find(`#eanTablaEccomerce_${index}_mProductos`).val() || "";
@@ -399,7 +392,10 @@
                     });
                 });
 
+                grupos.sort((a, b) => (a.did || 0) - (b.did || 0));
+
                 datos.push({
+                    did: did_variante_valores,
                     variantes_valores,
                     grupos
                 });
@@ -482,6 +478,9 @@
                 }),
             };
 
+            console.log("datos", datos);
+            return
+
             globalValidar.formRepeater({
                 id: "formInsumos_mProductos"
             })
@@ -558,7 +557,6 @@
                 }),
             };
 
-
             globalValidar.formRepeater({
                 id: "formInsumos_mProductos"
             })
@@ -597,11 +595,23 @@
                 dataOriginal: g_data
             });
 
+
+            console.log("datosNuevos", datosNuevos);
+            console.log("g_data", g_data);
+
+
+            console.log("datosModificados", datosModificados);
+
+
             if (Object.keys(datosModificados).length === 0) {
                 globalSweetalert.alert({
                     titulo: "No se realizaron cambios"
                 });
                 return;
+            }
+
+            if (!datosModificados.files) {
+                datosNuevos.files = null
             }
 
             datosNuevos.ecommerce = globalValidar.obtenerCambiosEnArray({
@@ -618,6 +628,10 @@
                 dataNueva: datosNuevos.insumos,
                 dataOriginal: g_insumos
             })
+
+
+            console.log("datos", datosNuevos);
+            return
 
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de modificar este producto?"

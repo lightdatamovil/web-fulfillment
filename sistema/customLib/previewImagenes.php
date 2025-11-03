@@ -154,22 +154,33 @@
             }
         }
 
-
+        // ✅ versión corregida — muestra el tachito solo si type = "subir"
         function _appendCarouselItem(container, src, isActive) {
             const carouselInner = container.querySelector(".carousel-inner");
+            const type = container.dataset.type;
             const div = document.createElement("div");
             div.className = `carousel-item h-100 ${isActive ? "active" : ""}`;
-            div.innerHTML = `
-            <img src="${src}" class="d-block w-100 h-100" style="object-fit:cover;">
-            <div class="carousel-caption p-0" style="bottom: 5%">
+
+            let botones = `
                 <button type="button" class="btn rounded btn-icon btn-label-info btn-xs me-1" onclick="globalImageCarousel.expandirImagen(event, '${src}')">
                     <i class="tf-icons ri-expand-diagonal-fill ri-13px"></i>
                 </button>
-                <button type="button" class="btn rounded btn-icon btn-label-danger btn-xs" onclick="globalImageCarousel.removeImage(event, '${container.id}', '${src}')">
-                    <i class="tf-icons ri-delete-bin-line ri-13px"></i>
-                </button>
-            </div>
-        `;
+            `;
+
+            if (type === "subir") {
+                botones += `
+                    <button type="button" class="btn rounded btn-icon btn-label-danger btn-xs" onclick="globalImageCarousel.removeImage(event, '${container.id}', '${src}')">
+                        <i class="tf-icons ri-delete-bin-line ri-13px"></i>
+                    </button>
+                `;
+            }
+
+            div.innerHTML = `
+                <img src="${src}" class="d-block w-100 h-100" style="object-fit:cover;">
+                <div class="carousel-caption p-0" style="bottom: 5%">
+                    ${botones}
+                </div>
+            `;
             carouselInner.appendChild(div);
         }
 

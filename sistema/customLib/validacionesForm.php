@@ -406,9 +406,6 @@
                 }
             }
 
-            console.log("resultado", resultado);
-
-
             return resultado;
         };
 
