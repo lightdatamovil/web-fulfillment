@@ -2,7 +2,7 @@
     const appOffCanvasPedidos = (function() {
         let g_did = 0
         let g_idVenta = ""
-        const rutaAPI = "pedidos"
+        const rutaAPI = "ordenes-trabajo"
 
         const public = {}
 
@@ -49,7 +49,7 @@
         public.trabajarPedido = function() {
             const datos = {
                 "did_pedidos": [g_did],
-                "did_usuario": $("armadores_oPedidos").val()
+                "did_usuario": $("#armadores_oPedidos").val()
             };
 
             globalValidar.habilitarTiempoReal({
@@ -69,7 +69,7 @@
                 })
                 .then(function(confirmado) {
                     if (confirmado) {
-                        globalRequest.put(`/${rutaAPI}/${g_did}`, datos, {
+                        globalRequest.post(`/${rutaAPI}`, datos, {
                             onSuccess: function(result) {
                                 $("#modal_mPedidos").modal("hide")
                                 globalActivarAcciones.toggleOffcanvas({

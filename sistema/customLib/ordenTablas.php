@@ -5,10 +5,11 @@
         public.activar = function({
             idThead,
             callback,
-            defaultOrder = null
+            defaultOrder = null,
+            defaultDir = "asc"
         }) {
             let currentOrder = defaultOrder;
-            let currentDir = "asc";
+            let currentDir = defaultDir;
 
             $(`#${idThead} th[data-order]`).each(function() {
                 if ($(this).find("i").length === 0) {
@@ -22,7 +23,8 @@
 
             if (defaultOrder) {
                 const $thDefault = $(`#${idThead} th[data-order="${defaultOrder}"]`);
-                $thDefault.find("i").attr("class", "ri-sort-asc text-primary active-icon");
+                const icon = currentDir === "asc" ? "ri-sort-asc" : "ri-sort-desc";
+                $thDefault.find("i").attr("class", `${icon} text-primary active-icon`);
             }
 
             $(`#${idThead} th[data-order]`)

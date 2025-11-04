@@ -279,12 +279,17 @@
                 if (item.variantes_valores.length > 0) {
                     item.variantes_valores.forEach((valor) => {
                         let categoria = curvaSeleccionada.categorias.find(cat => cat.valores.some(v => v.did == valor));
-                        let variante = appSistema.variantes.find(item => item.did == categoria.did_variante)
-                        let valorSeleccionado = categoria.valores.find(v => v.did == valor);
+                        let variante = categoria ? appSistema.variantes.find(item => item.did == categoria.did_variante) : null;
+                        let valorSeleccionado = categoria ? categoria.valores.find(v => v.did == valor) : null;
 
-                        titulo += `<div class="text-center ${masDeUno ? "border-start border-primary ps-3" : ""}">${variante.nombre}<br/>${categoria.nombre}: <span class="text-primary">${valorSeleccionado.nombre}</span></div>`
-                        masDeUno = true
-                    })
+                        const nombreVariante = variante?.nombre || "Desconocido";
+                        const nombreCategoria = categoria?.nombre || "Desconocido";
+                        const nombreValor = valorSeleccionado?.nombre || "Desconocido";
+
+                        titulo += `<div class="text-center ${masDeUno ? "border-start border-primary ps-3" : ""}">${nombreVariante}<br/>${nombreCategoria}: <span class="text-primary">${nombreValor}</span></div>`;
+                        masDeUno = true;
+                    });
+
 
                 } else {
                     titulo = `Default`
@@ -478,9 +483,6 @@
                 }),
             };
 
-            console.log("datos", datos);
-            return
-
             globalValidar.formRepeater({
                 id: "formInsumos_mProductos"
             })
@@ -488,7 +490,6 @@
             globalValidar.formRepeater({
                 id: "formCombos_mProductos"
             })
-
 
             globalValidar.habilitarTiempoReal({
                 className: "camposObli_mProductos",

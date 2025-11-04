@@ -3,6 +3,8 @@
 		<div class="modal-content">
 
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			<div class="d-flex position-absolute containerSvg ocultar" id="tienda_mPedidos" style="top: 1.4rem;left: 1.4rem;width: 70px;height: auto;"></div>
+
 			<div class="modal-body p-0">
 				<div class=" col-12 text-center mb-6">
 					<h4 class="mb-2" id="titulo_mPedidos">Nuevo pedido</h4>
@@ -273,7 +275,10 @@
 
 				<div class="col-12 border-top pt-5 mt-2">
 					<div class="row justify-content-end g-3">
-						<div class="col-12 col-md-6 col-lg-3">
+						<div class="col-12 col-md-6 col-lg-2">
+							<div class="row justify-content-end px-5" id="btnTrabajar_mPedidos"></div>
+						</div>
+						<div class="col-12 col-md-6 col-lg-3 ocultarDesdeVer_mPedidos">
 							<button type="submit" class="btn btn-success w-100" id="btnGuardar_mPedidos" onclick="appModalPedidos.guardar()">Guardar</button>
 							<button type="submit" class="btn btn-success w-100" id="btnEditar_mPedidos" onclick="appModalPedidos.editar()">Guardar</button>
 						</div>

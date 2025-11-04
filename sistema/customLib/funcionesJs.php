@@ -47,13 +47,14 @@
             fecha,
             para
         }) {
-            const f = fecha ? new Date(fecha) : new Date();
+            if (!fecha) return "";
+            const f = new Date(fecha);
 
-            const dia = String(f.getDate()).padStart(2, "0");
-            const mes = String(f.getMonth() + 1).padStart(2, "0");
-            const anio = f.getFullYear();
-            const horas = String(f.getHours()).padStart(2, "0");
-            const minutos = String(f.getMinutes()).padStart(2, "0");
+            const dia = String(f.getUTCDate()).padStart(2, "0");
+            const mes = String(f.getUTCMonth() + 1).padStart(2, "0");
+            const anio = f.getUTCFullYear();
+            const horas = String(f.getUTCHours()).padStart(2, "0");
+            const minutos = String(f.getUTCMinutes()).padStart(2, "0");
 
             switch (para) {
                 case "frontend":
@@ -68,8 +69,6 @@
                     return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
             }
         };
-
-
 
         return public;
 

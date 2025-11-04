@@ -4,6 +4,7 @@
         let g_data;
         let g_productos;
         let donde = 0;
+        let logosTiendas = {}
         const rutaAPI = "pedidos"
 
         const public = {};
@@ -24,6 +25,9 @@
                 id: "producto_productos_mPedidos"
             })
 
+            logosTiendas = globalLogoTiendas.obtener()
+
+
             if (mode == 0) {
                 // NUEVO PEDIDO
                 $("#titulo_mPedidos").text("Nuevo pedido");
@@ -31,7 +35,7 @@
                 $('.campos_mPedidos').prop('disabled', false);
                 $("#checkHabilitado_mPedidos").prop("checked", true);
                 $("#tienda_mPedidos").prop('disabled', true);
-                $("#btnEditar_mPedidos, #listaProductos_mPedidos").addClass("ocultar");
+                $("#btnEditar_mPedidos, #listaProductos_mPedidos, #tienda_mPedidos, #btnTrabajar_mPedidos").addClass("ocultar");
                 $("#btnGuardar_mPedidos, .ocultarDesdeVer_mPedidos").removeClass("ocultar");
                 renderProductosRepeater()
                 $("#modal_mPedidos").modal("show")
@@ -42,7 +46,7 @@
                 $("#subtitulo_mPedidos").html("Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios ");
                 $('.campos_mPedidos').prop('disabled', false);
                 $("#btnGuardar_mPedidos").addClass("ocultar");
-                $("#btnEditar_mPedidos, .ocultarDesdeVer_mPedidos").removeClass("ocultar");
+                $("#btnEditar_mPedidos, .ocultarDesdeVer_mPedidos, #tienda_mPedidos , #btnTrabajar_mPedidos").removeClass("ocultar");
                 await get()
             } else {
                 // VER PEDIDO
@@ -50,14 +54,16 @@
                 $("#titulo_mPedidos").text("Ver pedido");
                 $("#subtitulo_mPedidos").text("Visualizacion de pedido, no se puede modificar.");
                 $('.campos_mPedidos').prop('disabled', true);
-                $("#listaProductos_mPedidos").removeClass("ocultar");
-                $("#btnGuardar_mPedidos, #btnEditar_mPedidos, .ocultarDesdeVer_mPedidos").addClass("ocultar");
+                $("#listaProductos_mPedidos, #tienda_mPedidos, #btnTrabajar_mPedidos").removeClass("ocultar");
+                $(".ocultarDesdeVer_mPedidos").addClass("ocultar");
                 await get()
             }
 
             await globalActivarAcciones.select2({
                 className: "select2_mPedidos"
             })
+
+
         }
 
         function get() {
@@ -90,6 +96,14 @@
                     $("#longitud_mPedidos").val(g_data.direccion.longitud);
                     $("#referencia_mPedidos").val(g_data.direccion.referencia);
 
+                    $("#tienda_mPedidos").html(g_data.flex != 0 ? logosTiendas[g_data.flex] : `<span class="fs-6 fw-bold">DIRECTO</span>`)
+
+                    let bufferBtnTrabajar = ""
+                    bufferBtnTrabajar += `<button type="button" style="${g_data.trabajado == 1 ? "cursor:auto;" : "" }" class="btn btn-icon rounded-pill btn-label-${g_data.trabajado == 1 ? "success" : "warning"}" ${g_data.trabajado == 1 ? "" : `onclick="appOffCanvasPedidos.open({did: '${g_data.did}', idVenta: '${g_data.id_venta}'})"`} data-bs-toggle="tooltip" data-bs-placement="top" title="${g_data.trabajado == 1 ? "Pedido trabajado" : "Trabajar pedido"}">`
+                    bufferBtnTrabajar += `<i class="tf-icons ri-${g_data.trabajado == 1 ? "check" : "inbox-archive"}-fill ri-22px"></i>`
+                    bufferBtnTrabajar += `</button>`
+                    $("#btnTrabajar_mPedidos").html(bufferBtnTrabajar)
+
                     g_productos = g_data.productos || []
                     renderProductosListado()
                     // renderProductosRepeater();
@@ -114,6 +128,10 @@
                         $(".ocultarDesdeVer_mPedidos").removeClass("ocultar")
                     }
                     $("#modal_mPedidos").modal("show")
+
+                    globalActivarAcciones.tooltips({
+                        idContainer: "modal_mPedidos"
+                    })
                 }
             });
         }
@@ -152,7 +170,7 @@
             $("#listaProductos_mPedidos").empty();
 
             if (g_productos.length === 0) {
-                $("#listaProductos_mPedidos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Puedes elegir una curva, caso contrario debes seleccionar la opcion "Sin curva"</span></div>`);
+                $("#listaProductos_mPedidos").html(`<div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin productos</span></div>`);
                 return;
             }
 

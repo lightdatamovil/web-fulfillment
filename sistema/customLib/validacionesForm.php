@@ -421,11 +421,16 @@
                 const $inputs = $fila.find('input:not([type="hidden"]),select:not([type="hidden"]),textarea:not([type="hidden"])');
 
                 if (!did) {
-                    const todosVacios = $inputs.toArray().every(input => $(input).val().trim() == '');
+                    const todosVacios = $inputs.toArray().every(input => {
+                        const valor = $(input).val();
+                        return (valor === null || valor === undefined || valor.toString().trim() === '');
+                    });
+
                     const sufijo = id.substring(id.lastIndexOf('_') + 1);
+
                     if (todosVacios) {
                         $inputs.removeClass(`camposObli_${sufijo}`);
-                        $inputs.removeClass('is-invalid')
+                        $inputs.removeClass('is-invalid');
                     } else {
                         $inputs.addClass(`camposObli_${sufijo}`);
                     }
