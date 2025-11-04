@@ -94,6 +94,10 @@ include("modulos/pedidos/listado/modulo/estructura.php");
 include("modulos/pedidos/listado/modal/ficha.php");
 include("modulos/pedidos/listado/modal/estructura.php");
 
+// Off Canvas de Pedidos
+include("modulos/pedidos/listado/offCanvas/ficha.php");
+include("modulos/pedidos/listado/offCanvas/estructura.php");
+
 // Subida masiva de Pedidos
 include("modulos/pedidos/subidaMasiva/modulo/ficha.php");
 include("modulos/pedidos/subidaMasiva/modulo/estructura.php");

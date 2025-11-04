@@ -14,6 +14,7 @@
         curvas: [],
         clientes: [],
         insumos: [],
+        usuarios: [],
         ecommerce: {
             0: "Directo",
             1: "Mercado Libre",
@@ -92,6 +93,7 @@
                     this.curvas = result.data.curvas;
                     this.clientes = result.data.clientes;
                     this.insumos = result.data.insumos;
+                    this.usuarios = result.data.usuarios;
                 },
             });
         },

@@ -596,13 +596,6 @@
             });
 
 
-            console.log("datosNuevos", datosNuevos);
-            console.log("g_data", g_data);
-
-
-            console.log("datosModificados", datosModificados);
-
-
             if (Object.keys(datosModificados).length === 0) {
                 globalSweetalert.alert({
                     titulo: "No se realizaron cambios"
@@ -628,10 +621,6 @@
                 dataNueva: datosNuevos.insumos,
                 dataOriginal: g_insumos
             })
-
-
-            console.log("datos", datosNuevos);
-            return
 
             globalSweetalert.confirmar({
                     titulo: "¿Estas seguro de modificar este producto?"

@@ -41,7 +41,7 @@
 
         public.select2 = function({
             className,
-            container = null // 👈 nuevo parámetro opcional
+            container = null
         }) {
             let $targets;
 
@@ -57,12 +57,20 @@
                     $el.select2('destroy');
                 }
 
+                // Detectar si está dentro de un modal o un offcanvas
                 const $modalParent = $el.closest('.modal');
+                const $offcanvasParent = $el.closest('.offcanvas');
 
                 if ($modalParent.length) {
                     $el.select2({
                         dropdownParent: $modalParent,
                         dropdownCssClass: 'select2-inside-modal',
+                        width: '100%'
+                    });
+                } else if ($offcanvasParent.length) {
+                    $el.select2({
+                        dropdownParent: $offcanvasParent,
+                        dropdownCssClass: 'select2-inside-offcanvas',
                         width: '100%'
                     });
                 } else {
@@ -72,6 +80,7 @@
                 }
             });
         };
+
 
         public.activarPrimerTab = function({
             tabList
@@ -307,7 +316,6 @@
                 $repeater.setList(data);
             }
 
-            // 👇 ESTE BLOQUE ES LA SOLUCIÓN 👇
             if (!data || data.length === 0) {
                 $repeater.find(`select.select2_repeater_${sufijoModulo}`).each(function() {
                     globalActivarAcciones.select2({

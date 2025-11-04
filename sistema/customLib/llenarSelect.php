@@ -66,6 +66,29 @@
             $(`#${id}`).html(buffer)
         }
 
+        public.armadores = function({
+            id,
+            multiple = false
+        }) {
+            const armadores = appSistema.usuarios.filter(item => item.perfil == 3)
+
+            if (armadores.length == 0) {
+                $(`#${id}`).html(`<option value="" ${multiple ? "" : "selected"} disabled>Sin armadores</option>`)
+                return
+            }
+
+            buffer = ""
+            if (!multiple) {
+                buffer = `<option value="" selected>Seleccionar armador</option>`
+            }
+
+            for (armador of armadores) {
+                buffer += `<option value="${armador["did"]}">${armador["nombre"]} ${armador["apellido"]}</option>`
+            }
+
+            $(`#${id}`).html(buffer)
+        }
+
         public.insumos = function({
             id,
             multiple = false

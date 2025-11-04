@@ -76,21 +76,20 @@
 
 				buffer += `<tr>`
 				buffer += `<td>${cliente || '---'}</td>`
-				buffer += `<td>${ pedido.fecha ? globalFuncionesJs.formatearFecha({fecha: pedido.fecha, para: "frontend"}) : '---'}</td>`
+				buffer += `<td>${pedido.fecha ? globalFuncionesJs.formatearFecha({fecha: pedido.fecha, para: "frontend"}) : '---'}</td>`
 				buffer += `<td>${appSistema.ecommerce[pedido.flex] || '---'}</td>`
 				buffer += `<td>${pedido.id_venta || '---'}</td>`
-				// buffer += `<td class="text-wrap">${pedido.comprador || '---'}</td>`
 				buffer += `<td>${htmlEstado}</td>`
-				// buffer += `<td>${pedido.total ? globalFuncionesJs.convertirPrecio(pedido.total) : '---'}</td>`
 				buffer += `<td class="text-center"><span class="badge badge-center rounded-pill bg-label-${pedido.armado == 1 ? "success" : "danger"}"><i class="ri-${pedido.armado == 1 ? "check" : "close-large"}-line"></i></span></td>`
-				buffer += `<td class="text-center">${pedido.trabajado || '---'}</td>`
+				buffer += `<td class="text-center">`
+				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-label-${pedido.trabajado == 1 ? "success" : "warning"}" ${pedido.trabajado == 1 ? "" : `onclick="appOffCanvasPedidos.open({did: '${pedido.did}', idVenta: '${pedido.id_venta}'})"`} data-bs-toggle="tooltip" data-bs-placement="top" title="${pedido.trabajado == 1 ? "Pedido trabajado" : "Trabajar pedido"}">`
+				buffer += `<i class="tf-icons ri-${pedido.trabajado == 1 ? "check" : "inbox-archive"}-fill ri-22px"></i>`
+				buffer += `</button>`
+				buffer += `</td>`
 				buffer += `<td>`
 				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidos.open({mode: 2, did: '${pedido.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
 				buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`
 				buffer += `</button>`
-				// buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidos.open({mode: 1, did: '${pedido.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">`
-				// buffer += `<i class="tf-icons ri-pencil-line ri-22px"></i>`
-				// buffer += `</button>`
 				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidos.eliminar('${pedido.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
 				buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
 				buffer += `</button>`
