@@ -116,11 +116,11 @@ include("modulos/envios/sincronizar/modal/estructura.php");
 
 // --------------------------------------------------------------
 
-// ARMADO PV ----------------------------------------------------
+// PEDIDO DE VENTA ----------------------------------------------------
 
-// Armado
-include("modulos/PV/armado/modulo/ficha.php");
-include("modulos/PV/armado/modulo/estructura.php");
+// Listado
+include("modulos/PV/listado/modulo/ficha.php");
+include("modulos/PV/listado/modulo/estructura.php");
 
 // --------------------------------------------------------------
 

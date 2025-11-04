@@ -1,4 +1,4 @@
-<div class="winapp" id='container_pedidoDeVenta' style="display:none;">
+<div class="winapp" id='modulo_pedidoDeVenta' style="display:none;">
 
     <div class="card mb-6">
         <div class="card-body">
@@ -13,13 +13,18 @@
 
         <div class="card-header border-bottom">
 
-            <div class="row g-3 align-items-center justify-content-between">
-                <div class="col-12 col-md-6 col-lg-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-12 col-md-6 col-lg-6">
                     <div class="form-floating form-floating-outline">
-                        <select id="filtroClientes_pedidoDeVenta" class="form-select"></select>
+                        <select id="filtroClientes_pedidoDeVenta" class="form-select select2_pedidoDeVenta" multiple></select>
                         <label for="filtroClientes_pedidoDeVenta">Cliente</label>
                     </div>
                 </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                    <button class="btn btn-primary w-100" onclick="appModuloPedidoDeVenta.getListado({type: 1})">Filtrar</button>
+                </div>
+
                 <div class="col-12 col-md-6 col-lg-3">
                     <button class="btn btn-label-warning w-100"><span class=" tf-icons ri-alarm-warning-fill ri-19px me-2"></span>Procesar pedidos alertadas</button>
                 </div>
@@ -29,12 +34,12 @@
 
         <div class="table-responsive text-nowrap table-container">
             <table class="table table-hover">
-                <thead class="table-thead">
+                <thead id="theadListado_pedidoDeVenta" class="table-thead">
                     <tr>
-                        <th>Cliente</th>
-                        <th>Pedidos pendientes</th>
-                        <th>Pedidos alertadas</th>
-                        <th>Total</th>
+                        <th data-order="did_cliente">Cliente</th>
+                        <th class="text-center" data-order="ordenes_pendientes">Pedidos pendientes</th>
+                        <th class="text-center" data-order="ordenes_alertadas">Pedidos alertadas</th>
+                        <th class="text-center" data-order="ordenes_total">Total</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyListado_pedidoDeVenta"></tbody>
