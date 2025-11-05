@@ -194,7 +194,7 @@
                 "nombre": "Listado",
                 "titulo": "Listado PV",
                 "ruta": "listado-pv",
-                "accion": "appModuloPedidoDeVenta.open()",
+                "accion": "appModuloPedidoDeVentas.open()",
                 "icono": "menu-icon tf-icons ri-shopping-cart-line",
                 "permisos": { "adm": 1, "operador": 1, "exterior": 1, "armador": 1 },
                 "hijos": []

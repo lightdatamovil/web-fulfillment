@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-3">
-                    <button class="btn btn-primary w-100" onclick="appModuloPedidoDeVenta.getListado({type: 1})">Filtrar</button>
+                    <button class="btn btn-primary w-100" onclick="appModuloPedidoDeVentas.getListado({type: 1})">Filtrar</button>
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-3">

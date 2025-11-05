@@ -122,6 +122,10 @@ include("modulos/envios/sincronizar/modal/estructura.php");
 include("modulos/PV/listado/modulo/ficha.php");
 include("modulos/PV/listado/modulo/estructura.php");
 
+// Modal
+include("modulos/PV/listado/modal/ficha.php");
+include("modulos/PV/listado/modal/estructura.php");
+
 // --------------------------------------------------------------
 
 // ARMADO OT ----------------------------------------------------

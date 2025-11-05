@@ -1,5 +1,5 @@
 <script>
-    const appModuloPedidoDeVenta = (function() {
+    const appModuloPedidoDeVentas = (function() {
         let g_data;
         let g_meta;
         let order = "";
@@ -25,12 +25,13 @@
                 className: "select2_pedidoDeVenta"
             })
 
-            await appModuloPedidoDeVenta.getListado();
+            await appModuloPedidoDeVentas.getListado();
 
             await globalOrdenTablas.activar({
                 idThead: "theadListado_pedidoDeVenta",
-                callback: appModuloPedidoDeVenta.getListado,
-                defaultOrder: "ordenes_total"
+                callback: appModuloPedidoDeVentas.getListado,
+                defaultOrder: "ordenes_total",
+                defaultDir: "desc"
             })
         };
 
@@ -53,11 +54,11 @@
             g_data.forEach(orden => {
                 cliente = appSistema.clientes.find((cliente) => cliente.did == orden.did_cliente);
 
-                btnPendientes = `<button type="button" class="btn rounded-pill btn-label-info waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${orden.ordenes_pendientes > 0 ? "Ver ordenes pendientes": "Sin ordenes"}"><i class="tf-icons ri-timer-line ri-16px me-2"></i>${orden.ordenes_pendientes || 0}</button>`
-                btnAlertados = `<button type="button" class="btn rounded-pill btn-label-warning waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${orden.ordenes_alertadas > 0 ? "Ver ordenes alertadas": "Sin ordenes"}"><i class="tf-icons ri-alarm-warning-line ri-16px me-2"></i>${orden.ordenes_alertadas || 0}</button>`
+                btnPendientes = `<button type="button" ${orden.ordenes_pendientes > 0 ? `onclick="appModalPedidoDeVentas.open({mode: 0, did_cliente: ${orden.did_cliente}})"`: ""} class="btn rounded-pill btn-label-info waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${orden.ordenes_pendientes > 0 ? "Ver": "Sin"} pedidos pendientes" style="${orden.ordenes_pendientes > 0 ? "" : "cursor: auto;"}"><i class="tf-icons ri-timer-line ri-16px me-2"></i>${orden.ordenes_pendientes || 0}</button>`
+                btnAlertados = `<button type="button" ${orden.ordenes_alertadas > 0 ? `onclick="appModalPedidoDeVentas.open({mode: 1, did_cliente: ${orden.did_cliente}})"`: ""} class="btn rounded-pill btn-label-warning waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${orden.ordenes_alertadas > 0 ? "Ver": "Sin"} pedidos alertadas" style="${orden.ordenes_alertadas > 0 ? "" : "cursor: auto;"}"><i class="tf-icons ri-alarm-warning-line ri-16px me-2"></i>${orden.ordenes_alertadas || 0}</button>`
 
                 buffer += `<tr>`
-                buffer += `<td>${cliente ? cliente["nombre_fantasia"] : '---'}</td>`
+                buffer += `<td class="${cliente ? "" : "fw-bold"}">${cliente ? cliente["nombre_fantasia"] : 'Cliente eliminado'}</td>`
                 buffer += `<td class="text-center">${btnPendientes}</td>`
                 buffer += `<td class="text-center">${btnAlertados}</td>`
                 buffer += `<td class="text-center">${orden.ordenes_total || '0'}</td>`
@@ -101,7 +102,7 @@
                     globalPaginado.generar({
                         idBase: "_pedidoDeVenta",
                         meta: g_meta,
-                        estructura: appModuloPedidoDeVenta
+                        estructura: appModuloPedidoDeVentas
                     });
                 },
             });

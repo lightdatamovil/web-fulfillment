@@ -23,11 +23,11 @@
                             <div class="d-flex flex-column gap-1">
                                 <p class="m-0" style="color: #7b7c95;">
                                 Total de registros: 
-                                <span id="totalRegistros${idBase}" class="badge badge-center rounded-pill bg-label-primary w-auto">${totalItems}</span>
+                                <span id="totalRegistros${idBase}" class="badge badge-center rounded-pill bg-label-primary w-auto" style="min-width: 24px;">${totalItems}</span>
                                 </p>
                                 <p class="m-0" style="color: #7b7c95;">
                                 Total de páginas: 
-                                <span id="totalPaginas${idBase}" class="badge badge-center rounded-pill bg-label-primary w-auto">${totalPages}</span>
+                                <span id="totalPaginas${idBase}" class="badge badge-center rounded-pill bg-label-primary w-auto" style="min-width: 24px;">${totalPages}</span>
                                 </p>
                             </div>
                             </div>

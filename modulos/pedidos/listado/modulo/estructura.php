@@ -68,7 +68,10 @@
 			};
 
 			g_data.forEach(pedido => {
-				const cliente = appSistema.clientes.find(c => c.did == pedido.did_cliente)?.nombre_fantasia || "<b>Cliente eliminado</b>";
+				let cliente = "<b>Cliente no registrado</b>"
+				if (pedido.did_cliente) {
+					cliente = appSistema.clientes.find(c => c.did == pedido.did_cliente)?.nombre_fantasia || "<b>Cliente eliminado</b>";
+				}
 
 				htmlEstado = pedido.estado || "---"
 				if (pedido.estado && appSistema.estadosPedidos[pedido.estado]) {
