@@ -16,6 +16,14 @@
 			<div class="row gy-5 gx-3 mb-5">
 
 				<div class="col-12 col-md-6 col-lg-3">
+					<div class="input-group input-daterange">
+						<input type="date" class="form-control campos_pedidos" id="filtroFechaDesde_pedidos" />
+						<span class="input-group-text cursor-pointer" id="tipoFecha_pedidos" onclick="appModuloPedidos.cambiarTipoFecha()"><i class="ri-arrow-right-s-line"></i></span>
+						<input type="date" class="form-control campos_pedidos" id="filtroFechaHasta_pedidos" />
+					</div>
+				</div>
+
+				<div class="col-12 col-md-6 col-lg-3">
 					<div class="form-floating form-floating-outline">
 						<input type="text" class="form-control campos_pedidos inputs_pedidos" id="filtroIdVenta_pedidos" placeholder="ID Venta" />
 						<label for="filtroIdVenta_pedidos">Buscar por ID venta</label>
@@ -51,21 +59,21 @@
 					</div>
 				</div>
 
-				<div class="col-12 col-md-6 col-lg-4">
+				<div class="col-12 col-md-6 col-lg-3">
 					<div class="form-floating form-floating-outline">
 						<select id="filtroClientes_pedidos" multiple class="form-select campos_pedidos select2_pedidos"></select>
 						<label for="filtroClientes_pedidos">Clientes</label>
 					</div>
 				</div>
 
-				<div class="col-12 col-md-6 col-lg-4">
+				<div class="col-12 col-md-6 col-lg-3">
 					<div class="form-floating form-floating-outline">
 						<select id="filtroOrigen_pedidos" multiple class="form-select campos_pedidos select2_pedidos"></select>
 						<label for="filtroOrigen_pedidos">Origen</label>
 					</div>
 				</div>
 
-				<div class="col-12 col-md-6 col-lg-4">
+				<div class="col-12 col-md-6 col-lg-3">
 					<div class="form-floating form-floating-outline">
 						<select id="filtroEstado_pedidos" multiple class="form-select campos_pedidos select2_pedidos"></select>
 						<label for="filtroEstado_pedidos">Estado</label>

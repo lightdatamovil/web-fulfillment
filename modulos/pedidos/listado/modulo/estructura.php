@@ -4,7 +4,9 @@
 		let g_meta;
 		let order = "";
 		let direction = "";
-		let openModulo = 0
+		let openModulo = 0;
+		let rangoFecha = true;
+
 		const rutaAPI = "pedidos"
 
 		const public = {};
@@ -35,6 +37,8 @@
 				className: "select2_pedidos"
 			})
 
+			await formatearRangoFecha()
+
 			await appModuloPedidos.getListado();
 
 			await globalActivarAcciones.filtrarConEnter({
@@ -53,6 +57,35 @@
 		public.limpiarCampos = function() {
 			$(".campos_pedidos").val("")
 			$(".select2_pedidos").trigger("change")
+			formatearRangoFecha()
+		};
+
+		function formatearRangoFecha() {
+			const fechaDesde = globalFuncionesJs.formatearFecha({
+				fecha: "hoy",
+				para: "date",
+				menos: 7
+			})
+
+			const fechaHasta = globalFuncionesJs.formatearFecha({
+				fecha: "hoy",
+				para: "date"
+			})
+
+			$('#filtroFechaDesde_pedidos').val(fechaDesde);
+			$('#filtroFechaHasta_pedidos').val(fechaHasta);
+		}
+
+		public.cambiarTipoFecha = function() {
+			rangoFecha = !rangoFecha
+
+			if (rangoFecha) {
+				$("#filtroFechaHasta_pedidos").removeClass("ocultar")
+				$("#tipoFecha_pedidos").removeClass("rounded-end")
+			} else {
+				$("#filtroFechaHasta_pedidos").addClass("ocultar")
+				$("#tipoFecha_pedidos").addClass("rounded-end")
+			}
 		};
 
 		function renderListado() {
@@ -124,6 +157,8 @@
 				page_size: public.limitePorPagina,
 				sort_by: order,
 				sort_dir: direction,
+				fecha_from: $("#filtroFechaDesde_pedidos").val(),
+				fecha_to: rangoFecha ? $("#filtroFechaHasta_pedidos").val() : $("#filtroFechaDesde_pedidos").val(),
 				id_venta: $("#filtroIdVenta_pedidos").val().trim(),
 				comprador: $("#filtroComprador_pedidos").val().trim(),
 				armado: $("#filtroArmado_pedidos").val(),
@@ -132,6 +167,9 @@
 				flex: $("#filtroOrigen_pedidos").val().join(","),
 				estado: $("#filtroEstado_pedidos").val().join(","),
 			};
+
+			console.log("parametros", parametros);
+
 
 			const queryString = $.param(parametros);
 

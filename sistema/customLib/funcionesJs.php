@@ -45,16 +45,26 @@
 
         public.formatearFecha = function({
             fecha,
-            para
+            para,
+            menos = 0
         }) {
             if (!fecha) return "";
+
+            if (typeof fecha === "string" && fecha.toLowerCase() === "hoy") {
+                fecha = new Date();
+            }
+
             const f = new Date(fecha);
 
-            const dia = String(f.getUTCDate()).padStart(2, "0");
-            const mes = String(f.getUTCMonth() + 1).padStart(2, "0");
-            const anio = f.getUTCFullYear();
-            const horas = String(f.getUTCHours()).padStart(2, "0");
-            const minutos = String(f.getUTCMinutes()).padStart(2, "0");
+            if (menos > 0) {
+                f.setDate(f.getDate() - menos);
+            }
+
+            const dia = String(f.getDate()).padStart(2, "0");
+            const mes = String(f.getMonth() + 1).padStart(2, "0");
+            const anio = f.getFullYear();
+            const horas = String(f.getHours()).padStart(2, "0");
+            const minutos = String(f.getMinutes()).padStart(2, "0");
 
             switch (para) {
                 case "frontend":
@@ -69,6 +79,8 @@
                     return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
             }
         };
+
+
 
         return public;
 

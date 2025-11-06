@@ -30,6 +30,14 @@
                 alertada: donde
             };
 
+
+            if (!did_cliente) {
+                globalSweetalert.alert({
+                    titulo: "El cliente no esta registrado en el sistema"
+                });
+                return;
+            }
+
             const queryString = $.param(parametros);
 
             globalRequest.get(`/${rutaAPI}/${did_cliente}?${queryString}`, {

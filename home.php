@@ -65,6 +65,10 @@ if (!isset($_SESSION["logueado"])) {
     <link rel="stylesheet" href="assets/vendor/libs/flatpickr/flatpickr.css" />
     <link rel="stylesheet" href="assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css" />
     <link rel="stylesheet" href="assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css" />
+    <link rel="stylesheet" href="assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css" />
+    <link rel="stylesheet" href="assets/vendor/libs/jquery-timepicker/jquery-timepicker.css" />
+    <link rel="stylesheet" href="assets/vendor/libs/pickr/pickr-themes.css" />
 
     <!-- Page CSS -->
     <link rel="stylesheet" href="assets/vendor/css/pages/cards-statistics.css" />
@@ -349,6 +353,10 @@ if (!isset($_SESSION["logueado"])) {
     <script src="assets/vendor/libs/autosize/autosize.js"></script>
     <script src="assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
     <script src="assets/vendor/libs/jquery-repeater/jquery-repeater.js"></script>
+    <script src="assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script src="assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+    <script src="assets/vendor/libs/jquery-timepicker/jquery-timepicker.js"></script>
+    <script src="assets/vendor/libs/pickr/pickr.js"></script>
 
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
@@ -365,6 +373,7 @@ if (!isset($_SESSION["logueado"])) {
     <script src="assets/js/forms-selects.js"></script>
     <script src="assets/js/forms-typeahead.js"></script>
     <script src="assets/js/forms-extras.js"></script>
+    <script src="assets/js/forms-pickers.js"></script>
 
     <!-- LIBRERIA DE PANTALLA COMPLETA Y ZOOM DE IMAGENES -->
     <script src="/librerias/photoswipe/photoswipe.umd.min.js"></script>
