@@ -47,21 +47,21 @@
         "hijos": [
             {
                 "id": 11,
-                "nombre": "Listado",
-                "titulo": "Listado",
-                "ruta": "curvas",
-                "accion": "appModuloCurvas.open();",
-                "icono": "menu-icon tf-icons ri-t-shirt-air-line",
-                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
-                "hijos": []
-            },
-            {
-                "id": 12,
                 "nombre": "Variantes",
                 "titulo": "Variantes",
                 "ruta": "variantes",
                 "accion": "appModuloVariantes.open();",
                 "icono": "menu-icon tf-icons ri-palette-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
+                "hijos": []
+            },
+            {
+                "id": 12,
+                "nombre": "Listado",
+                "titulo": "Listado",
+                "ruta": "curvas",
+                "accion": "appModuloCurvas.open();",
+                "icono": "menu-icon tf-icons ri-t-shirt-air-line",
                 "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 0 },
                 "hijos": []
             }

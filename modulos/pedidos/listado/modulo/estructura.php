@@ -57,6 +57,7 @@
 		public.limpiarCampos = function() {
 			$(".campos_pedidos").val("")
 			$(".select2_pedidos").trigger("change")
+			appModuloPedidos.cambiarTipoFecha(true)
 			formatearRangoFecha()
 		};
 
@@ -76,8 +77,12 @@
 			$('#filtroFechaHasta_pedidos').val(fechaHasta);
 		}
 
-		public.cambiarTipoFecha = function() {
-			rangoFecha = !rangoFecha
+		public.cambiarTipoFecha = function(rango) {
+			if (rango) {
+				rangoFecha = rango
+			} else {
+				rangoFecha = !rangoFecha
+			}
 
 			if (rangoFecha) {
 				$("#filtroFechaHasta_pedidos").removeClass("ocultar")

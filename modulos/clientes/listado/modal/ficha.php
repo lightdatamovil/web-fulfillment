@@ -36,7 +36,7 @@
 								<i class="ri-key-2-line ri-20px d-sm-none"></i>
 							</button>
 						</li>
-						<li class="nav-item">
+						<!-- <li class="nav-item">
 							<button
 								type="button"
 								class="nav-link"
@@ -48,7 +48,7 @@
 								<span class="d-none d-sm-block"><i class="tf-icons ri-map-pin-2-line me-2"></i>Direcciones</span>
 								<i class="ri-map-pin-2-line ri-20px d-sm-none"></i>
 							</button>
-						</li>
+						</li> -->
 						<li class="nav-item">
 							<button
 								type="button"

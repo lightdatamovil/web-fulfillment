@@ -32,7 +32,7 @@
                 $("#subtitulo_mClientes").text("Creacion de cliente nuevo, completar formulario.");
                 $('.campos_mClientes').prop('disabled', false);
                 $("#btnEditar_mClientes").addClass("ocultar")
-                renderDirecciones()
+                // renderDirecciones()
                 renderContactos()
                 $("#btnGuardar_mClientes, .ocultarDesdeVer_mClientes").removeClass("ocultar");
                 $("#modal_mClientes").modal("show")
@@ -76,7 +76,7 @@
                         });
                     }
                     g_direcciones = g_data.direcciones || []
-                    renderDirecciones();
+                    // renderDirecciones();
                     g_contactos = g_data.contactos || [];
                     renderContactos();
 

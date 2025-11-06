@@ -114,8 +114,8 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <div class="form-floating form-floating-outline">
-                                            <input type="text" id="posicion_mProductos" class="form-control campos_mProductos" placeholder="Posicion" />
-                                            <label for="posicion_mProductos">Posicion</label>
+                                            <input type="text" id="posicion_mProductos" class="form-control campos_mProductos" placeholder="Ubicación" />
+                                            <label for="posicion_mProductos">Ubicación</label>
                                         </div>
                                     </div>
 
@@ -145,8 +145,8 @@
 
                                     <div class="col-12 col-md-4">
                                         <div class="form-floating form-floating-outline">
-                                            <input type="number" step="0.1" min="0" id="profundo_mProductos" class="form-control campos_mProductos" placeholder="Profundo" oninput="appModalProductos.calcularCm3()" />
-                                            <label for="profundo_mProductos">Profundo</label>
+                                            <input type="number" step="0.1" min="0" id="profundo_mProductos" class="form-control campos_mProductos" placeholder="Profundidad" oninput="appModalProductos.calcularCm3()" />
+                                            <label for="profundo_mProductos">Profundidad</label>
                                         </div>
                                     </div>
 
