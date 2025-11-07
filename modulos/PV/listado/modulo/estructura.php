@@ -4,7 +4,9 @@
         let g_meta;
         let order = "";
         let direction = "";
-        let openModulo = 0
+        let openModulo = 0;
+        let rangoFecha = true;
+
         const rutaAPI = "ordenes-trabajo"
 
         const public = {};
@@ -14,62 +16,141 @@
 
         public.open = async function() {
             $(".winapp").hide();
-            $("#modulo_pedidoDeVenta").show();
+            $("#modulo_pedidoDeVentas").show();
 
             await globalLlenarSelect.clientes({
-                id: "filtroClientes_pedidoDeVenta",
+                id: "filtroClientes_pedidoDeVentas",
+                multiple: true
+            })
+
+            await globalLlenarSelect.armadores({
+                id: "filtroArmador_pedidoDeVentas",
+                multiple: true
+            })
+
+            await globalLlenarSelect.estadosOT({
+                id: "filtroEstado_pedidoDeVentas",
+                multiple: true
+            })
+
+            await globalLlenarSelect.tiendas({
+                id: "filtroOrigen_pedidoDeVentas",
                 multiple: true
             })
 
             await globalActivarAcciones.select2({
-                className: "select2_pedidoDeVenta"
+                className: "select2_pedidoDeVentas"
             })
+
+            await formatearRangoFecha()
 
             await appModuloPedidoDeVentas.getListado();
 
+            await globalActivarAcciones.filtrarConEnter({
+                className: "inputs_pedidoDeVentas",
+                callback: appModuloPedidoDeVentas.getListado
+            })
+
             await globalOrdenTablas.activar({
-                idThead: "theadListado_pedidoDeVenta",
+                idThead: "theadListado_pedidoDeVentas",
                 callback: appModuloPedidoDeVentas.getListado,
-                defaultOrder: "ordenes_total",
+                defaultOrder: "fecha",
                 defaultDir: "desc"
             })
         };
 
         public.limpiarCampos = function() {
-            $(".campos_pedidoDeVenta").val("")
+            $(".campos_pedidoDeVentas").val("")
+            $(".select2_pedidoDeVentas").trigger("change")
+            appModuloPedidoDeVentas.cambiarTipoFecha(true)
+            formatearRangoFecha()
+        };
+
+        function formatearRangoFecha() {
+            const fechaDesde = globalFuncionesJs.formatearFecha({
+                fecha: "hoy",
+                para: "date",
+                menos: 7
+            })
+
+            const fechaHasta = globalFuncionesJs.formatearFecha({
+                fecha: "hoy",
+                para: "date"
+            })
+
+            $('#filtroFechaDesde_pedidoDeVentas').val(fechaDesde);
+            $('#filtroFechaHasta_pedidoDeVentas').val(fechaHasta);
+        }
+
+        public.cambiarTipoFecha = function(rango) {
+            if (rango) {
+                rangoFecha = rango
+            } else {
+                rangoFecha = !rangoFecha
+            }
+
+            if (rangoFecha) {
+                $("#filtroFechaHasta_pedidoDeVentas").removeClass("ocultar")
+                $("#tipoFecha_pedidoDeVentas").removeClass("rounded-end")
+            } else {
+                $("#filtroFechaHasta_pedidoDeVentas").addClass("ocultar")
+                $("#tipoFecha_pedidoDeVentas").addClass("rounded-end")
+            }
         };
 
         function renderListado() {
-            $("#tbodyListado_pedidoDeVenta").empty()
+            $("#tbodyListado_pedidoDeVentas").empty()
             let buffer = ""
 
             if (!g_data || g_data.length < 1) {
                 globalSinInformacion.tablasVacias({
-                    idTbody: "tbodyListado_pedidoDeVenta",
+                    idTbody: "tbodyListado_pedidoDeVentas",
                     open: openModulo
                 })
                 return
             };
 
-            g_data.forEach(orden => {
-                cliente = appSistema.clientes.find((cliente) => cliente.did == orden.did_cliente);
+            g_data.forEach(pedido => {
+                const venta = pedido.pedidos[0]
 
-                btnPendientes = `<button type="button" ${orden.ordenes_pendientes > 0 ? `onclick="appModalPedidoDeVentas.open({mode: 0, did_cliente: ${orden.did_cliente}})"`: ""} class="btn rounded-pill btn-label-info waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${orden.ordenes_pendientes > 0 ? "Ver": "Sin"} pedidos pendientes" style="${orden.ordenes_pendientes > 0 ? "" : "cursor: auto;"}"><i class="tf-icons ri-timer-line ri-16px me-2"></i>${orden.ordenes_pendientes || 0}</button>`
-                btnAlertados = `<button type="button" ${orden.ordenes_alertadas > 0 ? `onclick="appModalPedidoDeVentas.open({mode: 1, did_cliente: ${orden.did_cliente}})"`: ""} class="btn rounded-pill btn-label-warning waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="${orden.ordenes_alertadas > 0 ? "Ver": "Sin"} pedidos alertadas" style="${orden.ordenes_alertadas > 0 ? "" : "cursor: auto;"}"><i class="tf-icons ri-alarm-warning-line ri-16px me-2"></i>${orden.ordenes_alertadas || 0}</button>`
+                let cliente = "<b>Cliente no registrado</b>"
+                if (venta.did_cliente) {
+                    cliente = appSistema.clientes.find(c => c.did == venta.did_cliente)?.nombre_fantasia || "<b>Cliente eliminado</b>";
+                }
 
-                buffer += `<tr>`
-                buffer += `<td class="${cliente ? "" : "fw-bold"}">${cliente ? cliente["nombre_fantasia"] : 'Cliente eliminado'}</td>`
-                buffer += `<td class="text-center">${btnPendientes}</td>`
-                buffer += `<td class="text-center">${btnAlertados}</td>`
-                buffer += `<td class="text-center">${orden.ordenes_total || '0'}</td>`
+                estado = appSistema.estadosOT.find(e => e.did == pedido.estado) || {};
+                htmlEstado = `<span class="badge rounded-pill bg-label-${estado.color || "secondary"}">${estado.nombre || "Desconocido"}</span>`
+
+                let armador = "<b>Usuario no registrado</b>"
+                if (pedido.asignado) {
+                    armador = appSistema.usuarios.find(c => c.did == pedido.asignado)?.nombre || "<b>Usuario eliminado</b>";
+                }
+
+                buffer += `<tr class="${pedido.alertada == 1 ? "bg-label-warning" : ""}">`
+                buffer += `<td>${cliente || '---'}</td>`
+                buffer += `<td>${pedido.fecha_inicio ? globalFuncionesJs.formatearFecha({fecha: pedido.fecha_inicio, para: "frontend"}).slice(0, 10) : '---'}</td>`
+                buffer += `<td>${venta.id_venta || '---'}</td>`
+                buffer += `<td>${htmlEstado}</td>`
+                buffer += `<td>${appSistema.ecommerce[venta.flex] || '---'}</td>`
+                buffer += `<td>${armador || '---'}</td>`
+
+                buffer += `<td>`
+                buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidoDeVentas.open({did: '${pedido.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
+                buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`
+                buffer += `</button>`
+                buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalPedidoDeVentas.eliminar('${pedido.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
+                buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
+                buffer += `</button>`
+                buffer += `</td>`
+
                 buffer += `</tr>`
             });
 
-            $("#tbodyListado_pedidoDeVenta").html(buffer)
-            $("#totalRegistros_pedidoDeVenta").text(g_meta.totalItems)
-            $("#totalPaginas_pedidoDeVenta").text(g_meta.totalPages)
+            $("#tbodyListado_pedidoDeVentas").html(buffer)
+            $("#totalRegistros_pedidoDeVentas").text(g_meta.totalItems)
+            $("#totalPaginas_pedidoDeVentas").text(g_meta.totalPages)
             globalActivarAcciones.tooltips({
-                idContainer: "modulo_pedidoDeVenta"
+                idContainer: "modulo_pedidoDeVentas"
             })
 
         }
@@ -88,7 +169,14 @@
                 page_size: public.limitePorPagina,
                 sort_by: order,
                 sort_dir: direction,
-                did_cliente: $("#filtroClientes_pedidoDeVenta").val().join(",")
+                fecha_from: $("#filtroFechaDesde_pedidoDeVentas").val(),
+                fecha_to: rangoFecha ? $("#filtroFechaHasta_pedidoDeVentas").val() : $("#filtroFechaDesde_pedidoDeVentas").val(),
+                id_venta: $("#filtroIdVenta_pedidoDeVentas").val().trim(),
+                asignado: $("#filtroArmador_pedidoDeVentas").val().join(","),
+                did_cliente: $("#filtroClientes_pedidoDeVentas").val().join(","),
+                origen: $("#filtroOrigen_pedidoDeVentas").val().join(","),
+                estado: $("#filtroEstado_pedidoDeVentas").val().join(","),
+                alertada: $("#filtroAlertada_pedidoDeVentas").val(),
             };
 
             const queryString = $.param(parametros);
@@ -100,7 +188,7 @@
                     public.paginaActual = parseInt(g_meta.page);
                     renderListado();
                     globalPaginado.generar({
-                        idBase: "_pedidoDeVenta",
+                        idBase: "_pedidoDeVentas",
                         meta: g_meta,
                         estructura: appModuloPedidoDeVentas
                     });

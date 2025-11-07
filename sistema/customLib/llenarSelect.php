@@ -179,6 +179,23 @@
             $(`#${id}`).html(buffer)
         }
 
+        public.estadosOT = function({
+            id,
+            multiple = false
+        }) {
+            buffer = ""
+            if (!multiple) {
+                buffer = `<option value="" selected>Seleccionar estado</option>`
+            }
+
+            for (estado in appSistema.estadosOT) {
+                buffer += `<option value="${appSistema.estadosOT[estado].did}">${appSistema.estadosOT[estado].nombre || "Sin nombre"}</option>`
+            }
+
+            $(`#${id}`).html(buffer)
+        }
+
+
         public.estadosPedidos = function({
             id,
             multiple = false

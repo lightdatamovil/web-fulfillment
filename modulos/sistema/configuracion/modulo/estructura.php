@@ -44,8 +44,8 @@
             $('#logoEmpresa_configuracion').attr('src', g_data.logoEmpresa);
             $('#logoEmpresa_configuracion').attr('onerror', "this.onerror=null; this.src='../../assets/img/extras/imagenDefault.jpg';");
 
-            $("#qrcode").empty();
-            new QRCode(document.getElementById("qrcode"), {
+            $("#qrcode_configuracion").empty();
+            new QRCode(document.getElementById("qrcode_configuracion"), {
                 text: g_data.codEmpresa,
                 width: 200,
                 height: 200,

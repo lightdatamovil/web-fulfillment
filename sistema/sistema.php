@@ -15,6 +15,7 @@
         clientes: [],
         insumos: [],
         usuarios: [],
+        estadosOT: [],
         ecommerce: {
             0: "Directo",
             1: "Mercado Libre",
@@ -94,6 +95,7 @@
                     this.clientes = result.data.clientes;
                     this.insumos = result.data.insumos;
                     this.usuarios = result.data.usuarios;
+                    this.estadosOT = result.data.estados_ot;
                 },
             });
         },

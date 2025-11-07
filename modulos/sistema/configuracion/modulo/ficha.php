@@ -35,7 +35,7 @@
                     <div class="row p-5">
                         <div class="col-md-4">
                             <div class="bg-white p-3 rounded ratio ratio-1x1">
-                                <div id="qrcode" class="d-flex align-items-center justify-content-center"></div>
+                                <div id="qrcode_configuracion" class="d-flex align-items-center justify-content-center"></div>
                             </div>
                         </div>
                         <div class="col-md-8">

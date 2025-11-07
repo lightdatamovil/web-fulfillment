@@ -35,14 +35,14 @@
                                 <div class="tab-pane fade show active" id="tabGeneral_mCurvas" role="tabpanel">
                                     <form class="row g-5 align-items-baseline" onsubmit="return false">
                                         <h5 class="m-0 mt-3">Datos de la curva</h5>
-                                        <div class="col-12 col-md-3">
+                                        <div class="col-12 col-md-4">
                                             <div class="form-floating form-floating-outline">
                                                 <input type="text" id="codigo_mCurvas" class="form-control campos_mCurvas camposObli_mCurvas" placeholder="Codigo" />
                                                 <label for="codigo_mCurvas">Codigo</label>
                                                 <div class="invalid-feedback"> Debe completar el campo </div>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6">
+                                        <div class="col-12 col-md-8">
                                             <div class="form-floating form-floating-outline">
                                                 <input type="text" id="nombre_mCurvas" class="form-control campos_mCurvas camposObli_mCurvas" placeholder="Nombre" />
                                                 <label for="nombre_mCurvas">Nombre</label>
@@ -50,7 +50,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-12 col-md-3">
+                                        <div class="col-12 col-md-3 ocultar">
                                             <div class="form-check">
                                                 <input class="form-check-input campos_mCurvas" type="checkbox" value="" id="checkHabilitado_mCurvas" checked />
                                                 <label class="form-check-label" for="checkHabilitado_mCurvas"> Habilitado </label>
@@ -68,7 +68,7 @@
 
                                         <div class="col-12 col-md-12 col-lg-12" id="containerCategorias_mCurvas"></div>
 
-                                        <div class="col-12 col-md-12 col-lg-12 ocultarDesdeVer_mCurvas">
+                                        <div class="col-12 col-md-12 col-lg-12 ocultarDesdeVer_mCurvas ocultarDesdeModificar_mCurvas">
                                             <button id="btnGenerarCurva_mCurvas" class="btn btn-outline-success waves-effect w-100" disabled onclick="appModalCurvas.generarCurva()">
                                                 <span class="tf-icons ri-sparkling-2-line ri-22px me-2"></span>Generar curva
                                             </button>

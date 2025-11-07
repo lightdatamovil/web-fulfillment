@@ -32,7 +32,7 @@
                 $("#titulo_mCurvas").text("Nueva curva");
                 $("#subtitulo_mCurvas").text("Creacion de curva nuevo, completar formulario.");
                 $('.campos_mCurvas').prop('disabled', false);
-                $("#btnGuardar_mCurvas, .ocultarDesdeVer_mCurvas").removeClass("ocultar");
+                $("#btnGuardar_mCurvas, .ocultarDesdeModificar_mCurvas, .ocultarDesdeVer_mCurvas").removeClass("ocultar");
                 $("#btnEditar_mCurvas").addClass("ocultar")
                 $("#modal_mCurvas").modal("show")
             } else if (mode == 1) {
@@ -42,7 +42,7 @@
                 $("#subtitulo_mCurvas").text("Modificacion de curva existente, completar formulario.");
                 $('.campos_mCurvas').prop('disabled', false);
                 $("#btnEditar_mCurvas, .ocultarDesdeVer_mCurvas").removeClass("ocultar");
-                $("#btnGuardar_mCurvas").addClass("ocultar")
+                $("#btnGuardar_mCurvas, .ocultarDesdeModificar_mCurvas").addClass("ocultar")
                 await get()
             } else {
                 // VER CURVA
