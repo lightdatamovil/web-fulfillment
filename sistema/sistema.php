@@ -16,6 +16,7 @@
         insumos: [],
         usuarios: [],
         estadosOT: [],
+        identificadoresEspeciales: [],
         ecommerce: {
             0: "Directo",
             1: "Mercado Libre",
@@ -33,6 +34,17 @@
             1: "Celular",
             2: "Email",
             3: "Web",
+        },
+        tiposIdentificadoresEspeciales: {
+            1: "Texto",
+            2: "Fecha",
+        },
+        syncLogisticas: {
+            0: "No sync",
+            1: "Lightdata",
+            2: "Andreani",
+            3: "OCA",
+            4: "Otros",
         },
         estadosPedidos: {
             "confirmed": {
@@ -96,6 +108,7 @@
                     this.insumos = result.data.insumos;
                     this.usuarios = result.data.usuarios;
                     this.estadosOT = result.data.estados_ot;
+                    this.identificadoresEspeciales = result.data.identificadores_especiales;
                 },
             });
         },

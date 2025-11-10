@@ -89,11 +89,15 @@
                     await seleccionarCategorias()
                     await appModalCurvas.generarCurva()
 
-                    if (donde == 2) {
+                    if (donde == 1) {
+                        $(".ocultarDesdeModificar_mCurvas").addClass("ocultar")
+                        $(".deshabilitarDesdeModificar_mCurvas").prop('disabled', true)
+                    } else if (donde == 2) {
                         $('.campos_mCurvas').prop('disabled', true);
                         $(".ocultarDesdeVer_mCurvas").addClass("ocultar")
                     } else {
-                        $(".ocultarDesdeVer_mCurvas").removeClass("ocultar")
+                        $(".ocultarDesdeVer_mCurvas .ocultarDesdeModificar_mCurvas").removeClass("ocultar")
+                        $(".deshabilitarDesdeModificar_mCurvas").prop('disabled', false)
                     }
 
                     $("#modal_mCurvas").modal("show")
@@ -115,7 +119,7 @@
 
                     buffer += `<div class="col-12 col-md-${variantes.length > 1 ? "6" : "12"}">`
                     buffer += `<div class="form-floating form-floating-outline">`
-                    buffer += `<select class="form-select campos_mCurvas selectCategorias_mProductos" id="selectCategoria_${variante.did}_mProductos" data-variante="${variante.did}" onchange="appModalCurvas.habilitarBtnGenerarCurva()">`
+                    buffer += `<select class="form-select campos_mCurvas selectCategorias_mProductos deshabilitarDesdeModificar_mCurvas" id="selectCategoria_${variante.did}_mProductos" data-variante="${variante.did}" onchange="appModalCurvas.habilitarBtnGenerarCurva()">`
                     buffer += `<option value="" selected>Seleccionar</option>`
                     for (categorias of variante["categorias"]) {
                         buffer += `<option value="${categorias["did"]}">${categorias["nombre"] || "Sin nombre"}</option>`

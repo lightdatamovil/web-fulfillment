@@ -71,9 +71,9 @@
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalProductos.open({mode: 1, did: '${producto.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">`
                 buffer += `<i class="tf-icons ri-pencil-line ri-22px"></i>`
                 buffer += `</button>`
-                buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalProductos.eliminar('${producto.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
-                buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
-                buffer += `</button>`
+                // buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalProductos.eliminar('${producto.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
+                // buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
+                // buffer += `</button>`
                 buffer += `</td>`
                 buffer += `</tr>`
             });

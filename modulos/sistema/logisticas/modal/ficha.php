@@ -47,11 +47,13 @@
 
                                 <div class="col-12 col-md-12 col-lg-9">
                                     <div class="input-group">
-                                        <div class="input-group-text form-check mb-0">
-                                            <input class="form-check-input m-auto campos_mLogisticas" type="checkbox" value="" id="checkEsLightdata_mLogisticas" onchange="appModalLogisticas.onChangeEsLightdata(this)" />
-                                            <label class="form-check-label ms-2 lh-1" for="checkEsLightdata_mLogisticas">Es Lightdata</label>
+
+                                        <div class="form-floating form-floating-outline">
+                                            <select id="sync_mLogisticas" class="form-select campos_mLogisticas" onchange="appModalLogisticas.onChangeSync(this)"></select>
+                                            <label for="sync_mLogisticas">Sync</label>
                                         </div>
-                                        <input type="text" id="codLightdata_mLogisticas" class="form-control campos_mLogisticas rounded-end" placeholder="Codigo Lightdata" />
+
+                                        <input type="text" id="codSync_mLogisticas" class="form-control campos_mLogisticas rounded-end" placeholder="Codigo sync" />
                                         <div class="invalid-feedback"> Debe completar el campo </div>
                                     </div>
                                 </div>

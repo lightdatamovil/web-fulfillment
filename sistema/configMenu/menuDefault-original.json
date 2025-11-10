@@ -143,21 +143,21 @@
         "hijos": [
             {
                 "id": 51,
-                "nombre": "Listado",
-                "titulo": "Pedidos",
-                "ruta": "pedidos",
-                "accion": "appPedidosListado.open();",
-                "icono": "menu-icon tf-icons ri-checkbox-circle-line",
-                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
-                "hijos": []
-            },
-            {
-                "id": 52,
                 "nombre": "Subida masiva",
                 "titulo": "Subida masiva de pedidos",
                 "ruta": "pedidos-subida-masiva",
                 "accion": "appPedidosSubidaMasiva.open();",
                 "icono": "menu-icon tf-icons ri-file-upload-line",
+                "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
+                "hijos": []
+            },
+            {
+                "id": 52,
+                "nombre": "Listado",
+                "titulo": "Pedidos",
+                "ruta": "pedidos",
+                "accion": "appModuloPedidos.open();",
+                "icono": "menu-icon tf-icons ri-checkbox-circle-line",
                 "permisos": { "adm": 1, "operador": 1, "exterior": 0, "armador": 1 },
                 "hijos": []
             }

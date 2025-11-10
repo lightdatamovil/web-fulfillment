@@ -103,7 +103,7 @@
 						<th data-order="did_cliente">Cliente</th>
 						<th data-order="fecha">Fecha</th>
 						<th data-order="flex">Origen</th>
-						<th data-order="id_venta">#Venta</th>
+						<th data-order="id_venta">ID Venta</th>
 						<!-- <th data-order="comprador">Comprador</th> -->
 						<th data-order="estado">Estado</th>
 						<!-- <th data-order="total">Total</th> -->

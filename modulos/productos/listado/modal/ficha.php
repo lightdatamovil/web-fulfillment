@@ -241,7 +241,7 @@
 
                             <div class="col-12 col-md-12 col-lg-12">
                                 <div class="form-floating form-floating-outline select2-primary">
-                                    <select id="curvas_mProductos" class="form-select campos_mProductos select2_mProductos" onchange="appModalProductos.generarCurva()"></select>
+                                    <select id="curvas_mProductos" class="form-select campos_mProductos select2_mProductos deshabilitarDesdeModificar_mProductos" onchange="appModalProductos.generarCurva()"></select>
                                     <label for="curvas_mProductos">Curvas</label>
                                 </div>
                             </div>
@@ -254,9 +254,9 @@
                     </div>
 
                     <div class="tab-pane fade" id="tabEcommerce_mProductos" role="tabpanel">
-                        <div class="d-flex justify-content-center mb-5"><span class="badge rounded-pill bg-label-primary px-6">Asigna SKU por tienda a cada variante</span></div>
+                        <div class="d-flex justify-content-center mb-5"><span class="badge rounded-pill bg-label-primary px-6">Asigna a cada combinacion un SKU por tienda</span></div>
 
-                        <div id="contenedorEcommerce_mProductos"></div>
+                        <div style="height: 470px; overflow-y: auto;" class="table-responsive text-nowrap" id="contenedorEcommerce_mProductos"></div>
                     </div>
 
                     <div class="tab-pane fade" id="tabInsumos_mProductos" role="tabpanel">
@@ -264,10 +264,10 @@
                             <div class="col-12 bg-body mb-4 d-none d-lg-block" style="height: 44px;">
 
                                 <div class="row h-100">
-                                    <div class="col-5 h-100">
+                                    <div class="col-8 h-100">
                                         <div class="d-flex align-items-center h-100 ps-3 fw-semibold">Insumo</div>
                                     </div>
-                                    <div class="col-6 h-100">
+                                    <div class="col-3 h-100">
                                         <div class="d-flex align-items-center h-100 fw-semibold">Cantidad</div>
                                     </div>
 
@@ -285,11 +285,15 @@
                                                 <input type="hidden" name="did" id="did_insumos_mProductos" />
 
                                                 <div class="col-12 col-md-6 col-lg-8">
-                                                    <select name="didInsumo" id="insumo_insumos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_repeater_mProductos"></select>
+                                                    <select name="didInsumo" id="insumo_insumos_mProductos" class="form-select campos_mProductos camposObli_mProductos select2_repeater_mProductos" onchange="appModalProductos.changeInsumo(this)"></select>
                                                 </div>
 
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <input type="text" name="cantidad" id="cantidad_insumos_mProductos" class="form-control campos_mProductos camposObli_mProductos" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloDecimales(this)" />
+                                                    <div class="mesajeCantida_mProductos d-flex align-items-centerd-flex align-items-center h-100 px-3 ocultar">
+                                                        <p class="m-0">Insumo no unitario</p>
+                                                    </div>
+
                                                 </div>
 
                                                 <div class="col-12 col-md-6 col-lg-1">

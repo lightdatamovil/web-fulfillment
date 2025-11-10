@@ -35,7 +35,7 @@
                 $('.campos_mPedidos').prop('disabled', false);
                 $("#checkHabilitado_mPedidos").prop("checked", true);
                 $("#tienda_mPedidos").prop('disabled', true);
-                $("#btnEditar_mPedidos, #listaProductos_mPedidos, #tienda_mPedidos, #btnTrabajar_mPedidos").addClass("ocultar");
+                $("#btnEditar_mPedidos, #listaProductos_mPedidos, #tienda_mPedidos, #btnTrabajar_mPedidos, #containerOperadores_mPedidos").addClass("ocultar");
                 $("#btnGuardar_mPedidos, .ocultarDesdeVer_mPedidos").removeClass("ocultar");
                 renderProductosRepeater()
                 $("#modal_mPedidos").modal("show")
@@ -46,7 +46,7 @@
                 $("#subtitulo_mPedidos").html("Recordá presionar <b>Guardar</b> antes de salir, así conservás todos los cambios ");
                 $('.campos_mPedidos').prop('disabled', false);
                 $("#btnGuardar_mPedidos").addClass("ocultar");
-                $("#btnEditar_mPedidos, .ocultarDesdeVer_mPedidos, #tienda_mPedidos , #btnTrabajar_mPedidos").removeClass("ocultar");
+                $("#btnEditar_mPedidos, .ocultarDesdeVer_mPedidos, #tienda_mPedidos, #btnTrabajar_mPedidos, #containerOperadores_mPedidos").removeClass("ocultar");
                 await get()
             } else {
                 // VER PEDIDO
@@ -54,7 +54,7 @@
                 $("#titulo_mPedidos").text("Ver pedido");
                 $("#subtitulo_mPedidos").text("Visualizacion de pedido, no se puede modificar.");
                 $('.campos_mPedidos').prop('disabled', true);
-                $("#listaProductos_mPedidos, #tienda_mPedidos, #btnTrabajar_mPedidos").removeClass("ocultar");
+                $("#listaProductos_mPedidos, #tienda_mPedidos, #btnTrabajar_mPedidos, #containerOperadores_mPedidos").removeClass("ocultar");
                 $(".ocultarDesdeVer_mPedidos").addClass("ocultar");
                 await get()
             }
@@ -180,6 +180,7 @@
             buffer += `<thead id="theadListaProductos_mPedidos" class="table-thead z-1">`
 
             buffer += `<tr>`
+            buffer += `<th class="py-3">SKU</th>`
             buffer += `<th class="py-3">Producto</th>`
             buffer += `<th class="py-3">Combinacion</th>`
             buffer += `<th class="py-3 text-center">Cantidad</th>`
@@ -190,6 +191,7 @@
 
             g_productos.forEach((producto, idx) => {
                 buffer += `<tr>`
+                buffer += `<td>${producto.sku || "Sin SKU"}</td>`
                 buffer += `<td>${producto.descripcion || "Sin informacion"}</td>`
                 const varianteDescripcionParse = producto.variante_descripcion ? JSON.parse(producto.variante_descripcion) : []
                 const varianteDescripcion = varianteDescripcionParse.map((item) => `${item.name}${item.value_name ? `: ${item.value_name}` : "" }`)
@@ -209,9 +211,13 @@
         public.renderVariantes = function(select) {
             const $item = $(select).closest("[data-repeater-item]");
             const productoSeleccionado = $(select).val();
-            const $selectVariante = $item.find("select[name$='[did_producto_variante_valor]']"); // ← clave
+            const $selectVariante = $item.find("select[name$='[did_producto_variante_valor]']");
+            const $inputSku = $item.find("input[name$='[sku]']");
 
             if (productoSeleccionado) {
+                const skuProducto = appSistema.productos.find(p => p.did == productoSeleccionado).sku || ""
+                $inputSku.val(skuProducto)
+
                 let variantes = obtenerVariantes({
                     didProducto: productoSeleccionado
                 });
@@ -223,6 +229,7 @@
                 $selectVariante.prop("disabled", false).html(buffer);
             } else {
                 $selectVariante.prop("disabled", true).html('<option value="">Selecciona el producto para ver</option>');
+                $inputSku.val("")
             }
         };
 
@@ -353,6 +360,10 @@
                     id: "formProductos_mPedidos"
                 })
             };
+
+            console.log("datos", datos);
+            return
+
 
             globalValidar.formRepeater({
                 id: "formProductos_mPedidos"

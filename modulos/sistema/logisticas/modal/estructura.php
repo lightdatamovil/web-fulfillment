@@ -16,12 +16,9 @@
             g_did = did;
             donde = mode
 
-            await globalActivarAcciones.select2({
-                className: "select2_mLogisticas"
+            await globalLlenarSelect.syncLogisticas({
+                id: "sync_mLogisticas"
             })
-
-            console.log("donde", donde);
-
 
             if (mode == 0) {
                 // NUEVO LOGISTICA
@@ -29,7 +26,7 @@
                 $("#subtitulo_mLogisticas").text("Creacion de logistica nueva, completar formulario.");
                 $('.campos_mLogisticas').prop('disabled', false);
                 $("#checkHabilitado_mLogisticas").prop("checked", true);
-                $("#codLightdata_mLogisticas").prop('disabled', true).removeClass("camposObli_mLogisticas");
+                $("#codSync_mLogisticas").prop('disabled', true).removeClass("camposObli_mLogisticas");
                 $("#btnEditar_mLogisticas").addClass("ocultar");
                 $("#btnGuardar_mLogisticas, .ocultarDesdeVer_mLogisticas").removeClass("ocultar");
                 renderDirecciones()
@@ -61,9 +58,9 @@
                     $("#codigo_mLogisticas").val(g_data.codigo);
                     $("#nombre_mLogisticas").val(g_data.nombre);
                     $("#checkHabilitado_mLogisticas").prop("checked", g_data.habilitado == 1);
-                    $("#checkEsLightdata_mLogisticas").prop("checked", g_data.logisticaLD == 1);
-                    if (g_data.logisticaLD == 1) {
-                        $("#codLightdata_mLogisticas").val(g_data.codigoLD).prop('disabled', donde == 2);
+                    $("#sync_mLogisticas").val(g_data.sync)
+                    if (g_data.sync != 0) {
+                        $("#codSync_mLogisticas").val(g_data.codigoSync).prop('disabled', donde == 2);
                     }
 
                     g_direcciones = g_data.direcciones || []
@@ -87,7 +84,8 @@
             })
 
             $(".campos_mLogisticas").val("")
-            $("#checkHabilitado_mLogisticas, #checkEsLightdata_mLogisticas").prop("checked", false);
+            $("#sync_mLogisticas").val("0")
+            $("#checkHabilitado_mLogisticas").prop("checked", false);
             g_direcciones = [];
 
             globalValidar.limpiarTodas()
@@ -103,18 +101,19 @@
             })
         };
 
-        public.onChangeEsLightdata = function(e) {
-            const isChecked = $(e).is(":checked");
+        public.onChangeSync = function(e) {
+            const sync = $(e).val();
 
-            $("#codLightdata_mLogisticas").prop("disabled", !isChecked);
+            $("#codSync_mLogisticas").prop("disabled", sync == 0 ? true : false);
+
             globalValidar.limpiarUna({
-                id: "codLightdata_mLogisticas"
+                id: "codSync_mLogisticas"
             })
 
-            if (isChecked) {
-                $("#codLightdata_mLogisticas").addClass("camposObli_mLogisticas");
+            if (sync == 0) {
+                $("#codSync_mLogisticas").addClass("camposObli_mLogisticas");
             } else {
-                $("#codLightdata_mLogisticas").removeClass("camposObli_mLogisticas")
+                $("#codSync_mLogisticas").removeClass("camposObli_mLogisticas")
             }
         }
 
@@ -130,14 +129,14 @@
                 codigo: $("#codigo_mLogisticas").val().trim() || null,
                 nombre: $("#nombre_mLogisticas").val().trim() || null,
                 habilitado: $("#checkHabilitado_mLogisticas").is(":checked") ? 1 : 0,
-                logisticaLD: $("#checkEsLightdata_mLogisticas").is(":checked") ? 1 : 0,
+                sync: $("#sync_mLogisticas").val() || 0,
                 direcciones: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formDirecciones_mLogisticas"
                 }),
             };
 
-            if (datos.logisticaLD == 1) {
-                datos.codigoLD = $("#codLightdata_mLogisticas").val()
+            if (datos.sync == 1) {
+                datos.codigoSync = $("#codSync_mLogisticas").val()
             }
 
             globalValidar.formRepeater({
@@ -177,14 +176,14 @@
                 codigo: $("#codigo_mLogisticas").val().trim() || null,
                 nombre: $("#nombre_mLogisticas").val().trim() || null,
                 habilitado: $("#checkHabilitado_mLogisticas").is(":checked") ? 1 : 0,
-                logisticaLD: $("#checkEsLightdata_mLogisticas").is(":checked") ? 1 : 0,
+                sync: $("#sync_mLogisticas").val() || 0,
                 direcciones: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formDirecciones_mLogisticas"
                 }),
             };
 
-            if (datosNuevos.logisticaLD == 1) {
-                datosNuevos.codigoLD = $("#codLightdata_mLogisticas").val()
+            if (datosNuevos.sync == 1) {
+                datosNuevos.codigoSync = $("#codSync_mLogisticas").val()
             }
 
             globalValidar.formRepeater({

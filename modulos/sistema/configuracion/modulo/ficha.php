@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div class="col-12 col-md-12 col-lg-12">
+    <div class="col-12 col-md-12 col-lg-12 mb-6">
         <div class="card">
             <h4 class="card-header fw-bold pb-0">Seleccióne el modo de trabajo </h4>
             <div class="card-body">
@@ -72,7 +72,6 @@
                         </div>
                     </div>
 
-
                     <div class="col-md">
                         <div class="form-check custom-option custom-option-basic">
                             <label class="form-check-label custom-option-content" for="opcionOT_configuracion">
@@ -88,6 +87,38 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="card">
+
+            <h4 class="card-header fw-bold pb-0">Identificadores especiales</h4>
+            <button class="btn btn-label-success position-absolute" style="right: 2rem; top: 2rem;" onclick="appOffCanvasConfiguracion.open()"><span class="tf-icons ri-sound-module-line ri-19px me-2"></span>Nuevo</button>
+            <div class="card-body pt-0">
+                <p class="card-text">Podras agregarle diferentes campos a un producto para manejar su stock</p>
+                <div class="row">
+
+                    <div class="table-responsive text-nowrap ">
+                        <table class="table table-hover">
+                            <thead class="table-thead">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyIdentificadoresEspeciales_configuracion">
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin identificadores especiales</span></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
             </div>

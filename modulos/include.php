@@ -14,6 +14,10 @@ include("modulos/sistema/usuarios/modal/estructura.php");
 include("modulos/sistema/configuracion/modulo/ficha.php");
 include("modulos/sistema/configuracion/modulo/estructura.php");
 
+// Off Canvas de Configuración
+include("modulos/sistema/configuracion/offCanvas/ficha.php");
+include("modulos/sistema/configuracion/offCanvas/estructura.php");
+
 // Modulo de logisticas
 include("modulos/sistema/logisticas/modulo/ficha.php");
 include("modulos/sistema/logisticas/modulo/estructura.php");

@@ -8,6 +8,7 @@
         public.open = async function() {
             $(".winapp").hide();
             await get();
+            await appModuloConfiguracion.renderListadoIdentificadoresEspeciales()
             $("#modulo_configuracion").show();
         };
 
@@ -85,6 +86,36 @@
                     }
                 });
         };
+
+
+        public.renderListadoIdentificadoresEspeciales = function() {
+            let data = appSistema.identificadoresEspeciales
+            $("#tbodyIdentificadoresEspeciales_configuracion").empty()
+            let buffer = ""
+
+            if (!data || data.length < 1) {
+                $("#tbodyIdentificadoresEspeciales_configuracion").html(`<tr><td colspan="2"><div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin insumos</span></div></td></tr>`)
+                return
+            };
+
+            data.forEach(idEspecial => {
+                buffer += `<tr>`
+                buffer += `<td>${idEspecial.nombre || "Sin informacion"}</td>`
+                buffer += `<td>${appSistema.tiposIdentificadoresEspeciales[idEspecial.tipo] || "Desconocido"}</td>`
+                buffer += `<td>`
+                buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appOffCanvasConfiguracion.open({mode: 1, did: '${idEspecial.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">`
+                buffer += `<i class="tf-icons ri-pencil-line ri-22px"></i>`
+                buffer += `</button>`
+                buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appOffCanvasConfiguracion.eliminar('${idEspecial.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
+                buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
+                buffer += `</button>`
+                buffer += `</td>`
+
+                buffer += `</tr>`
+            });
+
+            $("#tbodyIdentificadoresEspeciales_configuracion").html(buffer)
+        }
 
         return public;
     })();

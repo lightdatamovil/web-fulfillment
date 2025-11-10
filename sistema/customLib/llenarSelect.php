@@ -147,6 +147,35 @@
             $(`#${id}`).html(buffer)
         }
 
+        public.tiposIdentificadoresEspeciales = function({
+            id,
+            multiple = false
+        }) {
+            buffer = ""
+            if (!multiple) {
+                buffer = `<option value="" selected>Seleccionar tipo</option>`
+            }
+
+            for (item in appSistema.tiposIdentificadoresEspeciales) {
+                buffer += `<option value="${item}">${appSistema.tiposIdentificadoresEspeciales[item] || "Sin nombre"}</option>`
+            }
+
+            $(`#${id}`).html(buffer)
+        }
+
+        public.syncLogisticas = function({
+            id,
+            multiple = false
+        }) {
+            buffer = ""
+
+            for (opcion in appSistema.syncLogisticas) {
+                buffer += `<option value="${opcion}">${appSistema.syncLogisticas[opcion] || "Sin nombre"}</option>`
+            }
+
+            $(`#${id}`).html(buffer)
+        }
+
         public.tiendas = function({
             id,
             multiple = false

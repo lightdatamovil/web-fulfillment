@@ -8,7 +8,7 @@
         let g_insumos = []
         let curvaSeleccionada = {}
         let logosTiendas = {}
-        let eanIguales = true
+        let primerLLenadoEan = true
 
         const rutaAPI = "productos"
 
@@ -52,7 +52,7 @@
                 $("#subtitulo_mProductos").text("Creacion de producto nuevo, completar formulario.");
                 $('.campos_mProductos').prop('disabled', false);
                 $("#btnEditar_mProductos").addClass("ocultar");
-                $("#btnGuardar_mProductos, .ocultarDesdeVer_mProductos").removeClass("ocultar");
+                $("#btnGuardar_mProductos, .ocultarDesdeVer_mProductos, .ocultarDesdeModificar_mCurvas").removeClass("ocultar");
                 await renderCombos()
                 await renderInsumos()
                 $("#modal_mProductos").modal("show")
@@ -67,7 +67,7 @@
                 $("#titulo_mProductos").text("Modificar producto");
                 $("#subtitulo_mProductos").text("Modificacion de producto existente, completar formulario.");
                 $('.campos_mProductos').prop('disabled', false);
-                $("#btnGuardar_mProductos").addClass("ocultar");
+                $("#btnGuardar_mProductos, .ocultarDesdeModificar_mCurvas").addClass("ocultar");
                 $("#btnEditar_mProductos, .ocultarDesdeVer_mProductos").removeClass("ocultar");
                 await get()
             } else {
@@ -123,12 +123,15 @@
                     g_insumos = g_data.insumos || []
                     renderInsumos()
 
-                    if (donde == 2) {
+                    if (donde == 1) {
+                        $(".ocultarDesdeModificar_mProductos").addClass("ocultar")
+                        $(".deshabilitarDesdeModificar_mProductos").prop('disabled', true)
+                    } else if (donde == 2) {
                         $('.campos_mProductos').prop('disabled', true);
                         $(".ocultarDesdeVer_mProductos").addClass("ocultar")
                     } else {
-                        $('.campos_mProductos').prop('disabled', false);
-                        $(".ocultarDesdeVer_mProductos").removeClass("ocultar")
+                        $(".ocultarDesdeVer_mProductos .ocultarDesdeModificar_mProductos").removeClass("ocultar")
+                        $(".deshabilitarDesdeModificar_mProductos").prop('disabled', false)
                     }
 
                     $("#modal_mProductos").modal("show")
@@ -188,6 +191,7 @@
             const columnasObtenidas = obtenerColumnasCurvas(valoresSeleccionados)
 
             renderTablaDeValoresCurvas(columnasObtenidas)
+            primerLLenadoEan = true
         }
 
         function obtenerColumnasCurvas(arrays) {
@@ -242,7 +246,7 @@
             $("#listaValores_mProductos").html(buffer);
             g_ecommerce = columnasCurva.map(columna => {
                 return {
-                    variantes_valores: columna.map(valor => {
+                    valores: columna.map(valor => {
                         return valor.did
                     })
                 }
@@ -252,6 +256,7 @@
         }
 
         public.renderEcommerce = function() {
+            primerLLenadoEan = true
             let valueCliente = $("#cliente_mProductos").val();
 
             if (valueCliente == "") {
@@ -266,143 +271,131 @@
 
             if (g_ecommerce.length < 1) {
                 g_ecommerce = [{
-                    variantes_valores: []
+                    valores: []
                 }];
             }
 
             let buffer = '';
 
+
+            buffer += `<table class="table table-bordered">`
+            buffer += `<thead class="table-thead z-3"><tr>`
+            buffer += `<th class="py-2" style="vertical-align: middle;">Combinacion</th>`
+            buffer += `<th class="py-2" style="vertical-align: middle;">EAN</th>`
+            // buffer += `<th class="py-2" style="vertical-align: middle;">Sincronizar stock<br/>entre tiendas</th>`
+
+            cuentas.forEach(cuenta => {
+                buffer += `<th class="py-2" style="vertical-align: middle;">`
+                buffer += `<did class="d-flex align-items-center gap-3">`
+                buffer += `<div class="containerSvg" style="width: 50px; height: auto;">${logosTiendas[cuenta.flex] || "Tienda:"}</div>`
+                buffer += `<p class="m-0" data-didCuenta="${cuenta.did}">${cuenta.titulo || "Sin informacion"}</p>`
+                buffer += `</did>`
+                buffer += `</th>`
+            })
+
+            buffer += `</tr></thead>`
+            buffer += `<tbody>`
+
+            let primerEan = true
             g_ecommerce.forEach((item, idx) => {
-                let titulo = ""
+                let combinacion = ""
                 let masDeUno = false
 
-                if (item.variantes_valores.length > 0) {
-                    item.variantes_valores.forEach((valor) => {
-                        let categoria = curvaSeleccionada.categorias.find(cat => cat.valores.some(v => v.did == valor));
+                if (item.valores.length > 0) {
+                    item.valores.forEach((valor) => {
+                        let categoria = curvaSeleccionada?.categorias?.find(cat => cat.valores.some(v => v.did == valor));
                         let variante = categoria ? appSistema.variantes.find(item => item.did == categoria.did_variante) : null;
                         let valorSeleccionado = categoria ? categoria.valores.find(v => v.did == valor) : null;
 
                         const nombreVariante = variante?.nombre || "Desconocido";
-                        const nombreCategoria = categoria?.nombre || "Desconocido";
                         const nombreValor = valorSeleccionado?.nombre || "Desconocido";
 
-                        titulo += `<div class="text-center ${masDeUno ? "border-start border-primary ps-3" : ""}">${nombreVariante}<br/>${nombreCategoria}: <span class="text-primary">${nombreValor}</span></div>`;
+                        combinacion += `<div>${nombreVariante}: <span class="text-primary fw-bold">${nombreValor}</span></div>`;
                         masDeUno = true;
                     });
 
-
                 } else {
-                    titulo = `Default`
+                    combinacion = `Default`
                 }
 
-                buffer += `<table class="table table-bordered tablasEcommerce_mProductos" data-valores='${JSON.stringify(item.variantes_valores)}' data-did="${item.did ? item.did : ""}" data-index="${idx}">`
-                buffer += `<thead><tr>`
-                buffer += `<th colspan="5" class="p-3"><div class="d-flex gap-3 align-items-center justify-content-center">${titulo}</div></th>`
-                buffer += `</tr></thead><tbody>`
+                buffer += `<tr class="lineasEcommerce_mProductos" data-valores='${JSON.stringify(item.valores)}' data-did="${item.did ? item.did : ""}" data-index="${idx}">`
+                buffer += `<td>${combinacion}</td>`
 
-                let contadorTipos = {};
+                buffer += `<td>`
+                buffer += `<div class="col-12">`
+                buffer += `<div class="form-floating form-floating-outline">`
+                buffer += `<input type="text" style="min-width: 200px;" class="form-control campos_mProductos eansProducto_mProductos" id="eanTablaEccomerce_${idx}_mProductos" ${primerEan && donde == 0 ? `onblur="appModalProductos.llenarAllEan()"`: ""} placeholder="EAN" value="${item.ean || ""}"/>`
+                buffer += `<label for="">EAN</label>`
+                buffer += `</div>`
+                buffer += `</div>`
+                buffer += `</td>`
+                primerEan = false
 
-                let primerEan = true
+                // buffer += `<td>`
+                // buffer += `<div class="form-check m-0 p-0 d-flex align-items-center flex-column gap-1">`
+                // buffer += `<input class="form-check-input m-0 campos_mProductos" type="checkbox" id="syncTablaEccomerce_${idx}_mProductos" ${item.sync ? "checked": "" }/>`
+                // buffer += `</div>`
+                // buffer += `</td>`
+
                 cuentas.forEach(cuenta => {
-                    let dataCuenta = item.grupos?.find(i => i.didCuenta == cuenta.did) || {}
+                    let dataCuenta = item.tiendas?.find(i => i.didCuenta == cuenta.did) || {}
 
-                    buffer += `<tr data-did="${dataCuenta.did || ""}">`
-
-                    buffer += `<td>`
-                    buffer += `<div class="d-flex align-items-center flex-column gap-1">`
-                    buffer += `<div class="containerSvg" style="width: 50px; height: auto;">${logosTiendas[cuenta.flex]}</div>`
-                    buffer += `<p class="m-0 text-center" id="cuentaTablaEccomerce_${idx}_mProductos" data-didCuenta="${cuenta.did}">${cuenta.titulo || cuenta.did}</p>`
-                    buffer += `</div>`
-                    buffer += `</td>`
-
-                    buffer += `<td>`
-                    buffer += `<div class="form-check m-0 p-0 d-flex align-items-center flex-column gap-1">`
-                    buffer += `<input class="form-check-input m-0 campos_mProductos" type="checkbox" id="syncTablaEccomerce_${idx}_mProductos" ${dataCuenta.sync ? "checked": "" }/>`
-                    buffer += `<p class="m-0 text-center" style="font-size: 12px; white-space: nowrap;">Sincronizar stock<br/>entre tiendas</p>`
-                    buffer += `</div>`
-                    buffer += `</td>`
-
-                    buffer += `<td>`
+                    buffer += `<td data-did="${dataCuenta.did || ""}" data-did-cuenta="${cuenta.did}">`
                     buffer += `<div class="col-12">`
                     buffer += `<div class="form-floating form-floating-outline">`
-                    buffer += `<input type="text" class="form-control campos_mProductos" placeholder="SKU" id="skuTablaEccomerce_${idx}_mProductos" value="${dataCuenta.sku || ""}"/>`
+                    buffer += `<input type="text" style="min-width: 200px;" class="form-control campos_mProductos" placeholder="SKU" id="skuTablaEccomerce_${idx}_mProductos" value="${dataCuenta.sku || ""}"/>`
                     buffer += `<label for="">SKU</label>`
                     buffer += `</div>`
                     buffer += `</div>`
                     buffer += `</td>`
 
-                    buffer += `<td>`
-                    buffer += `<div class="col-12">`
-                    buffer += `<div class="form-floating form-floating-outline">`
+                })
 
-                    if (donde == 0) {
-                        buffer += `<input type="text" class="form-control campos_mProductos eansProducto_mProductos" id="eanTablaEccomerce_${idx}_mProductos" ${primerEan ? `onchange="appModalProductos.llenarAllEan()"`: ""} placeholder="EAN" value="${dataCuenta.ean || ""}"/>`
-                    } else {
-                        buffer += `<input type="text" class="form-control campos_mProductos" id="eanTablaEccomerce_${idx}_mProductos" placeholder="EAN" value="${dataCuenta.ean || ""}"/>`
-                    }
-                    buffer += `<label for="">EAN</label>`
-                    buffer += `</div>`
-                    buffer += `</div>`
-                    buffer += `</td>`
-                    primerEan = false
+                buffer += `</tr>`
 
-                    buffer += `<td>`
-                    buffer += `<div class="col-12">`
-                    buffer += `<div class="form-floating form-floating-outline">`
-                    buffer += `<input type="text" class="form-control campos_mProductos" placeholder="URL" id="urlTablaEccomerce_${idx}_mProductos" value="${dataCuenta.url || ""}"/>`
-                    buffer += `<label for="">URL</label>`
-                    buffer += `</div>`
-                    buffer += `</div>`
-                    buffer += `</td>`
-
-                    buffer += `</tr>`
-
-                });
-
-                buffer += `</tbody></table>`
             })
+
+            buffer += `</tbody></table>`
+
+
 
             $("#contenedorEcommerce_mProductos").html(buffer);
         }
 
-
         function obtenerDatosEcommerce() {
             const datos = [];
 
-            $(".tablasEcommerce_mProductos").each(function() {
-                const $tabla = $(this);
-                const did_variante_valores = Number($tabla.attr("data-did")) || null
-                const variantes_valores = JSON.parse($tabla.attr("data-valores")) || [];
-                const index = $tabla.attr("data-index");
+            $(".lineasEcommerce_mProductos").each(function() {
+                const $linea = $(this);
+                const did_variante_valores = Number($linea.attr("data-did")) || null;
+                const valores = JSON.parse($linea.attr("data-valores")) || [];
+                const index = $linea.attr("data-index");
+                const ean = $linea.find(`#eanTablaEccomerce_${index}_mProductos`).val() || "";
+                const sync = $linea.find(`#syncTablaEccomerce_${index}_mProductos`).is(":checked") ? 1 : 0;
 
-                const grupos = [];
+                const tiendas = [];
 
-                $tabla.find("tbody tr").each(function() {
-                    const $fila = $(this);
+                $linea.find("td").slice(3).each(function() {
+                    const $td = $(this);
+                    const did = Number($td.attr("data-did")) || null;
+                    const didCuenta = Number($td.attr("data-did-cuenta")) || null;
+                    const sku = $td.find(`#skuTablaEccomerce_${index}_mProductos`).val() || "";
 
-                    const did = Number($fila.attr("data-did")) || null;
-                    const didCuenta = $fila.find(`[id^="cuentaTablaEccomerce_${index}_mProductos"]`).data("didcuenta") || null;
-                    const sku = $fila.find(`#skuTablaEccomerce_${index}_mProductos`).val() || "";
-                    const ean = $fila.find(`#eanTablaEccomerce_${index}_mProductos`).val() || "";
-                    const url = $fila.find(`#urlTablaEccomerce_${index}_mProductos`).val() || "";
-                    const sync = $fila.find(`#syncTablaEccomerce_${index}_mProductos`).is(":checked") ? 1 : 0;
-
-                    grupos.push({
+                    tiendas.push({
                         did,
                         didCuenta,
                         sku,
-                        ean,
-                        url,
-                        sync
                     });
                 });
 
-                grupos.sort((a, b) => (a.did || 0) - (b.did || 0));
+                tiendas.sort((a, b) => (a.did || 0) - (b.did || 0));
 
                 datos.push({
                     did: did_variante_valores,
-                    variantes_valores,
-                    grupos
+                    valores,
+                    ean,
+                    sync,
+                    tiendas
                 });
             });
 
@@ -413,6 +406,11 @@
             let select = $("#esCombo_mProductos").val();
 
             if (select == 1) {
+                $("#curvas_mProductos").val("").change()
+                globalActivarAcciones.mostrarOcultarTab({
+                    tab: "tabCurvas_mProductos",
+                    opcion: 0
+                })
                 globalActivarAcciones.mostrarOcultarTab({
                     tab: "tabCombos_mProductos",
                     opcion: 1
@@ -421,6 +419,10 @@
                 globalActivarAcciones.mostrarOcultarTab({
                     tab: "tabCombos_mProductos",
                     opcion: 0
+                })
+                globalActivarAcciones.mostrarOcultarTab({
+                    tab: "tabCurvas_mProductos",
+                    opcion: 1
                 })
             }
         }
@@ -439,7 +441,7 @@
         };
 
         public.llenarAllEan = function() {
-            if (!eanIguales) return;
+            if (!primerLLenadoEan) return
             let ean = $("#eanTablaEccomerce_0_mProductos").val().trim();
             if (ean == "") return;
 
@@ -447,7 +449,7 @@
                 if ($(this).val().trim() != "") return;
                 $(this).val(ean);
             });
-            eanIguales = false;
+            primerLLenadoEan = false
         };
 
         function validacion() {
@@ -455,6 +457,32 @@
                 className: "camposObli_mProductos"
             })
         }
+
+        public.changeInsumo = function(select) {
+            const didSeleccionado = select.value;
+            const insumo = appSistema.insumos.find(i => i.did == didSeleccionado);
+            const $item = $(select).closest("[data-repeater-item]");
+            const inputCantidad = $item.find("input[name$='[cantidad]']");
+            const mensajeCantidad = $item.find(".mesajeCantida_mProductos");
+
+            if (insumo) {
+                if (insumo.unidad == 0) {
+                    $(inputCantidad).val('1');
+                    $(inputCantidad).addClass('ocultar');
+                    $(mensajeCantidad).removeClass('ocultar');
+                } else {
+                    $(inputCantidad).val('');
+                    $(inputCantidad).removeClass('ocultar');
+                    $(mensajeCantidad).addClass('ocultar');
+                }
+            } else {
+                // Caso sin insumo seleccionado
+                $(inputCantidad).val('');
+                $(inputCantidad).removeClass('ocultar');
+                $(mensajeCantidad).addClass('ocultar');
+            }
+        };
+
 
         public.guardar = function() {
             const datos = {

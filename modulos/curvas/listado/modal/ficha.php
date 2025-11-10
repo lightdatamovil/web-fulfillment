@@ -61,7 +61,7 @@
                                         <h5 class="m-0">Seleccionar variantes</h5>
                                         <div class="col-12 col-md-12 col-lg-12">
                                             <div class="form-floating form-floating-outline select2-primary">
-                                                <select id="variantes_mCurvas" class="select2_mCurvas form-select campos_mCurvas" multiple onchange="appModalCurvas.agregarVariante()"></select>
+                                                <select id="variantes_mCurvas" class="select2_mCurvas form-select campos_mCurvas deshabilitarDesdeModificar_mCurvas" multiple onchange="appModalCurvas.agregarVariante()"></select>
                                                 <label for="variantes_mCurvas">Selecciona al menos una variante</label>
                                             </div>
                                         </div>

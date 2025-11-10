@@ -133,6 +133,25 @@
 								</div>
 
 							</form>
+
+							<div class="row g-5 align-items-baseline border-top mt-5" id="containerOperadores_mPedidos" onsubmit="return false">
+								<h5 class="mb-0 mt-3">Operadores</h5>
+
+								<div class="d-flex align-items-center gap-8">
+									<div class="d-flex align-items-center">
+										<i class="ri-user-line ri-24px"></i><span class="mx-2">Asignado:</span>
+										<span class="text-primary fw-bold" id="armador_mPedidoDeVentas">No asignado</span>
+									</div>
+
+									<div class="d-flex align-items-center">
+										<i class="ri-truck-line ri-24px"></i><span class="mx-2">Logistica:</span>
+										<span class="text-primary fw-bold" id="logistica_mPedidoDeVentas">No sincronizado</span>
+									</div>
+
+								</div>
+
+							</div>
+
 						</div>
 
 
@@ -165,6 +184,8 @@
 										<div data-repeater-item>
 											<div class="row g-3">
 												<input type="hidden" name="did" id="did_productos_mPedidos" />
+												<input type="hidden" name="sku" id="sku_productos_mPedidos" />
+
 												<div class="col-12 col-md-6 col-lg-3">
 													<select name="did_producto" id="producto_productos_mPedidos" class="form-select campos_mPedidos camposObli_mPedidos select2_repeater_mPedidos producto_productos_mPedidos" onchange="appModalPedidos.renderVariantes(this)"></select>
 												</div>
@@ -178,6 +199,7 @@
 												<div class="col-12 col-md-6 col-lg-2">
 													<input type="text" name="cantidad" id="cantidad_productos_mPedidos" class="form-control campos_mPedidos camposObli_mPedidos" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloNumeros(this)" />
 												</div>
+
 												<div class="col-12 col-md-6 col-lg-1">
 													<div class="d-flex align-items-center justify-content-center h-100 ocultarDesdeVer_mPedidos">
 														<button type="button" class="btn btn-icon rounded-pill btn-text-danger" data-repeater-delete data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar"><i class="tf-icons ri-delete-bin-6-line ri-22px"></i></button>

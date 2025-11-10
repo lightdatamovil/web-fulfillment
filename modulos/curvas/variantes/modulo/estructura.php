@@ -52,12 +52,12 @@
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalVariantes.open({mode: 2, did: '${variante.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
                 buffer += `<i class="tf-icons ri-eye-line ri-22px"></i>`
                 buffer += `</button>`
-                buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalVariantes.open({mode: 1, did: '${variante.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">`
-                buffer += `<i class="tf-icons ri-pencil-line ri-22px"></i>`
-                buffer += `</button>`
-                buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalVariantes.eliminar('${variante.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
-                buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
-                buffer += `</button>`
+                // buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalVariantes.open({mode: 1, did: '${variante.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">`
+                // buffer += `<i class="tf-icons ri-pencil-line ri-22px"></i>`
+                // buffer += `</button>`
+                // buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalVariantes.eliminar('${variante.did}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
+                // buffer += `<i class="tf-icons ri-delete-bin-6-line ri-22px"></i>`
+                // buffer += `</button>`
                 buffer += `</td>`
                 buffer += `</tr>`
             });
