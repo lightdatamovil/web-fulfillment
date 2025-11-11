@@ -87,7 +87,7 @@
             await globalLoading.open();
             await this.activarComponentes()
             await this.expirarSesion();
-            await this.cargarDatos();
+            await this.preload();
 
             console.log("Sistema inicializado");
             await globalLoading.close();
@@ -98,7 +98,7 @@
             [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
         },
 
-        cargarDatos: async function() {
+        preload: async function() {
             await globalRequest.get(`/preload`, {
                 onSuccess: (result) => {
                     this.productos = result.data.productos;

@@ -398,6 +398,7 @@ if (!isset($_SESSION["logueado"])) {
     <?php include("sistema/customLib/ordenTablas.php"); ?>
     <?php include("sistema/customLib/requestApi.php"); ?>
     <?php include("sistema/customLib/previewImagenes.php"); ?>
+    <?php include("sistema/customLib/estadosGlobales.php"); ?>
 
     <!-- NO BORRAR, DEJAR SIMEPRE AL FINAL -->
     <?php include("router.php"); ?>

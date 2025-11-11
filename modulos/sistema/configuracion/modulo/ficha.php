@@ -112,7 +112,7 @@
                             </thead>
                             <tbody id="tbodyIdentificadoresEspeciales_configuracion">
                                 <tr>
-                                    <td colspan="2">
+                                    <td colspan="3">
                                         <div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin identificadores especiales</span></div>
                                     </td>
                                 </tr>

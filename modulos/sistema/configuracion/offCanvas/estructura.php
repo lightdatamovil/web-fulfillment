@@ -94,7 +94,13 @@
                     if (confirmado) {
                         globalRequest.post(`/${rutaAPI}`, datos, {
                             onSuccess: function(result) {
-                                $("#modal_oConfiguracion").modal("hide");
+                                globalEstadosGlobales.add({
+                                    key: "identificadoresEspeciales",
+                                    data: result.data
+                                })
+                                globalActivarAcciones.toggleOffcanvas({
+                                    id: "offCanvas_oConfiguracion"
+                                })
                                 globalSweetalert.exito();
                                 appModuloConfiguracion.renderListadoIdentificadoresEspeciales();
                             }
@@ -140,7 +146,13 @@
                     if (confirmado) {
                         globalRequest.put(`/${rutaAPI}/${g_did}`, datosNuevos, {
                             onSuccess: function(result) {
-                                $("#modal_oConfiguracion").modal("hide");
+                                globalEstadosGlobales.update({
+                                    key: "identificadoresEspeciales",
+                                    data: result.data
+                                })
+                                globalActivarAcciones.toggleOffcanvas({
+                                    id: "offCanvas_oConfiguracion"
+                                })
                                 globalSweetalert.exito();
                                 appModuloConfiguracion.renderListadoIdentificadoresEspeciales();
                             }
@@ -157,6 +169,10 @@
                 if (confirmado) {
                     globalRequest.delete(`/${rutaAPI}/${did}`, {
                         onSuccess: function(result) {
+                            globalEstadosGlobales.remove({
+                                key: "identificadoresEspeciales",
+                                data: result.data
+                            })
                             globalSweetalert.exito({
                                 titulo: "Eliminado con éxito!"
                             });

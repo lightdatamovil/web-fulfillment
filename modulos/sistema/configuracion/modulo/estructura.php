@@ -94,7 +94,7 @@
             let buffer = ""
 
             if (!data || data.length < 1) {
-                $("#tbodyIdentificadoresEspeciales_configuracion").html(`<tr><td colspan="2"><div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin insumos</span></div></td></tr>`)
+                $("#tbodyIdentificadoresEspeciales_configuracion").html(`<tr><td colspan="3"><div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin identificadores especiales</span></div></td></tr>`)
                 return
             };
 
