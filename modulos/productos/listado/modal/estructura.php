@@ -155,6 +155,8 @@
             g_ecommerce = [];
             g_insumos = [];
 
+            appModalProductos.mostrarCombos()
+
             globalValidar.limpiarTodas()
             globalValidar.deshabilitarTiempoReal({
                 className: "camposObli_mProductos"
@@ -452,12 +454,6 @@
             primerLLenadoEan = false
         };
 
-        function validacion() {
-            return globalValidar.obligatorios({
-                className: "camposObli_mProductos"
-            })
-        }
-
         public.changeInsumo = function(select) {
             const didSeleccionado = select.value;
             const insumo = appSistema.insumos.find(i => i.did == didSeleccionado);
@@ -483,6 +479,11 @@
             }
         };
 
+        function validacion() {
+            return globalValidar.obligatorios({
+                className: "camposObli_mProductos"
+            })
+        }
 
         public.guardar = function() {
             const datos = {

@@ -1,5 +1,5 @@
 <script>
-    const appModuloConfiguracion = (function() {
+    const appModuloAjusteStock = (function() {
         let g_data;
         const rutaAPI = "configuracion";
 
@@ -8,11 +8,11 @@
         public.open = async function() {
             $(".winapp").hide();
             await get();
-            await appModuloConfiguracion.renderListadoIdentificadoresEspeciales()
+            await appModuloAjusteStock.renderListadoIdentificadoresEspeciales()
             globalActivarAcciones.tooltips({
-                idContainer: "modulo_configuracion"
+                idContainer: "modulo_ajusteStock"
             })
-            $("#modulo_configuracion").show();
+            $("#modulo_ajusteStock").show();
         };
 
         function get() {
@@ -36,20 +36,20 @@
                 logoEmpresa: "<?php echo $_SESSION["logoEmpresa"]; ?>",
             };
 
-            $("#nombreFantasia_configuracion").html(g_data.nombreEmpresa);
-            $("#razonSocial_configuracion").html(g_data.nombreEmpresa);
+            $("#nombreFantasia_ajusteStock").html(g_data.nombreEmpresa);
+            $("#razonSocial_ajusteStock").html(g_data.nombreEmpresa);
 
-            $('input[name="modoDeTrabajo_configuracion"]').closest('.custom-option').removeClass('checked');
-            $(`input[name="modoDeTrabajo_configuracion"][value="${g_data.modo_trabajo}"]`)
+            $('input[name="modoDeTrabajo_ajusteStock"]').closest('.custom-option').removeClass('checked');
+            $(`input[name="modoDeTrabajo_ajusteStock"][value="${g_data.modo_trabajo}"]`)
                 .prop('checked', true)
                 .closest('.custom-option')
                 .addClass('checked');
 
-            $('#logoEmpresa_configuracion').attr('src', g_data.logoEmpresa);
-            $('#logoEmpresa_configuracion').attr('onerror', "this.onerror=null; this.src='../../assets/img/extras/imagenDefault.jpg';");
+            $('#logoEmpresa_ajusteStock').attr('src', g_data.logoEmpresa);
+            $('#logoEmpresa_ajusteStock').attr('onerror', "this.onerror=null; this.src='../../assets/img/extras/imagenDefault.jpg';");
 
-            $("#qrcode_configuracion").empty();
-            new QRCode(document.getElementById("qrcode_configuracion"), {
+            $("#qrcode_ajusteStock").empty();
+            new QRCode(document.getElementById("qrcode_ajusteStock"), {
                 text: g_data.codEmpresa,
                 width: 200,
                 height: 200,
@@ -69,7 +69,7 @@
                 })
                 .then(function(confirmado) {
                     if (confirmado) {
-                        $('input[name="modoDeTrabajo_configuracion"]').closest('.custom-option').removeClass('checked');
+                        $('input[name="modoDeTrabajo_ajusteStock"]').closest('.custom-option').removeClass('checked');
                         $(radio).closest('.custom-option').addClass('checked');
 
                         globalRequest.put(`/${rutaAPI}/toggle-modo-trabajo`, datosNuevos, {
@@ -81,8 +81,8 @@
                             }
                         });
                     } else {
-                        $('input[name="modoDeTrabajo_configuracion"]').closest('.custom-option').removeClass('checked');
-                        $(`input[name="modoDeTrabajo_configuracion"][value="${g_data.modo_trabajo}"]`)
+                        $('input[name="modoDeTrabajo_ajusteStock"]').closest('.custom-option').removeClass('checked');
+                        $(`input[name="modoDeTrabajo_ajusteStock"][value="${g_data.modo_trabajo}"]`)
                             .prop('checked', true)
                             .closest('.custom-option')
                             .addClass('checked');
@@ -93,11 +93,11 @@
 
         public.renderListadoIdentificadoresEspeciales = function() {
             let data = appSistema.identificadoresEspeciales
-            $("#tbodyIdentificadoresEspeciales_configuracion").empty()
+            $("#tbodyIdentificadoresEspeciales_ajusteStock").empty()
             let buffer = ""
 
             if (!data || data.length < 1) {
-                $("#tbodyIdentificadoresEspeciales_configuracion").html(`<tr><td colspan="3"><div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin identificadores especiales</span></div></td></tr>`)
+                $("#tbodyIdentificadoresEspeciales_ajusteStock").html(`<tr><td colspan="3"><div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin identificadores especiales</span></div></td></tr>`)
                 return
             };
 
@@ -117,7 +117,7 @@
                 buffer += `</tr>`
             });
 
-            $("#tbodyIdentificadoresEspeciales_configuracion").html(buffer)
+            $("#tbodyIdentificadoresEspeciales_ajusteStock").html(buffer)
         }
 
         return public;
