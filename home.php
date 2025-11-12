@@ -23,7 +23,7 @@ if (!isset($_SESSION["logueado"])) {
         name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Lightdata</title>
+    <title>Fulfillment</title>
 
     <meta name="description" content="" />
 
@@ -111,14 +111,28 @@ if (!isset($_SESSION["logueado"])) {
                     <a href="/" class="app-brand-link">
                         <span class="app-brand-logo">
                             <span style="color: var(--bs-primary)">
-                                <svg width="31" height="30" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M25.1012 0L50.2024 25L25.1012 50L0 25L25.1012 0ZM3.91031 25L25.1012 46.1055L46.2921 25L25.1012 3.89455L3.91031 25Z" fill="var(--bs-primary)" />
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M25.2638 17L33.4066 24.7825L31.6445 26.6118L25.2638 20.5134L18.8832 26.6118L17.1211 24.7825L25.2638 17Z" fill="var(--bs-primary)" />
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M25.2638 23.6055L33.4066 31.388L31.6445 33.2172L25.2638 27.1189L18.8832 33.2172L17.1211 31.388L25.2638 23.6055Z" fill="var(--bs-primary)" />
+                                <svg width="25" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M19.612 1.3379C20.3867 0.591176 21.6133 0.591176 22.388 1.3379L40.5666 18.8604C41.3593 19.6245 41.3854 20.8856 40.6249 21.6818L38.8434 23.5471C38.078 24.3484 36.8069 24.3747 36.0091 23.6056L22.388 10.4761C21.6133 9.72942 20.3867 9.72942 19.612 10.4761L5.99091 23.6056C5.19307 24.3747 3.92201 24.3484 3.15662 23.5471L1.37507 21.6818C0.614624 20.8856 0.640687 19.6245 1.43338 18.8604L19.612 1.3379Z" fill="var(--bs-primary)" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M19.612 18.3379C20.3867 17.5912 21.6133 17.5912 22.388 18.3379L40.5666 35.8604C41.3593 36.6245 41.3854 37.8856 40.6249 38.6818L38.8434 40.5471C38.078 41.3484 36.8069 41.3747 36.0091 40.6056L22.388 27.4761C21.6133 26.7294 20.3867 26.7294 19.612 27.4761L5.99091 40.6056C5.19307 41.3747 3.92201 41.3484 3.15662 40.5471L1.37507 38.6818C0.614624 37.8856 0.640687 36.6245 1.43338 35.8604L19.612 18.3379Z" fill="var(--bs-primary)" />
                                 </svg>
+
                             </span>
                         </span>
-                        <span class="app-brand-text demo menu-text fw-semibold ms-2">Lightdata</span>
+                        <span class="app-brand-text demo menu-text fw-semibold ms-2">
+                            <svg width="130" viewBox="0 0 170 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M159.352 17.3834V4.29036H154.322V0H169.708V4.29036H164.678V17.3834H159.352Z" fill="white" />
+                                <path d="M136.433 17.3834V0H140.329L148.392 9.73962H147.628V0H152.584V17.3834H148.688L140.649 7.64375H141.414V17.3834H136.433Z" fill="white" />
+                                <path d="M121.432 17.3834V0H134.328V4.04379H126.512V6.53417H133.736V10.578H126.512V13.3396H134.328V17.3834H121.432Z" fill="white" />
+                                <path d="M99.5215 17.3834V0H104.157L109.434 11.8108H108.595L113.872 0H118.508V17.3834H113.699V7.98895H114.883L110.445 17.3834H107.51L103.072 7.98895H104.33V17.3834H99.5215Z" fill="white" />
+                                <path d="M84.9517 17.3834V0H90.2776V12.9944H97.3296V17.3834H84.9517Z" fill="white" />
+                                <path d="M70.4565 17.3834V0H75.7825V12.9944H82.8345V17.3834H70.4565Z" fill="white" />
+                                <path d="M62.2695 17.3834V0H67.5955V17.3834H62.2695Z" fill="white" />
+                                <path d="M47.7246 17.3834V0H60.3491V4.04379H53.0506V6.75609H59.7574V10.7999H53.0506V17.3834H47.7246Z" fill="white" />
+                                <path d="M33.2295 17.3834V0H38.5555V12.9944H45.6074V17.3834H33.2295Z" fill="white" />
+                                <path d="M22.5327 17.6793C19.8532 17.6793 17.8396 17.0299 16.4916 15.7313C15.1437 14.4163 14.4697 12.4437 14.4697 9.81359V0H19.7957V9.88756C19.7957 10.9889 20.0094 11.8273 20.4368 12.4026C20.8806 12.9779 21.5792 13.2656 22.5327 13.2656C23.4861 13.2656 24.1765 12.9779 24.6039 12.4026C25.0477 11.8273 25.2696 10.9889 25.2696 9.88756V0H30.4969V9.81359C30.4969 12.4437 29.8394 14.4163 28.5244 15.7313C27.2258 17.0299 25.2285 17.6793 22.5327 17.6793Z" fill="white" />
+                                <path d="M0 17.3834V0H12.6245V4.04379H5.32597V6.75609H12.0327V10.7999H5.32597V17.3834H0Z" fill="white" />
+                            </svg>
+                        </span>
                     </a>
 
                     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -263,11 +277,29 @@ if (!isset($_SESSION["logueado"])) {
                         <?php include("modulos/include.php"); ?>
                         <?php include("sistema/include.php"); ?>
 
-                        <div class="winapp w-100 h-100" id="ContainerHomeNovedades">
+                        <div class="winapp w-100 h-100">
                             <div class="w-100 h-100 position-relative d-flex d-md-block justify-content-center align-items-center">
                                 <div class="containerTituloHome position-relative p-10">
-                                    <h1 class="text-center tituloHome">FULFILLMENT</h1>
-                                    <h5 class="text-center subtituloHome">BIENVENIDOS</h5>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="d-flex flex-column align-items-end">
+                                            <svg class="tituloHome" width="600" viewBox="0 0 225 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.612 1.3379C20.3867 0.591176 21.6133 0.591176 22.388 1.3379L40.5666 18.8604C41.3593 19.6245 41.3854 20.8856 40.6249 21.6818L38.8434 23.5471C38.078 24.3484 36.8069 24.3747 36.0091 23.6056L22.388 10.4761C21.6133 9.72942 20.3867 9.72942 19.612 10.4761L5.99091 23.6056C5.19307 24.3747 3.92201 24.3484 3.15662 23.5471L1.37507 21.6818C0.614624 20.8856 0.640687 19.6245 1.43338 18.8604L19.612 1.3379Z" fill="white" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.612 18.3379C20.3867 17.5912 21.6133 17.5912 22.388 18.3379L40.5666 35.8604C41.3593 36.6245 41.3854 37.8856 40.6249 38.6818L38.8434 40.5471C38.078 41.3484 36.8069 41.3747 36.0091 40.6056L22.388 27.4761C21.6133 26.7294 20.3867 26.7294 19.612 27.4761L5.99091 40.6056C5.19307 41.3747 3.92201 41.3484 3.15662 40.5471L1.37507 38.6818C0.614624 37.8856 0.640687 36.6245 1.43338 35.8604L19.612 18.3379Z" fill="white" />
+                                                <path d="M214.599 34.3834V21.2904H209.569V17H224.955V21.2904H219.925V34.3834H214.599Z" fill="white" />
+                                                <path d="M191.681 34.3834V17H195.577L203.639 26.7396H202.875V17H207.831V34.3834H203.935L195.897 24.6438H196.661V34.3834H191.681Z" fill="white" />
+                                                <path d="M176.68 34.3834V17H189.575V21.0438H181.759V23.5342H188.984V27.578H181.759V30.3396H189.575V34.3834H176.68Z" fill="white" />
+                                                <path d="M154.769 34.3834V17H159.405L164.681 28.8108H163.843L169.12 17H173.755V34.3834H168.947V24.989H170.131L165.692 34.3834H162.758L158.32 24.989H159.577V34.3834H154.769Z" fill="white" />
+                                                <path d="M140.199 34.3834V17H145.525V29.9944H152.577V34.3834H140.199Z" fill="white" />
+                                                <path d="M125.704 34.3834V17H131.03V29.9944H138.082V34.3834H125.704Z" fill="white" />
+                                                <path d="M117.517 34.3834V17H122.843V34.3834H117.517Z" fill="white" />
+                                                <path d="M102.972 34.3834V17H115.597V21.0438H108.298V23.7561H115.005V27.7999H108.298V34.3834H102.972Z" fill="white" />
+                                                <path d="M88.4771 34.3834V17H93.803V29.9944H100.855V34.3834H88.4771Z" fill="white" />
+                                                <path d="M77.7802 34.6793C75.1008 34.6793 73.0871 34.0299 71.7392 32.7313C70.3913 31.4163 69.7173 29.4437 69.7173 26.8136V17H75.0433V26.8876C75.0433 27.9889 75.257 28.8273 75.6843 29.4026C76.1282 29.9779 76.8268 30.2656 77.7802 30.2656C78.7336 30.2656 79.424 29.9779 79.8514 29.4026C80.2953 28.8273 80.5172 27.9889 80.5172 26.8876V17H85.7445V26.8136C85.7445 29.4437 85.087 31.4163 83.7719 32.7313C82.4733 34.0299 80.4761 34.6793 77.7802 34.6793Z" fill="white" />
+                                                <path d="M55.2476 34.3834V17H67.8721V21.0438H60.5735V23.7561H67.2803V27.7999H60.5735V34.3834H55.2476Z" fill="white" />
+                                            </svg>
+                                            <h5 class="text-center subtituloHome">BIENVENIDOS</h5>
+                                        </div>
+                                    </div>
                                 </div>
                                 <img src="assets/img/illustrations/fondoHome.png" class="position-absolute bottom-0 start-0 d-none d-md-block imagenHome" style="height: 53%;" alt="">
 

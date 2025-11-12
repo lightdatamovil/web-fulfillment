@@ -110,6 +110,28 @@
             $(`#${id}`).html(buffer)
         }
 
+        public.identificadoresEspeciales = function({
+            id,
+            multiple = false
+        }) {
+            if (appSistema.identificadoresEspeciales.length == 0) {
+                $(`#${id}`).html(`<option value="" ${multiple ? "" : "selected"} disabled>Sin identificadores especiales</option>`)
+                return
+            }
+
+            buffer = ""
+            if (!multiple) {
+                buffer = `<option value="" selected>Seleccionar identificador especial</option>`
+            }
+
+            for (ie of appSistema.identificadoresEspeciales) {
+                buffer += `<option value="${ie["did"]}">${ie["nombre"] || "Sin nombre"}</option>`
+            }
+
+            $(`#${id}`).html(buffer)
+        }
+
+
         public.productos = function({
             id,
             multiple = false
@@ -157,7 +179,7 @@
             }
 
             for (item in appSistema.tiposIdentificadoresEspeciales) {
-                buffer += `<option value="${item}">${appSistema.tiposIdentificadoresEspeciales[item] || "Sin nombre"}</option>`
+                buffer += `<option value="${item}">${appSistema.tiposIdentificadoresEspeciales[item]?.nombre || "Sin nombre"}</option>`
             }
 
             $(`#${id}`).html(buffer)

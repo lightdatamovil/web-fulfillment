@@ -35,12 +35,12 @@ $jsonData = file_get_contents('sistema/configMenu/menuDefault.json');
 
     async function handleRoute(pathname, esEntradaInicial = false) {
         const route = pathname.replace(/^\//, "");
-        document.title = routes[route]?.titulo ? `Lightdata | ${routes[route].titulo}` : "Lightdata";
+        document.title = routes[route]?.titulo ? `Fulfillment | ${routes[route].titulo}` : "Fulfillment";
 
         if (!estaLogueado) {
             if (route !== "/") {
                 await history.replaceState(null, null, "/");
-                document.title = "Lightdata | Login";
+                document.title = "Fulfillment | Login";
             }
             return;
         }

@@ -40,6 +40,11 @@
                 id: "cliente_mProductos"
             })
 
+            await globalLlenarSelect.identificadoresEspeciales({
+                id: "identificadoreEspeciales_mProductos",
+                multiple: true
+            })
+
             await globalLlenarSelect.insumos({
                 id: "nombre_insumo_mProductos"
             })
@@ -50,7 +55,7 @@
                 // NUEVO PRODUCTO
                 $("#titulo_mProductos").text("Nuevo producto");
                 $("#subtitulo_mProductos").text("Creacion de producto nuevo, completar formulario.");
-                $('.campos_mProductos').prop('disabled', false);
+                $('.campos_mProductos, .deshabilitarDesdeModificar_mProductos').prop('disabled', false);
                 $("#btnEditar_mProductos").addClass("ocultar");
                 $("#btnGuardar_mProductos, .ocultarDesdeVer_mProductos, .ocultarDesdeModificar_mCurvas").removeClass("ocultar");
                 await renderCombos()
@@ -105,6 +110,7 @@
                     $("#profundo_mProductos").val(g_data.profundo);
                     $("#cm3_mProductos").val(g_data.cm3);
                     $("#habilitado_mProductos").val(g_data.habilitado);
+                    $("#identificadoreEspeciales_mProductos").val(g_data.dids_ie).change()
                     $("#descripcion_mProductos").val(g_data.descripcion);
                     $("#curvas_mProductos").val(g_data.did_curva).change();
 
@@ -115,10 +121,10 @@
                         multiple: false
                     });
 
-                    g_ecommerce = g_data.ecommerce || []
+                    g_ecommerce = g_data.combinaciones || []
                     appModalProductos.renderEcommerce()
 
-                    g_combos = g_data.combos || [];
+                    g_combos = g_data.productos_hijos || [];
                     renderCombos();
                     g_insumos = g_data.insumos || []
                     renderInsumos()
@@ -146,7 +152,7 @@
 
             $(".campos_mProductos").val("")
             $("#contenedorEcommerce_mProductos").empty();
-            $('#curvas_mProductos').val(null).trigger('change');
+            $('#curvas_mProductos, #identificadoreEspeciales_mProductos').val(null).trigger('change');
             $("#esCombo_mProductos").val("0");
             $("#habilitado_mProductos").val("1");
 
@@ -377,7 +383,7 @@
 
                 const tiendas = [];
 
-                $linea.find("td").slice(3).each(function() {
+                $linea.find("td").slice(2).each(function() {
                     const $td = $(this);
                     const did = Number($td.attr("data-did")) || null;
                     const didCuenta = Number($td.attr("data-did-cuenta")) || null;
@@ -491,10 +497,10 @@
                 titulo: $("#nombre_mProductos").val().trim() || "",
                 sku: $("#sku_mProductos").val().trim() || "",
                 ean: $("#ean_mProductos").val().trim() || "",
-                alto: $("#alto_mProductos").val().trim() || null,
-                ancho: $("#ancho_mProductos").val().trim() || null,
-                profundo: $("#profundo_mProductos").val().trim() || null,
-                cm3: $("#cm3_mProductos").val().trim() || null,
+                alto: $("#alto_mProductos").val().trim() || "",
+                ancho: $("#ancho_mProductos").val().trim() || "",
+                profundo: $("#profundo_mProductos").val().trim() || "",
+                cm3: $("#cm3_mProductos").val().trim() || "",
                 es_combo: $("#esCombo_mProductos").val() || 0,
                 habilitado: $("#habilitado_mProductos").val() || 0,
                 files: globalImageCarousel.getImages({
@@ -503,8 +509,9 @@
                 descripcion: $("#descripcion_mProductos").val().trim() || "",
                 posicion: $("#posicion_mProductos").val().trim() || "",
                 did_curva: $("#curvas_mProductos").val() || null,
-                ecommerce: obtenerDatosEcommerce(),
-                combos: globalActivarAcciones.obtenerDataFormRepeater({
+                dids_ie: ($("#identificadoreEspeciales_mProductos").val() || []).map(Number),
+                combinaciones: obtenerDatosEcommerce(),
+                productos_hijos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formCombos_mProductos"
                 }),
                 insumos: globalActivarAcciones.obtenerDataFormRepeater({
@@ -533,9 +540,9 @@
             }
 
             if (datos.es_combo == 0) {
-                datos.combos = []
+                datos.productos_hijos = []
             } else {
-                if (datos.combos.length < 1) {
+                if (datos.productos_hijos.length < 1) {
                     globalSweetalert.alertVolver({
                         titulo: "Si es combo, debe agregar al menos un producto",
                         subtitulo: 'En la pestaña "Combos"'
@@ -566,10 +573,10 @@
                 titulo: $("#nombre_mProductos").val().trim() || "",
                 sku: $("#sku_mProductos").val().trim() || "",
                 ean: $("#ean_mProductos").val().trim() || "",
-                alto: $("#alto_mProductos").val().trim() || null,
-                ancho: $("#ancho_mProductos").val().trim() || null,
-                profundo: $("#profundo_mProductos").val().trim() || null,
-                cm3: $("#cm3_mProductos").val().trim() || null,
+                alto: $("#alto_mProductos").val().trim() || "",
+                ancho: $("#ancho_mProductos").val().trim() || "",
+                profundo: $("#profundo_mProductos").val().trim() || "",
+                cm3: $("#cm3_mProductos").val().trim() || "",
                 es_combo: $("#esCombo_mProductos").val() || 0,
                 habilitado: $("#habilitado_mProductos").val() || 0,
                 files: globalImageCarousel.getImages({
@@ -578,8 +585,9 @@
                 descripcion: $("#descripcion_mProductos").val().trim() || "",
                 posicion: $("#posicion_mProductos").val().trim() || "",
                 did_curva: $("#curvas_mProductos").val() || null,
-                ecommerce: obtenerDatosEcommerce(),
-                combos: globalActivarAcciones.obtenerDataFormRepeater({
+                dids_ie: ($("#identificadoreEspeciales_mProductos").val() || []).map(Number),
+                combinaciones: obtenerDatosEcommerce(),
+                productos_hijos: globalActivarAcciones.obtenerDataFormRepeater({
                     id: "formCombos_mProductos"
                 }),
                 insumos: globalActivarAcciones.obtenerDataFormRepeater({
@@ -609,9 +617,9 @@
             }
 
             if (datosNuevos.es_combo == 0) {
-                datosNuevos.combos = []
+                datosNuevos.productos_hijos = []
             } else {
-                if (datosNuevos.combos.length < 1) {
+                if (datosNuevos.productos_hijos.length < 1) {
                     globalSweetalert.alertVolver({
                         titulo: "Si es combo, debe agregar al menos un producto",
                         subtitulo: 'En la pestaña "Combos"'
@@ -625,7 +633,6 @@
                 dataOriginal: g_data
             });
 
-
             if (Object.keys(datosModificados).length === 0) {
                 globalSweetalert.alert({
                     titulo: "No se realizaron cambios"
@@ -637,13 +644,13 @@
                 datosNuevos.files = null
             }
 
-            datosNuevos.ecommerce = globalValidar.obtenerCambiosEnArray({
-                dataNueva: datosNuevos.ecommerce,
+            datosNuevos.combinaciones = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.combinaciones,
                 dataOriginal: g_ecommerce
             })
 
-            datosNuevos.combos = globalValidar.obtenerCambiosEnArray({
-                dataNueva: datosNuevos.combos,
+            datosNuevos.productos_hijos = globalValidar.obtenerCambiosEnArray({
+                dataNueva: datosNuevos.productos_hijos,
                 dataOriginal: g_combos
             })
 

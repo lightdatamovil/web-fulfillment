@@ -15,7 +15,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Lightdata | Login</title>
+    <title>Fulfillment | Login</title>
 
     <meta name="description" content="" />
 
@@ -71,14 +71,25 @@
         <a href="javascript:void(0)" class="auth-cover-brand d-flex align-items-center gap-4" style="cursor: default;">
             <span class="app-brand-logo">
                 <span style="color: var(--bs-primary)">
-                    <svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M25.1012 0L50.2024 25L25.1012 50L0 25L25.1012 0ZM3.91031 25L25.1012 46.1055L46.2921 25L25.1012 3.89455L3.91031 25Z" fill="var(--bs-primary)" />
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M25.2638 17L33.4066 24.7825L31.6445 26.6118L25.2638 20.5134L18.8832 26.6118L17.1211 24.7825L25.2638 17Z" fill="var(--bs-primary)" />
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M25.2638 23.6055L33.4066 31.388L31.6445 33.2172L25.2638 27.1189L18.8832 33.2172L17.1211 31.388L25.2638 23.6055Z" fill="var(--bs-primary)" />
+                    <svg width="225" height="42" viewBox="0 0 225 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M19.612 1.3379C20.3867 0.591176 21.6133 0.591176 22.388 1.3379L40.5666 18.8604C41.3593 19.6245 41.3854 20.8856 40.6249 21.6818L38.8434 23.5471C38.078 24.3484 36.8069 24.3747 36.0091 23.6056L22.388 10.4761C21.6133 9.72942 20.3867 9.72942 19.612 10.4761L5.99091 23.6056C5.19307 24.3747 3.92201 24.3484 3.15662 23.5471L1.37507 21.6818C0.614624 20.8856 0.640687 19.6245 1.43338 18.8604L19.612 1.3379Z" fill="white" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M19.612 18.3379C20.3867 17.5912 21.6133 17.5912 22.388 18.3379L40.5666 35.8604C41.3593 36.6245 41.3854 37.8856 40.6249 38.6818L38.8434 40.5471C38.078 41.3484 36.8069 41.3747 36.0091 40.6056L22.388 27.4761C21.6133 26.7294 20.3867 26.7294 19.612 27.4761L5.99091 40.6056C5.19307 41.3747 3.92201 41.3484 3.15662 40.5471L1.37507 38.6818C0.614624 37.8856 0.640687 36.6245 1.43338 35.8604L19.612 18.3379Z" fill="white" />
+                        <path d="M214.599 34.3834V21.2904H209.569V17H224.955V21.2904H219.925V34.3834H214.599Z" fill="white" />
+                        <path d="M191.681 34.3834V17H195.577L203.639 26.7396H202.875V17H207.831V34.3834H203.935L195.897 24.6438H196.661V34.3834H191.681Z" fill="white" />
+                        <path d="M176.68 34.3834V17H189.575V21.0438H181.759V23.5342H188.984V27.578H181.759V30.3396H189.575V34.3834H176.68Z" fill="white" />
+                        <path d="M154.769 34.3834V17H159.405L164.681 28.8108H163.843L169.12 17H173.755V34.3834H168.947V24.989H170.131L165.692 34.3834H162.758L158.32 24.989H159.577V34.3834H154.769Z" fill="white" />
+                        <path d="M140.199 34.3834V17H145.525V29.9944H152.577V34.3834H140.199Z" fill="white" />
+                        <path d="M125.704 34.3834V17H131.03V29.9944H138.082V34.3834H125.704Z" fill="white" />
+                        <path d="M117.517 34.3834V17H122.843V34.3834H117.517Z" fill="white" />
+                        <path d="M102.972 34.3834V17H115.597V21.0438H108.298V23.7561H115.005V27.7999H108.298V34.3834H102.972Z" fill="white" />
+                        <path d="M88.4771 34.3834V17H93.803V29.9944H100.855V34.3834H88.4771Z" fill="white" />
+                        <path d="M77.7802 34.6793C75.1008 34.6793 73.0871 34.0299 71.7392 32.7313C70.3913 31.4163 69.7173 29.4437 69.7173 26.8136V17H75.0433V26.8876C75.0433 27.9889 75.257 28.8273 75.6843 29.4026C76.1282 29.9779 76.8268 30.2656 77.7802 30.2656C78.7336 30.2656 79.424 29.9779 79.8514 29.4026C80.2953 28.8273 80.5172 27.9889 80.5172 26.8876V17H85.7445V26.8136C85.7445 29.4437 85.087 31.4163 83.7719 32.7313C82.4733 34.0299 80.4761 34.6793 77.7802 34.6793Z" fill="white" />
+                        <path d="M55.2476 34.3834V17H67.8721V21.0438H60.5735V23.7561H67.2803V27.7999H60.5735V34.3834H55.2476Z" fill="white" />
                     </svg>
+
                 </span>
             </span>
-            <span class="app-brand-text demo text-heading fw-semibold">Lightdata | Fulfillment</span>
+            <!-- <span class="app-brand-text demo text-heading fw-semibold">Lightdata | Fulfillment</span> -->
         </a>
         <!-- /Logo -->
         <div class="authentication-inner row m-0">

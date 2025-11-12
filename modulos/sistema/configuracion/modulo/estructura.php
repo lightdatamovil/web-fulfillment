@@ -104,7 +104,7 @@
             data.forEach(idEspecial => {
                 buffer += `<tr>`
                 buffer += `<td>${idEspecial.nombre || "Sin informacion"}</td>`
-                buffer += `<td>${appSistema.tiposIdentificadoresEspeciales[idEspecial.tipo] || "Desconocido"}</td>`
+                buffer += `<td>${appSistema.tiposIdentificadoresEspeciales[idEspecial.tipo]?.nombre || "Desconocido"}</td>`
                 buffer += `<td>`
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appOffCanvasConfiguracion.open({mode: 1, did: '${idEspecial.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">`
                 buffer += `<i class="tf-icons ri-pencil-line ri-22px"></i>`

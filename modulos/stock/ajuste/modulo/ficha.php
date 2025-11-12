@@ -30,7 +30,7 @@
 							<span class="bs-stepper-label">
 								<span class="bs-stepper-number">02</span>
 								<span class="d-flex flex-column gap-1 ms-2">
-									<span class="bs-stepper-title">Seleccionar productos</span>
+									<span class="bs-stepper-title">Selecciona los productos</span>
 								</span>
 							</span>
 						</button>
@@ -153,8 +153,8 @@
 							<div class="row h-100 g-5">
 
 								<div class="col-12 col-md-12 col-lg-6">
-									<div class="card" style="min-height: 600px;">
-										<h4 class="card-header fw-bold pb-0">Productos</h4>
+									<div class="card h-100">
+										<h4 class="card-header fw-bold pb-0">Productos de <span class="fw-light" id="nombreDelCliente_ajusteStock"></span></h4>
 										<div class="card-body">
 											<p class="card-text">Selecciona un producto para ajustar su stock</p>
 											<div class="row">
@@ -162,8 +162,7 @@
 												<div class="col-12">
 													<div class="input-group input-group-merge">
 														<span class="input-group-text"><i class="ri-search-line"></i></span>
-														<input
-															type="text" class="form-control" placeholder="Buscar por nombre o SKU" />
+														<input type="text" class="form-control" id="searchProducto_ajusteStock" placeholder="Buscar por nombre o SKU" oninput="appModuloAjusteStock.searchProducto()" />
 													</div>
 												</div>
 
@@ -171,30 +170,7 @@
 													<div class="table-responsive text-nowrap">
 														<table class="table table-hover">
 
-															<tbody id="tbodyListado_ajusteStock">
-
-																<tr>
-																	<td>
-																		<div class="d-flex justify-content-between align-items-center">
-																			<div class="d-flex justify-content-start align-items-center">
-																				<div class="avatar-wrapper me-3">
-																					<div class="avatar rounded-3 bg-label-secondary"><img src="../../assets/img/ecommerce-images/product-9.png" class="rounded-2"></div>
-																				</div>
-																				<div class="d-flex flex-column">
-																					<span class="text-nowrap text-heading fw-medium">Pantalon</span>
-																					<small class="text-truncate d-none d-sm-block">SKU: 1234ABCD</small>
-																				</div>
-																			</div>
-																			<div>
-																				<small class="text-truncate d-none d-sm-block">Stock: <b>120</b></small>
-
-																			</div>
-																		</div>
-
-																	</td>
-																</tr>
-
-															</tbody>
+															<tbody id="tbodyListado_ajusteStock"></tbody>
 														</table>
 													</div>
 												</div>
@@ -206,65 +182,43 @@
 								</div>
 
 								<div class="col-12 col-md-12 col-lg-6">
-									<div class="card" style="min-height: 600px;">
+									<div class="card h-100">
 
-										<h4 class="card-header fw-bold pb-0">Movimiento de stock</h4>
+										<h4 class="card-header fw-bold pb-0">Movimiento de stock: <span class="fw-light" id="tipoDeMovimiento_ajusteStock"></span></h4>
 										<div class="card-body">
 											<p class="card-text">Agrega productos al listado de stock para procesarlos</p>
 											<div class="row g-5">
 
 												<div class="col-12 col-md-12 col-lg-12 border-top border-bottom mt-5 py-3">
-													<div class="d-flex justify-content-between align-items-center">
-														<div class="d-flex justify-content-start align-items-center">
-															<div class="avatar-wrapper me-3">
-																<div class="avatar rounded-3 bg-label-secondary"><img src="../../assets/img/ecommerce-images/product-9.png" class="rounded-2"></div>
-															</div>
-															<div class="d-flex flex-column">
-																<span class="text-nowrap text-heading fw-medium">Pantalon</span>
-																<small class="text-truncate d-none d-sm-block">SKU: 1234ABCD</small>
-															</div>
-														</div>
-														<div>
-															<small class="text-truncate d-none d-sm-block">Stock: <b>120</b></small>
-
-														</div>
+													<div class="d-flex justify-content-between align-items-center" id="containerProductoSeleccionado_ajusteStock">
+														<span class="text-nowrap text-heading fw-medium">Seleccione un producto</span>
 													</div>
 												</div>
 
 												<div class="col-12 col-md-12 col-lg-12">
 													<div class="form-floating form-floating-outline">
-														<select id="variante_ajusteStock" multiple class="form-select campos_ajusteStock camposObli_ajusteStock select2_ajusteStock"></select>
-														<label for="variante_ajusteStock">Variante</label>
+														<select id="combinacion_ajusteStock" class="form-select campos_ajusteStock camposObliStep2_ajusteStock select2_ajusteStock" disabled>
+															<option value="">Selecciona el producto para ver</option>
+														</select>
+														<label for="combinacion_ajusteStock">Combinación</label>
 														<div class="invalid-feedback"> Debe seleccionar uno</div>
 													</div>
 												</div>
 
 												<div class="col-12 col-md-12 col-lg-12">
 													<div class="form-floating form-floating-outline">
-														<input type="text" id="cantidad_ajusteStock" class="form-control campos_ajusteStock" placeholder="Cantidad" />
+														<input type="text" id="cantidad_ajusteStock" class="form-control campos_ajusteStock camposObliStep2_ajusteStock" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloNumeros(this)" disabled />
 														<label for="cantidad_ajusteStock">Cantidad</label>
-													</div>
-												</div>
-
-												<div class="col-12 col-md-12 col-lg-12">
-													<div class="form-floating form-floating-outline">
-														<input type="text" id="lote_ajusteStock" class="form-control campos_ajusteStock" placeholder="Lote" />
-														<label for="lote_ajusteStock">Lote</label>
-													</div>
-												</div>
-
-												<div class="col-12 col-md-12 col-lg-12">
-													<div class="form-floating form-floating-outline">
-														<input class="form-control campos_ajusteStock camposObli_ajusteStock" type="date" id="fechaVencimiento_ajusteStock" />
-														<label for="fechaVencimiento_ajusteStock">Fecha de vencimiento</label>
 														<div class="invalid-feedback"> Debe completar el campo </div>
 													</div>
 												</div>
 
+												<div class="col-12 ocultar" id="containerIdentificadoresEspeciales"></div>
+
 												<div class="col-12">
 													<div class="row justify-content-end">
 														<div class="col-12 col-md-6 col-lg-3">
-															<button class="btn btn-label-success w-100">
+															<button id="btnAgregar_ajusteStock" class="btn btn-label-success w-100" onclick="appModuloAjusteStock.verificarCamposStep2()" disabled>
 																<span class="align-middle d-sm-inline-block d-none me-sm-1">Agregar</span>
 																<i class="ri-arrow-down-line"></i>
 															</button>
@@ -326,7 +280,7 @@
 											<i class="ri-arrow-left-line me-sm-1 me-0"></i>
 											<span class="align-middle d-sm-inline-block d-none">Anterior</span>
 										</button>
-										<button class="btn btn-success btn-submit_ajusteStock">
+										<button class="btn btn-success btn-submit_ajusteStock" onclick="appModuloAjusteStock.subirStock()">
 											<span class="align-middle d-sm-inline-block d-none me-sm-1">Subir stock</span>
 											<i class="ri-arrow-right-line"></i>
 										</button>

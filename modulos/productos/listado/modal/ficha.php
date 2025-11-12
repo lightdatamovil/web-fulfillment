@@ -98,14 +98,14 @@
 
                             <div class="col-12 col-md-12 col-lg-6">
                                 <div class="row g-5">
-                                    <div class="col-12">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" id="sku_mProductos" class="form-control campos_mProductos camposObli_mProductos" placeholder="SKU" />
                                             <label for="sku_mProductos">SKU</label>
                                             <div class="invalid-feedback"> Debe completar el campo </div>
                                         </div>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" id="ean_mProductos" class="form-control campos_mProductos camposObli_mProductos" placeholder="EAN" />
                                             <label for="ean_mProductos">EAN</label>
@@ -167,6 +167,12 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-12 col-md-12 col-lg-12">
+                                        <div class="form-floating form-floating-outline">
+                                            <select id="identificadoreEspeciales_mProductos" multiple class="form-select campos_mProductos select2_mProductos"></select>
+                                            <label for="identificadoreEspeciales_mProductos">Identificadore especiales</label>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>

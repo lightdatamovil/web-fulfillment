@@ -36,8 +36,28 @@
             3: "Web",
         },
         tiposIdentificadoresEspeciales: {
-            1: "Texto",
-            2: "Fecha",
+            1: {
+                nombre: "Texto",
+                input: "text"
+            },
+            2: {
+                nombre: "Fecha",
+                input: "date"
+            },
+        },
+        ajusteStock: {
+            1: {
+                did: 1,
+                nombre: "Ingreso"
+            },
+            2: {
+                did: 2,
+                nombre: "Egreso"
+            },
+            3: {
+                did: 3,
+                nombre: "Formateo"
+            },
         },
         syncLogisticas: {
             0: "No sync",

@@ -111,8 +111,27 @@
     }
 
     .tituloHome {
-        letter-spacing: 20px;
-        font-size: clamp(1rem, 5vw, 2.5rem);
+        display: block;
+        width: 300px;
+        height: auto;
+    }
+
+    @media (min-width: 400px) {
+        .tituloHome {
+            width: 400px;
+        }
+    }
+
+    @media (min-width: 576px) {
+        .tituloHome {
+            width: 500px;
+        }
+    }
+
+    @media (min-width: 700px) {
+        .tituloHome {
+            width: 600px;
+        }
     }
 
     .subtituloHome {

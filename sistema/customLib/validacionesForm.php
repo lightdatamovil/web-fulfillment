@@ -169,29 +169,29 @@
             callback
         }) {
             $(`.${className}`).each(function() {
-                if ($(this).is("select")) {
-                    $(this).on("change", function() {
+                const $el = $(this);
+
+                if ($el.is("select")) {
+                    // Evento con namespace propio
+                    $el.on("change.tiempoReal", function() {
                         callback();
                     });
                 } else {
-                    $(this).on("keyup", function() {
+                    $el.on("keyup.tiempoReal", function() {
                         callback();
                     });
                 }
             });
-        }
+        };
 
         public.deshabilitarTiempoReal = function({
             className
         }) {
             $(`.${className}`).each(function() {
-                if ($(this).is("select")) {
-                    $(this).off("change");
-                } else {
-                    $(this).off("keyup");
-                }
+                $(this).off(".tiempoReal");
             });
-        }
+        };
+
 
         public.obligatorios = function({
             className
