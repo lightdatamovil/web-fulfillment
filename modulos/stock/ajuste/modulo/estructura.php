@@ -298,43 +298,51 @@
 			$("#containerIdentificadoresEspeciales").empty()
 			let buffer = ""
 
-			if (g_productoSeleccionado.dids_ie.length > 0) {
+			if (g_data.ajuste == 1) {
+				if (g_productoSeleccionado.dids_ie.length > 0) {
 
+					buffer += `<div class="row g-5">`
+
+					g_productoSeleccionado.dids_ie.forEach((ie_producto) => {
+						let campo = appSistema.identificadoresEspeciales.find(ie => ie.did == ie_producto)
+						if (!campo) return;
+
+						buffer += `<div class="col-12 col-md-12 col-lg-12">`
+						buffer += `<div class="form-floating form-floating-outline">`
+						buffer += `<input class="form-control campos_ajusteStock camposObliStep2_ajusteStock camposIdentificadoresEspeciales_ajusteStock" data-did="${campo.did}" type="${appSistema.tiposIdentificadoresEspeciales[campo.tipo]?.input || "text"}" id="identificadorEspecial_${campo.did}_ajusteStock" />`
+						buffer += `<label for="identificadorEspecial_${campo.did}_ajusteStock">${campo.nombre}</label>`
+						buffer += `<div class="invalid-feedback"> Debe completar el campo </div>`
+						buffer += `</div>`
+						buffer += `</div>`
+					})
+
+					buffer += `</div>`
+					$("#containerIdentificadoresEspeciales").removeClass("ocultar").html(buffer)
+				} else {
+					$("#containerIdentificadoresEspeciales").addClass("ocultar").html(buffer)
+				}
+			} else {
 				buffer += `<div class="row g-5">`
 
 				buffer += `<div class="col-12 col-md-12 col-lg-12">`
 				buffer += `<div class="form-floating form-floating-outline">`
 				buffer += `<select id="opcionIdentificadoresEspeciales_ajusteStock" class="form-select campos_ajusteStock select2_ajusteStock">`
-				buffer += `<option value="">Nuevos identificadores especiales</option>`
+				buffer += `<option value="">No hay stock por modificar</option>`
 
 				if (g_stockIdentificadoresEspeciales.length > 0) {
 					g_stockIdentificadoresEspeciales.forEach((c) => {
 						buffer += `<option value="${c.did}">${c.identificadores}</option>`
 					})
 				}
+
 				buffer += `</select>`
 				buffer += `<label for="opcionIdentificadoresEspeciales_ajusteStock">Identificadores especiales</label>`
 				buffer += `<div class="invalid-feedback"> Debe seleccionar uno</div>`
 				buffer += `</div>`
 				buffer += `</div>`
 
-				g_productoSeleccionado.dids_ie.forEach((ie_producto) => {
-					let campo = appSistema.identificadoresEspeciales.find(ie => ie.did == ie_producto)
-					if (!campo) return;
-
-					buffer += `<div class="col-12 col-md-12 col-lg-12">`
-					buffer += `<div class="form-floating form-floating-outline">`
-					buffer += `<input class="form-control campos_ajusteStock camposObliStep2_ajusteStock camposIdentificadoresEspeciales_ajusteStock" data-did="${campo.did}" type="${appSistema.tiposIdentificadoresEspeciales[campo.tipo]?.input || "text"}" id="identificadorEspecial_${campo.did}_ajusteStock" />`
-					buffer += `<label for="identificadorEspecial_${campo.did}_ajusteStock">${campo.nombre}</label>`
-					buffer += `<div class="invalid-feedback"> Debe completar el campo </div>`
-					buffer += `</div>`
-					buffer += `</div>`
-				})
-
 				buffer += `</div>`
 				$("#containerIdentificadoresEspeciales").removeClass("ocultar").html(buffer)
-			} else {
-				$("#containerIdentificadoresEspeciales").addClass("ocultar").html(buffer)
 			}
 		}
 
