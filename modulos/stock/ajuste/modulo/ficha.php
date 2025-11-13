@@ -162,7 +162,7 @@
 												<div class="col-12">
 													<div class="input-group input-group-merge">
 														<span class="input-group-text"><i class="ri-search-line"></i></span>
-														<input type="text" class="form-control" id="searchProducto_ajusteStock" placeholder="Buscar por nombre o SKU" oninput="appModuloAjusteStock.searchProducto()" />
+														<input type="text" class="form-control campos_ajusteStock" id="searchProducto_ajusteStock" placeholder="Buscar por nombre o SKU" oninput="appModuloAjusteStock.searchProducto()" />
 													</div>
 												</div>
 

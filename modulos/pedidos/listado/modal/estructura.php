@@ -146,6 +146,7 @@
 
 
             const fechaActual = globalFuncionesJs.formatearFecha({
+                fecha: "hoy",
                 para: "date"
             })
             $("#fechaVenta_mPedidos").val(fechaActual);

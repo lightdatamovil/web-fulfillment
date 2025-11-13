@@ -48,6 +48,8 @@
             para,
             menos = 0
         }) {
+            console.log("entreeee");
+
             if (!fecha) return "";
 
             if (typeof fecha === "string" && fecha.toLowerCase() === "hoy") {
@@ -65,6 +67,9 @@
             const anio = f.getFullYear();
             const horas = String(f.getHours()).padStart(2, "0");
             const minutos = String(f.getMinutes()).padStart(2, "0");
+
+
+            console.log("entreeee2", `${anio}-${mes}-${dia}`);
 
             switch (para) {
                 case "frontend":

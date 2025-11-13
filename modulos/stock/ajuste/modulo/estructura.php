@@ -7,6 +7,7 @@
 		let g_productosPorCliente_filtado = [];
 		let g_productoSeleccionado = {}
 		let g_listadoMovimientos = []
+		let g_stockIdentificadoresEspeciales = []
 
 		const rutaAPI = "stock/productos"
 
@@ -31,6 +32,7 @@
 		function resetModulo() {
 			volverAlPrimerStep();
 			$(".campos_ajusteStock").val("");
+			$(".select2_ajusteStock").val(null).change()
 			g_data = {};
 			g_productosPorCliente = [];
 			g_productosPorCliente_filtado = [];
@@ -38,6 +40,20 @@
 			g_listadoMovimientos = []
 			stepperInicializado = false
 
+			$("#containerProductoSeleccionado_ajusteStock").html(`<span class="text-nowrap text-heading fw-medium">Seleccione un producto</span>`)
+			$("#combinacion_ajusteStock, #cantidad_ajusteStock").prop("disabled", true)
+			$("#containerIdentificadoresEspeciales").empty().addClass("ocultar")
+
+			const fechaActual = globalFuncionesJs.formatearFecha({
+				fecha: "hoy",
+				para: "date"
+			})
+			console.log("fechaActual", fechaActual);
+
+
+			$("#fecha_ajusteStock").val(fechaActual)
+
+			renderListadoMovimientos()
 			globalValidar.limpiarTodas()
 			globalValidar.deshabilitarTiempoReal({
 				className: "camposObliStep1_ajusteStock"
@@ -75,6 +91,7 @@
 			if (wizardNumberedBtnPrevList) {
 				wizardNumberedBtnPrevList.forEach(wizardNumberedBtnPrev => {
 					wizardNumberedBtnPrev.addEventListener('click', event => {
+						resetModulo()
 						numberedStepper.previous();
 					});
 				});
@@ -142,7 +159,6 @@
 			$("#nombreDelCliente_ajusteStock").html(appSistema.clientes.find(c => c.did == g_data.cliente)?.nombre_fantasia || "Desconocido")
 			$("#tipoDeMovimiento_ajusteStock").html(appSistema.ajusteStock[g_data.ajuste]?.nombre || "Desconocido")
 
-
 			let buffer = ""
 
 			g_productosPorCliente_filtado.forEach(producto => {
@@ -184,6 +200,8 @@
 				return
 			}
 
+			getStockIdentificadoresEspeciales(did)
+
 			buffer += `<div class="d-flex justify-content-start align-items-center">`
 			buffer += `<div class="avatar-wrapper me-3">`
 			buffer += `<div class="avatar rounded-3 bg-label-secondary"><img src="${g_productoSeleccionado.imagen}" style="object-fit: cover;" onerror="this.onerror=null; this.src='../../assets/img/extras/imagenDefault.jpg';" alt="" class="rounded-2"></div>`
@@ -194,7 +212,7 @@
 			buffer += `</div>`
 			buffer += `</div>`
 			buffer += `<div>`
-			buffer += `<small class="text-truncate d-none d-sm-block">Stock total actual: <b>${g_productoSeleccionado.stock || 0}</b></small>`
+			buffer += `<small class="text-truncate d-none d-sm-block">Stock total actual: <b>${g_productoSeleccionado.stock_producto || 0}</b></small>`
 			buffer += `</div>`
 
 			globalValidar.limpiarTodas()
@@ -207,6 +225,15 @@
 			$("#containerProductoSeleccionado_ajusteStock").html(buffer)
 			renderVariantes()
 			renderIdentificadoresEspeciales()
+		}
+
+		function getStockIdentificadoresEspeciales(did) {
+			globalRequest.get(`/${rutaAPI}/stockIE/${did}`, {
+				onSuccess: function(result) {
+					console.log("resul", result);
+					g_stockIdentificadoresEspeciales = result.data
+				}
+			});
 		}
 
 		function renderVariantes() {
@@ -272,7 +299,25 @@
 			let buffer = ""
 
 			if (g_productoSeleccionado.dids_ie.length > 0) {
+
 				buffer += `<div class="row g-5">`
+
+				buffer += `<div class="col-12 col-md-12 col-lg-12">`
+				buffer += `<div class="form-floating form-floating-outline">`
+				buffer += `<select id="opcionIdentificadoresEspeciales_ajusteStock" class="form-select campos_ajusteStock select2_ajusteStock">`
+				buffer += `<option value="">Nuevos identificadores especiales</option>`
+
+				if (g_stockIdentificadoresEspeciales.length > 0) {
+					g_stockIdentificadoresEspeciales.forEach((c) => {
+						buffer += `<option value="${c.did}">${c.identificadores}</option>`
+					})
+				}
+				buffer += `</select>`
+				buffer += `<label for="opcionIdentificadoresEspeciales_ajusteStock">Identificadores especiales</label>`
+				buffer += `<div class="invalid-feedback"> Debe seleccionar uno</div>`
+				buffer += `</div>`
+				buffer += `</div>`
+
 				g_productoSeleccionado.dids_ie.forEach((ie_producto) => {
 					let campo = appSistema.identificadoresEspeciales.find(ie => ie.did == ie_producto)
 					if (!campo) return;
@@ -331,12 +376,29 @@
 				didProducto: g_productoSeleccionado.did
 			});
 
+			let columnaIE = "";
 
-			let columnaIE = ""
-			identificadores.forEach((camposIE) => {
-				let identificador = appSistema.identificadoresEspeciales.find(ie => ie.did == camposIE.did)
-				columnaIE += `${identificador.nombre}: ${identificador.tipo == 2 ? globalFuncionesJs.formatearFecha({fecha: camposIE.valor, para: "frontend"}).slice(0, 10) : camposIE.valor}<br>`
-			})
+			const $opcionIE = $("#opcionIdentificadoresEspeciales_ajusteStock");
+			const valorSeleccionado = $opcionIE.val();
+
+			if (valorSeleccionado) {
+				columnaIE = $opcionIE.find("option:selected").text();
+			} else {
+				identificadores.forEach(camposIE => {
+					const identificador = appSistema.identificadoresEspeciales.find(ie => ie.did == camposIE.did);
+					if (!identificador) return;
+
+					let valor = camposIE.valor;
+					if (identificador.tipo == 2 && valor) {
+						valor = globalFuncionesJs.formatearFecha({
+							fecha: valor,
+							para: "frontend"
+						}).slice(0, 10);
+					}
+
+					columnaIE += `${identificador.nombre}: ${valor}<br>`;
+				});
+			}
 
 			let did_combinacion = $("#combinacion_ajusteStock").val()
 
@@ -345,6 +407,7 @@
 				combinaciones: [{
 					did_combinacion,
 					cantidad: $("#cantidad_ajusteStock").val(),
+					did_stock_producto_detalle: $("#opcionIdentificadoresEspeciales_ajusteStock").val() || null,
 					identificadores_especiales: identificadores
 				}],
 				render: {
