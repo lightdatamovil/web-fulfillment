@@ -296,7 +296,7 @@
 
                                                 <div class="col-12 col-md-6 col-lg-3">
                                                     <input type="text" name="cantidad" id="cantidad_insumos_mProductos" class="form-control campos_mProductos camposObli_mProductos" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloDecimales(this)" />
-                                                    <div class="mesajeCantida_mProductos d-flex align-items-centerd-flex align-items-center h-100 px-3 ocultar">
+                                                    <div class="mesajeCantidad_mProductos d-flex align-items-centerd-flex align-items-center h-100 px-3 ocultar">
                                                         <p class="m-0">Insumo no unitario</p>
                                                     </div>
 

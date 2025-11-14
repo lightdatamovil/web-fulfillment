@@ -191,6 +191,10 @@
         }) {
             buffer = ""
 
+            if (!multiple) {
+                buffer = `<option value="" selected>Seleccionar sincronizacion</option>`
+            }
+
             for (opcion in appSistema.syncLogisticas) {
                 buffer += `<option value="${opcion}">${appSistema.syncLogisticas[opcion] || "Sin nombre"}</option>`
             }

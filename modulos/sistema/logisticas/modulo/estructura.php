@@ -15,11 +15,23 @@
         public.open = async function() {
             $(".winapp").hide();
             $("#modulo_logisticas").show();
+
+            await globalLlenarSelect.syncLogisticas({
+                id: "filtroSync_logisticas",
+                multiple: true
+            })
+
+            await globalActivarAcciones.select2({
+                className: "select2_logisticas"
+            })
+
             await appModuloLogisticas.getListado();
+
             await globalActivarAcciones.filtrarConEnter({
                 className: "inputs_logisticas",
                 callback: appModuloLogisticas.getListado
             })
+
             await globalOrdenTablas.activar({
                 idThead: "theadListado_logisticas",
                 callback: appModuloLogisticas.getListado,
@@ -48,7 +60,8 @@
                 buffer += `<tr>`
                 buffer += `<td>${logistica.codigo || "---"}</td>`
                 buffer += `<td>${logistica.nombre || "---"}</td>`
-                buffer += `<td><span class="badge rounded-pill bg-label-${logistica.logisticaLD == 1 ? 'success' : 'danger'}">${logistica.logisticaLD == 1 ? (logistica.codigoLD || "Sin codigo") : "NO"}</span></td>`
+                buffer += `<td>${appSistema.syncLogisticas[logistica.sync] || "---"}</td>`
+                buffer += `<td>${logistica.codigoSync || "---"}</td>`
                 buffer += `<td><span class="badge rounded-pill bg-label-${logistica.habilitado == 1 ? 'success': 'danger'}">${logistica.habilitado == 1 ? 'Habilitado' : 'Deshabilitado'}</span></td>`
                 buffer += `<td>`
                 buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-primary" onclick="appModalLogisticas.open({mode: 2, did: '${logistica.did}'})" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver">`
@@ -90,7 +103,8 @@
                 nombre: $("#filtroNombre_logisticas").val(),
                 codigo: $("#filtroCodigo_logisticas").val(),
                 habilitado: $("#filtroEstado_logisticas").val(),
-                logisticaLD: $("#filtroEsLightdata_logisticas").val()
+                sync: $("#filtroSync_productos").val(),
+                codigoSync: $("#filtroCodigoSync_logisticas").val()
             };
 
             const queryString = $.param(parametros);

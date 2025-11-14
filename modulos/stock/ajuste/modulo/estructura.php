@@ -41,16 +41,13 @@
 			stepperInicializado = false
 
 			$("#containerProductoSeleccionado_ajusteStock").html(`<span class="text-nowrap text-heading fw-medium">Seleccione un producto</span>`)
-			$("#combinacion_ajusteStock, #cantidad_ajusteStock").prop("disabled", true)
+			$("#combinacion_ajusteStock").prop("disabled", true)
 			$("#containerIdentificadoresEspeciales").empty().addClass("ocultar")
 
 			const fechaActual = globalFuncionesJs.formatearFecha({
 				fecha: "hoy",
 				para: "date"
 			})
-			console.log("fechaActual", fechaActual);
-
-
 			$("#fecha_ajusteStock").val(fechaActual)
 
 			renderListadoMovimientos()
@@ -162,6 +159,7 @@
 			let buffer = ""
 
 			g_productosPorCliente_filtado.forEach(producto => {
+				if (g_data.ajuste != 1 && producto.stock_producto < 1) return
 				buffer += `<tr>`
 				buffer += `<td>`
 				buffer += `<div class="d-flex justify-content-between align-items-center">`
@@ -184,6 +182,10 @@
 				buffer += `</td>`
 				buffer += `</tr>`
 			})
+
+			if (buffer === "") {
+				buffer += `<tr><td><div class="d-flex justify-content-center"><span class="badge rounded-pill bg-label-primary px-6">Sin coincidencias en tu busqueda</span></div></td></tr>`
+			}
 
 			$("#tbodyListado_ajusteStock").html(buffer)
 		}
@@ -220,8 +222,7 @@
 				className: "camposObliStep2_ajusteStock"
 			})
 
-			$("#cantidad_ajusteStock").val("")
-			$("#cantidad_ajusteStock, #btnAgregar_ajusteStock").prop("disabled", false)
+			$("#btnAgregar_ajusteStock").prop("disabled", false)
 			$("#containerProductoSeleccionado_ajusteStock").html(buffer)
 			renderVariantes()
 			renderIdentificadoresEspeciales()
@@ -230,7 +231,6 @@
 		function getStockIdentificadoresEspeciales(did) {
 			globalRequest.get(`/${rutaAPI}/stockIE/${did}`, {
 				onSuccess: function(result) {
-					console.log("resul", result);
 					g_stockIdentificadoresEspeciales = result.data
 				}
 			});
@@ -245,7 +245,10 @@
 
 			if (variantes.length > 0) {
 				buffer += `<option value="">Seleccionar variante</option>`
-				variantes.forEach(v => buffer += `<option value="${v.did_producto_variante_valor}">${v.variante_descripcion} (Stock: ${v.stock_combinacion || 0})</option>`);
+				variantes.forEach((v) => {
+					if (g_data.ajuste != 1 && v.stock_combinacion < 1) return
+					buffer += `<option value="${v.did_producto_variante_valor}">${v.variante_descripcion} (Stock: ${v.stock_combinacion || 0})</option>`
+				});
 				$("#combinacion_ajusteStock").prop("disabled", false).html(buffer);
 			} else {
 				$("#combinacion_ajusteStock").prop("disabled", true).html('<option value="">Selecciona el producto para ver</option>');
@@ -326,15 +329,8 @@
 
 				buffer += `<div class="col-12 col-md-12 col-lg-12">`
 				buffer += `<div class="form-floating form-floating-outline">`
-				buffer += `<select id="opcionIdentificadoresEspeciales_ajusteStock" class="form-select campos_ajusteStock select2_ajusteStock">`
-				buffer += `<option value="">No hay stock por modificar</option>`
-
-				if (g_stockIdentificadoresEspeciales.length > 0) {
-					g_stockIdentificadoresEspeciales.forEach((c) => {
-						buffer += `<option value="${c.did}">${c.identificadores}</option>`
-					})
-				}
-
+				buffer += `<select id="opcionIdentificadoresEspeciales_ajusteStock" class="form-select campos_ajusteStock select2_ajusteStock camposObliStep2_ajusteStock" disabled>`
+				buffer += `<option value="">Selecciona una variante para ver</option>`
 				buffer += `</select>`
 				buffer += `<label for="opcionIdentificadoresEspeciales_ajusteStock">Identificadores especiales</label>`
 				buffer += `<div class="invalid-feedback"> Debe seleccionar uno</div>`
@@ -343,6 +339,28 @@
 
 				buffer += `</div>`
 				$("#containerIdentificadoresEspeciales").removeClass("ocultar").html(buffer)
+			}
+		}
+
+		public.renderOpcionesIdentificadoresEspeciales = function(select) {
+			if (g_data.ajuste != 1) {
+				const didCombinacion = $(select).val()
+				optionsPorConbinacion = g_stockIdentificadoresEspeciales.filter(s => s.did_producto_combinacion == didCombinacion)
+
+				let buffer = ""
+
+				if (optionsPorConbinacion.length > 0) {
+					buffer += `<option value="">Seleccionar</option>`
+					optionsPorConbinacion.forEach((c) => {
+						let stringIdentificadores = c.identificadores.map((i) => `${appSistema.identificadoresEspeciales.find(ie => ie.did == i.did)?.nombre || "Desconocido"}: ${i.valor}`)
+
+						buffer += `<option value="${c.did}">${stringIdentificadores.join(" | ")} (Stock: ${c.cantidad})</option>`
+					})
+				} else {
+					buffer += `<option value="">No hay stock por modificar</option>`
+				}
+
+				$("#opcionIdentificadoresEspeciales_ajusteStock").html(buffer).prop("disabled", false)
 			}
 		}
 
@@ -414,7 +432,7 @@
 				did_producto: g_productoSeleccionado.did,
 				combinaciones: [{
 					did_combinacion,
-					cantidad: $("#cantidad_ajusteStock").val(),
+					cantidad: 1,
 					did_stock_producto_detalle: $("#opcionIdentificadoresEspeciales_ajusteStock").val() || null,
 					identificadores_especiales: identificadores
 				}],
@@ -422,7 +440,7 @@
 					nombreProducto: g_productoSeleccionado.titulo || "Desconocido",
 					combinacion: variantes?.find(v => v.did_producto_variante_valor == did_combinacion)?.variante_descripcion || "Desconocido",
 					identificadores_especiales: columnaIE || "No tiene",
-					cantidad: $("#cantidad_ajusteStock").val(),
+					cantidad: 1,
 				}
 			}
 
@@ -444,7 +462,12 @@
 				buffer += `<td>${item.render.nombreProducto}</td>`
 				buffer += `<td>${item.render.combinacion}</td>`
 				buffer += `<td>${item.render.identificadores_especiales}</td>`
-				buffer += `<td>${item.render.cantidad}</td>`
+
+				buffer += `<td>`
+				buffer += `<div class="col-12 col-md-8 col-lg-6">`
+				buffer += `<input type="text" name="cantidad" value="${item.render.cantidad}" data-index="${index}" class="form-control form-control-sm campos_ajusteStock camposObli_ajusteStock cantidadMovimiento_ajusteStock" placeholder="Cantidad" />`
+				buffer += `</div>`
+				buffer += `</td>`
 
 				buffer += `<td>`
 				buffer += `<button type="button" class="btn btn-icon rounded-pill btn-text-warning" onclick="appModuloAjusteStock.desestimarLinea(${index})" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">`
@@ -475,69 +498,91 @@
 				});
 		};
 
-		public.subirStock = function() {
-			switch (Number(g_data.ajuste)) {
-				case 1:
-					ingresarStock()
-					break;
-				case 2:
-					egresarStock()
-					break;
-				case 3:
-					formatearStock()
-					break;
-				default:
-					break;
-			}
-		}
+		function formatearData() {
+			g_listadoMovimientos = g_listadoMovimientos.map((mov, index) => {
+				const nuevaCantidad = Number($(`.cantidadMovimiento_ajusteStock[data-index="${index}"]`).val()) || 0;
 
-		function ingresarStock() {
+				mov.combinaciones[0].cantidad = nuevaCantidad;
+				mov.render.cantidad = nuevaCantidad;
+
+				return mov;
+			});
+
+			let data = {
+				did_cliente: g_data.cliente,
+				fecha: globalFuncionesJs.formatearFecha({
+					fecha: g_data.fecha,
+					para: "api"
+				}) || "",
+				observacion: g_data.observacion || "",
+				productos: []
+			};
+
+			data.productos = Object.values(
+				g_listadoMovimientos.reduce((acc, item) => {
+					const did_producto = Number(item.did_producto);
+
+					if (!acc[did_producto]) {
+						acc[did_producto] = {
+							did_producto,
+							combinaciones: []
+						};
+					}
+
+					const combinacionesNormalizadas = item.combinaciones.map(c => ({
+						did_combinacion: Number(c.did_combinacion) || c.did_combinacion,
+						cantidad: Number(c.cantidad) || 1,
+
+						...(g_data.ajuste == 1 ? {
+							identificadores_especiales: c.identificadores_especiales.map(ie => ({
+								did: Number(ie.did),
+								valor: ie.valor
+							})) || null
+						} : {
+							did_stock_producto_detalle: Number(c.did_stock_producto_detalle)
+						})
+					}));
+
+					acc[did_producto].combinaciones.push(...combinacionesNormalizadas);
+					return acc;
+				}, {})
+			);
+
+			return data;
+		};
+
+
+		public.subirStock = function() {
 			if (g_listadoMovimientos < 1) {
 				globalSweetalert.alert({
 					titulo: "No hay movimientos de stock"
 				})
 			} else {
-				let data = {
-					did_cliente: g_data.cliente,
-					fecha: g_data.fecha,
-					observacion: g_data.observacion,
-					productos: []
+				let data = formatearData()
+
+				let type = "ingreso"
+				switch (Number(g_data.ajuste)) {
+					case 1:
+						type = "ingreso"
+						break;
+					case 2:
+						type = "egreso"
+						break;
+					case 3:
+						type = "ajuste"
+						break;
+					default:
+						break;
 				}
 
-				data.productos = Object.values(
-					g_listadoMovimientos.reduce((acc, item) => {
-						const did_producto = Number(item.did_producto);
-
-						if (!acc[did_producto]) {
-							acc[did_producto] = {
-								did_producto,
-								combinaciones: []
-							};
-						}
-
-						const combinacionesNormalizadas = item.combinaciones.map(c => ({
-							did_combinacion: isNaN(c.did_combinacion) ? c.did_combinacion : Number(c.did_combinacion),
-							cantidad: Number(c.cantidad),
-							identificadores_especiales: c.identificadores_especiales.map(ie => ({
-								did: Number(ie.did),
-								valor: ie.valor
-							}))
-						}));
-
-						acc[did_producto].combinaciones.push(...combinacionesNormalizadas);
-						return acc;
-					}, {})
-				);
-
-
-				console.log("data", data);
+				console.log("data", type, data);
 
 				globalSweetalert.confirmar({
 						titulo: "¿Estas seguro de subir todos estos movimientos de stock?"
 					})
 					.then(function(confirmado) {
 						if (confirmado) {
-							globalRequest.post(`/${rutaAPI}/ingreso`, data, {
+							globalRequest.post(`/${rutaAPI}/${type}`, data, {
 								onSuccess: function(result) {
 									globalSweetalert.exito();
 									appModuloAjusteStock.open();
@@ -545,20 +590,10 @@
 							});
 						}
 					});
-
 			}
-
-		}
-
-		function egresarStock() {
-			console.log("egresarStock");
-
-		}
-
-		function formatearStock() {
-			console.log("formatearStock");
 		}
 
 		return public;
+
 	})();
 </script>

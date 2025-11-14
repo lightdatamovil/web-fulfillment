@@ -49,12 +49,11 @@
                                     <div class="input-group">
 
                                         <div class="form-floating form-floating-outline">
-                                            <select id="sync_mLogisticas" class="form-select campos_mLogisticas" onchange="appModalLogisticas.onChangeSync(this)"></select>
-                                            <label for="sync_mLogisticas">Sync</label>
+                                            <select id="sync_mLogisticas" class="form-select campos_mLogisticas camposObli_mLogisticas" onchange="appModalLogisticas.onChangeSync(this)"></select>
+                                            <label for="sync_mLogisticas">Tipo de logistica</label>
                                         </div>
 
-                                        <input type="text" id="codSync_mLogisticas" class="form-control campos_mLogisticas rounded-end" placeholder="Codigo sync" />
-                                        <div class="invalid-feedback"> Debe completar el campo </div>
+                                        <input type="text" id="codSync_mLogisticas" class="form-control campos_mLogisticas rounded-end" placeholder="Codigo de logistica" />
                                     </div>
                                 </div>
 

@@ -465,7 +465,7 @@
             const insumo = appSistema.insumos.find(i => i.did == didSeleccionado);
             const $item = $(select).closest("[data-repeater-item]");
             const inputCantidad = $item.find("input[name$='[cantidad]']");
-            const mensajeCantidad = $item.find(".mesajeCantida_mProductos");
+            const mensajeCantidad = $item.find(".mesajeCantidad_mProductos");
 
             if (insumo) {
                 if (insumo.unidad == 0) {

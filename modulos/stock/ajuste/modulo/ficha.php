@@ -79,12 +79,12 @@
 												</div>
 												<div class="col-md">
 													<div class="form-check custom-option custom-option-icon">
-														<label class="form-check-label custom-option-content" for="opcionFormateo_ajusteStock">
+														<label class="form-check-label custom-option-content" for="opcionAjuste_ajusteStock">
 															<span class="custom-option-body">
 																<i class="ri-error-warning-line"></i>
-																<span class="custom-option-title">Formateo</span>
+																<span class="custom-option-title">Ajuste</span>
 															</span>
-															<input name="opcionAjuste_ajusteStock" class="form-check-input ocultar" type="radio" value="3" id="opcionFormateo_ajusteStock" />
+															<input name="opcionAjuste_ajusteStock" class="form-check-input ocultar" type="radio" value="3" id="opcionAjuste_ajusteStock" />
 														</label>
 													</div>
 												</div>
@@ -197,19 +197,11 @@
 
 												<div class="col-12 col-md-12 col-lg-12">
 													<div class="form-floating form-floating-outline">
-														<select id="combinacion_ajusteStock" class="form-select campos_ajusteStock camposObliStep2_ajusteStock select2_ajusteStock" disabled>
+														<select id="combinacion_ajusteStock" class="form-select campos_ajusteStock camposObliStep2_ajusteStock select2_ajusteStock" onchange="appModuloAjusteStock.renderOpcionesIdentificadoresEspeciales(this)" disabled>
 															<option value="">Selecciona el producto para ver</option>
 														</select>
 														<label for="combinacion_ajusteStock">Combinación</label>
 														<div class="invalid-feedback"> Debe seleccionar uno</div>
-													</div>
-												</div>
-
-												<div class="col-12 col-md-12 col-lg-12">
-													<div class="form-floating form-floating-outline">
-														<input type="text" id="cantidad_ajusteStock" class="form-control campos_ajusteStock camposObliStep2_ajusteStock" placeholder="Cantidad" oninput="globalFuncionesJs.inputSoloNumeros(this)" disabled />
-														<label for="cantidad_ajusteStock">Cantidad</label>
-														<div class="invalid-feedback"> Debe completar el campo </div>
 													</div>
 												</div>
 

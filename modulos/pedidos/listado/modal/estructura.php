@@ -87,6 +87,10 @@
                     $("#comprador_telefono_mPedidos").val(g_data.comprador.telefono);
                     $("#comprador_email_mPedidos").val(g_data.comprador.email);
 
+                    let usuarioAsignado = appSistema.usuarios.find(u => u.did == g_data.asignado)
+                    $("#armador_mPedidoDeVentas").text(usuarioAsignado ? `${usuarioAsignado.nombre} ${usuarioAsignado.apellido}` : "No asignado");
+                    // $("#logistica_mPedidoDeVentas").text(appSistema.logisticas.find(l => l.did == g_data.asignado)?.nombre);
+
                     $("#calle_mPedidos").val(g_data.direccion.calle);
                     $("#numero_mPedidos").val(g_data.direccion.numero);
                     $("#cp_mPedidos").val(g_data.direccion.cp);
@@ -143,7 +147,8 @@
 
             $(".campos_mPedidos").val("")
             $(".select2_mPedidos").trigger("change")
-
+            $("#armador_mPedidoDeVentas").text("No asignado");
+            $("#logistica_mPedidoDeVentas").text("No sincronizado");
 
             const fechaActual = globalFuncionesJs.formatearFecha({
                 fecha: "hoy",
@@ -361,10 +366,6 @@
                     id: "formProductos_mPedidos"
                 })
             };
-
-            console.log("datos", datos);
-            return
-
 
             globalValidar.formRepeater({
                 id: "formProductos_mPedidos"

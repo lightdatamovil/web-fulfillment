@@ -14,29 +14,35 @@
         <div class="card-header border-bottom">
 
             <div class="row g-3 mb-5">
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-12 col-md-6 col-lg-2">
                     <div class="form-floating form-floating-outline">
                         <input type="text" class="form-control campos_logisticas inputs_logisticas" id="filtroCodigo_logisticas" placeholder="Codigo" />
                         <label for="filtroCodigo_logisticas">Buscar por codigo</label>
                     </div>
                 </div>
+
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="form-floating form-floating-outline">
                         <input type="text" class="form-control campos_logisticas inputs_logisticas" id="filtroNombre_logisticas" placeholder="Nombre" />
                         <label for="filtroNombre_logisticas">Buscar por nombre</label>
                     </div>
                 </div>
+
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="form-floating form-floating-outline">
-                        <select id="filtroEsLightdata_logisticas" class="form-select campos_logisticas select_logisticas">
-                            <option value="todos" selected>Todos</option>
-                            <option value="1">Si</option>
-                            <option value="0">No</option>
-                        </select>
-                        <label for="filtroEsLightdata_logisticas">Es lightdata</label>
+                        <select id="filtroSync_logisticas" multiple class="form-select campos_logisticas select2_logisticas"></select>
+                        <label for="filtroSync_logisticas">Tipo de logistica</label>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="col-12 col-md-6 col-lg-2">
+                    <div class="form-floating form-floating-outline">
+                        <input type="text" class="form-control campos_logisticas inputs_logisticas" id="filtroCodigoSync_logisticas" placeholder="Codigo de logistica" />
+                        <label for="filtroCodigoSync_logisticas">Buscar por codigo de logistica</label>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-2">
                     <div class="form-floating form-floating-outline">
                         <select id="filtroEstado_logisticas" class="form-select campos_logisticas select_logisticas">
                             <option value="todos" selected>Todos</option>
@@ -68,7 +74,8 @@
                     <tr>
                         <th data-order="codigo">Codigo</th>
                         <th data-order="nombre">Nombre</th>
-                        <th data-order="es_lightdata">Es Lightdata</th>
+                        <th data-order="sync">Tipo de logistica</th>
+                        <th data-order="codigoSync">Codigo de logistica</th>
                         <th data-order="habilitado">Habilitado</th>
                         <th>Acciones</th>
                     </tr>

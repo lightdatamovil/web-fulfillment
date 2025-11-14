@@ -104,19 +104,18 @@
         public.onChangeSync = function(e) {
             const sync = $(e).val();
 
-            $("#codSync_mLogisticas").prop("disabled", sync == 0 ? true : false);
+            $("#codSync_mLogisticas").prop("disabled", !sync || sync == 0 ? true : false);
 
             globalValidar.limpiarUna({
                 id: "codSync_mLogisticas"
             })
 
-            if (sync == 0) {
-                $("#codSync_mLogisticas").addClass("camposObli_mLogisticas");
-            } else {
+            if (!sync || sync == 0) {
                 $("#codSync_mLogisticas").removeClass("camposObli_mLogisticas")
+            } else {
+                $("#codSync_mLogisticas").addClass("camposObli_mLogisticas");
             }
         }
-
 
         function validacion() {
             return globalValidar.obligatorios({
